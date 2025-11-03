@@ -1,0 +1,30 @@
+{
+  "app": {
+    "name": "SmartSpend"
+  },
+  "tabs": {
+    "home": "Home",
+    "history": "History",
+    "analytics": "Analytics",
+    "settings": "Settings"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "loading": "Loading...",
+    "error": "An error occurred"
+  },
+  "receipt": {
+    "capture": "Scan Receipt",
+    "merchant": "Merchant",
+    "date": "Date",
+    "total": "Total",
+    "items": "Items"
+  },
+  "onboarding": {
+    "welcome": "Welcome to SmartSpend",
+    "kvkk_title": "Privacy and Data Security"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "app": {
+    "name": "SmartSpend"
+  },
+  "tabs": {
+    "home": "Ana Sayfa",
+    "history": "Geçmiş",
+    "analytics": "Analiz",
+    "settings": "Ayarlar"
+  },
+  "common": {
+    "save": "Kaydet",
+    "cancel": "İptal",
+    "delete": "Sil",
+    "edit": "Düzenle",
+    "loading": "Yükleniyor...",
+    "error": "Bir hata oluştu"
+  },
+  "receipt": {
+    "capture": "Fiş Tara",
+    "merchant": "Mağaza",
+    "date": "Tarih",
+    "total": "Toplam",
+    "items": "Ürünler"
+  },
+  "onboarding": {
+    "welcome": "SmartSpend'e Hoş Geldiniz",
+    "kvkk_title": "Gizlilik ve Veri Güvenliği"
+  }
+}
