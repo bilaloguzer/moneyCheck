@@ -1,126 +1,175 @@
-// Camera viewport with simple edge detection overlay and capture control
-import React, { useEffect, useRef, useState } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { Camera } from 'expo-camera';
+import React, { useEffect } from 'react';
+import { View, StyleSheet, TouchableOpacity, Text, ActivityIndicator } from 'react-native';
+import { CameraView as ExpoCameraView } from 'expo-camera';
+import { useCamera } from '../../lib/hooks/camera/useCamera';
+import { MaterialIcons } from '@expo/vector-icons';
 
 interface CameraViewProps {
   onCapture: (uri: string) => void;
-  ratio?: string;
+  onClose?: () => void;
 }
 
-interface CameraInstance {
-  takePictureAsync: (options?: any) => Promise<{ uri: string }>;
-}
-
-export function CameraView({ onCapture, ratio = '16:9' }: CameraViewProps) {
-  const [hasPermission, setHasPermission] = useState<boolean | null>(null);
-  const [isReady, setIsReady] = useState(false);
-  const cameraRef = useRef<CameraInstance | null>(null);
-
-  // expo-camera's exported value can confuse TS in some setups; use a local any-typed alias for JSX
-  const ExpoCameraComponent: any = Camera;
+export function CameraView({ onCapture, onClose }: CameraViewProps) {
+  const {
+    cameraRef,
+    permission,
+    requestPermission,
+    type,
+    setType,
+    flash,
+    setFlash,
+    takePicture,
+    isReady
+  } = useCamera();
 
   useEffect(() => {
-    (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      setHasPermission(status === 'granted');
-    })();
-  }, []);
+    if (permission === false) {
+      // Could show an alert or just rely on the UI to show the permission button
+    }
+  }, [permission]);
 
-  const takePicture = async () => {
-    if (!cameraRef.current) return;
-    try {
-      const photo = await cameraRef.current.takePictureAsync({ quality: 0.8, skipProcessing: true });
-      onCapture(photo.uri);
-    } catch (err) {
-      console.warn('takePicture error', err);
+  if (!isReady) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color="#007AFF" />
+      </View>
+    );
+  }
+
+  if (permission === false) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.text}>No access to camera</Text>
+        <TouchableOpacity style={styles.button} onPress={requestPermission}>
+          <Text style={styles.buttonText}>Grant Permission</Text>
+        </TouchableOpacity>
+        {onClose && (
+            <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+                <MaterialIcons name="close" size={24} color="black" />
+            </TouchableOpacity>
+        )}
+      </View>
+    );
+  }
+
+  const handleCapture = async () => {
+    const uri = await takePicture();
+    if (uri) {
+      onCapture(uri);
     }
   };
 
-  if (hasPermission === null) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  }
+  const toggleFlash = () => {
+    setFlash(flash === 'off' ? 'on' : 'off');
+  };
 
-  if (hasPermission === false) {
-    return (
-      <View style={styles.center}>
-        <Text style={styles.permissionText}>Camera permission is required. Please enable it in settings.</Text>
-      </View>
-    );
-  }
+  const toggleType = () => {
+    setType(type === 'back' ? 'front' : 'back');
+  };
 
   return (
     <View style={styles.container}>
-      <ExpoCameraComponent
+      <ExpoCameraView
         ref={cameraRef}
         style={styles.camera}
-        ratio={ratio}
-        onCameraReady={() => setIsReady(true)}
+        facing={type}
+        flash={flash}
       >
-        <View style={styles.overlay} pointerEvents="none">
-          <View style={styles.frame} />
-        </View>
+        <View style={styles.controls}>
+          <View style={styles.topControls}>
+             {onClose && (
+              <TouchableOpacity style={styles.iconButton} onPress={onClose}>
+                <MaterialIcons name="close" size={30} color="white" />
+              </TouchableOpacity>
+            )}
+             <TouchableOpacity style={styles.iconButton} onPress={toggleFlash}>
+                <MaterialIcons name={flash === 'on' ? "flash-on" : "flash-off"} size={30} color="white" />
+            </TouchableOpacity>
+          </View>
+          
+          <View style={styles.bottomControls}>
+            <TouchableOpacity style={styles.iconButton} onPress={toggleType}>
+               <MaterialIcons name="flip-camera-ios" size={30} color="white" />
+            </TouchableOpacity>
 
-        <View style={styles.controls} pointerEvents="box-none">
-          <TouchableOpacity
-            style={[styles.captureButton, !isReady && styles.captureButtonDisabled]}
-            onPress={takePicture}
-            disabled={!isReady}
-          >
-            <View style={styles.innerCircle} />
-          </TouchableOpacity>
+            <TouchableOpacity style={styles.captureButton} onPress={handleCapture}>
+              <View style={styles.captureInner} />
+            </TouchableOpacity>
+            
+            <View style={styles.spacer} />
+          </View>
         </View>
-      </ExpoCameraComponent>
+      </ExpoCameraView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
-  camera: { flex: 1, backgroundColor: '#000' },
-  center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  permissionText: { color: '#fff', paddingHorizontal: 20, textAlign: 'center' },
-  overlay: {
-    ...StyleSheet.absoluteFillObject,
-    alignItems: 'center',
+  container: {
+    flex: 1,
     justifyContent: 'center',
+    backgroundColor: '#000',
   },
-  frame: {
-    width: '86%',
-    height: '60%',
-    borderWidth: 2,
-    borderColor: 'rgba(255,255,255,0.9)',
+  camera: {
+    flex: 1,
+  },
+  text: {
+    color: 'white',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  button: {
+    backgroundColor: '#007AFF',
+    padding: 15,
     borderRadius: 8,
+    alignSelf: 'center',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
   },
   controls: {
-    position: 'absolute',
-    bottom: 28,
-    left: 0,
-    right: 0,
+    flex: 1,
+    justifyContent: 'space-between',
+    padding: 20,
+    backgroundColor: 'transparent',
+  },
+  topControls: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingTop: 40,
+  },
+  bottomControls: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    justifyContent: 'center',
+    paddingBottom: 40,
+  },
+  iconButton: {
+    padding: 10,
   },
   captureButton: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    borderWidth: 4,
-    borderColor: '#fff',
-    alignItems: 'center',
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    backgroundColor: 'rgba(255,255,255,0.3)',
     justifyContent: 'center',
-    backgroundColor: 'rgba(255,255,255,0.06)',
+    alignItems: 'center',
   },
-  captureButtonDisabled: {
-    opacity: 0.6,
+  captureInner: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: 'white',
   },
-  innerCircle: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: '#fff',
+  spacer: {
+      width: 50,
   },
+  closeButton: {
+      position: 'absolute',
+      top: 40,
+      right: 20,
+      padding: 10,
+  }
 });
