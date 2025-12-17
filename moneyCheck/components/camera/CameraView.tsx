@@ -2,6 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import { CameraView as ExpoCamera, CameraType, FlashMode as ExpoFlashMode, useCameraPermissions } from 'expo-camera';
+import type { CameraView as CameraViewType } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -11,10 +12,6 @@ interface CameraViewProps {
   ratio?: string;
 }
 
-interface CameraInstance {
-  takePictureAsync: (options?: any) => Promise<{ uri: string }>;
-}
-
 type FlashMode = 'off' | 'on' | 'auto';
 
 export function CameraView({ onCapture, ratio = '16:9' }: CameraViewProps) {
@@ -22,7 +19,7 @@ export function CameraView({ onCapture, ratio = '16:9' }: CameraViewProps) {
   const [isReady, setIsReady] = useState(false);
   const [flashMode, setFlashMode] = useState<FlashMode>('off');
   const [isCapturing, setIsCapturing] = useState(false);
-  const cameraRef = useRef<CameraInstance | null>(null);
+  const cameraRef = useRef<CameraViewType | null>(null);
   const router = useRouter();
 
   useEffect(() => {

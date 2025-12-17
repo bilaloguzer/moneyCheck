@@ -61,10 +61,10 @@ AI-powered receipt scanner for Turkish receipts with OCR, price intelligence, an
 ## 🎨 UI DEVELOPER TASKS (31 tasks)
 
 ### Common Components (4 tasks)
-- [ ] 1. Complete Button component with primary/secondary/danger variants
-- [ ] 2. Complete Card component for consistent card styling
-- [ ] 3. Complete Input component with validation states
-- [ ] 4. Complete LoadingSpinner component
+- [x] 1. Complete Button component with primary/secondary/danger variants
+- [x] 2. Complete Card component for consistent card styling
+- [x] 3. Complete Input component with validation states
+- [x] 4. Complete LoadingSpinner component
 
 ### Camera & Scanning Flow (4 tasks)
 - [ ] 5. Implement CameraView component with capture UI overlay
