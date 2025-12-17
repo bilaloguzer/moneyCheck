@@ -36,28 +36,33 @@ export default function SettingsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: '#F7F6F3',
   },
   section: {
     marginTop: 24,
-    backgroundColor: '#fff',
+    backgroundColor: '#FFFFFF',
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: '#E9E9E7',
   },
   sectionTitle: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '600',
-    color: '#64748B',
+    color: '#787774',
     paddingHorizontal: 16,
     paddingTop: 16,
     paddingBottom: 8,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
   },
   settingItem: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 12,
+    paddingVertical: 14,
     paddingHorizontal: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
+    borderBottomColor: '#E9E9E7',
   },
   settingLeft: {
     flexDirection: 'row',
@@ -65,11 +70,12 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   settingText: {
-    fontSize: 16,
-    color: '#1E293B',
+    fontSize: 15,
+    color: '#37352F',
+    fontWeight: '400',
   },
   settingValue: {
-    fontSize: 16,
-    color: '#64748B',
+    fontSize: 15,
+    color: '#787774',
   },
 });
