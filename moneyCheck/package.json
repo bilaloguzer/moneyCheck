@@ -36,6 +36,7 @@
   },
   "private": true,
   "devDependencies": {
+    "@jest/test-sequencer": "^29.7.0",
     "@types/better-sqlite3": "^7.6.13",
     "@types/jest": "^29.5.12",
     "@types/react": "~19.1.10",
