@@ -17,7 +17,7 @@ export default function HistoryScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: '#F7F6F3',
   },
   content: {
     flex: 1,
@@ -29,11 +29,12 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#1E293B',
+    color: '#37352F',
     marginBottom: 8,
   },
   emptySubtext: {
     fontSize: 14,
-    color: '#64748B',
+    color: '#787774',
+    lineHeight: 20,
   },
 });

@@ -73,8 +73,9 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   buttonText: {
-    color: '#2563EB',
+    color: '#FFFFFF',
     fontSize: 12,
+    fontWeight: '500',
   },
   captureButton: {
     width: 70,
@@ -83,11 +84,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',
+    shadowColor: '#00000020',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
   },
   captureButtonInner: {
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: '#2563EB',
+    backgroundColor: '#37352F',
   },
 });

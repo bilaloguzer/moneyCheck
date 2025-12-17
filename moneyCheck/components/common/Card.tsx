@@ -28,18 +28,20 @@ export function Card({ children, style, elevated = true, padding = 12, onPress, 
 
 const styles = StyleSheet.create({
   base: {
-    borderRadius: 12,
+    borderRadius: 6,
     backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#E9E9E7',
   },
   elevated: Platform.select({
     ios: {
-      shadowColor: '#000',
+      shadowColor: '#00000015',
       shadowOffset: { width: 0, height: 1 },
-      shadowOpacity: 0.08,
-      shadowRadius: 6,
+      shadowOpacity: 0.05,
+      shadowRadius: 3,
     },
     android: {
-      elevation: 2,
+      elevation: 1,
     },
     default: {},
   }),
