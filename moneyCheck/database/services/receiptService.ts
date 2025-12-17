@@ -39,6 +39,7 @@ export async function createReceipt(
     receipt.notes ?? null
   );
 
+  console.log('ReceiptService.createReceipt result:', result);
   return result.lastInsertRowId;
 }
 

@@ -31,6 +31,13 @@ class MockSQLiteDatabase {
     try {
       const stmt = this.db.prepare(sql);
       const info = stmt.run(...params);
+      
+      // DEBUG LOG
+      console.log('Mock runAsync:', sql);
+      console.log('Info:', info);
+      console.log('lastInsertRowId type:', typeof info.lastInsertRowId);
+      console.log('lastInsertRowId value:', info.lastInsertRowId);
+
       return {
         lastInsertRowId: Number(info.lastInsertRowId),
         changes: info.changes,

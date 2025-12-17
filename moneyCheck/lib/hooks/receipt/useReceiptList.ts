@@ -1,12 +1,45 @@
 // Hook for fetching and filtering receipt lists with pagination
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import type { Receipt, ReceiptFilter, PaginatedResult } from '@/lib/types';
+import { useDatabaseContext } from '@/contexts/DatabaseContext';
+import { ReceiptRepository } from '@/lib/database/repositories/ReceiptRepository';
 
 export function useReceiptList(filter?: ReceiptFilter, page = 1, limit = 20) {
+  const { db } = useDatabaseContext();
   const [receipts, setReceipts] = useState<PaginatedResult<Receipt> | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
-  // Implementation placeholder
-  return { receipts, loading, error, refetch: () => {} };
+  // Memoize repository
+  const repository = useMemo(() => {
+    if (!db) return null;
+    return new ReceiptRepository(db);
+  }, [db]);
+
+  const fetchReceipts = useCallback(async () => {
+    if (!repository) return;
+    
+    try {
+      setLoading(true);
+      setError(null);
+      const result = await repository.findAll(filter, page, limit);
+      setReceipts(result);
+    } catch (err) {
+      console.error('Error fetching receipts:', err);
+      setError(err instanceof Error ? err : new Error('Failed to fetch receipts'));
+    } finally {
+      setLoading(false);
+    }
+  }, [repository, JSON.stringify(filter), page, limit]);
+
+  useEffect(() => {
+    fetchReceipts();
+  }, [fetchReceipts]);
+
+  return { 
+    receipts, 
+    loading, 
+    error, 
+    refetch: fetchReceipts 
+  };
 }

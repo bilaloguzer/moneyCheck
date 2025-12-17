@@ -8,6 +8,7 @@ export interface Receipt {
   total: number;
   imagePath: string;
   ocrConfidence: number;
+  items?: LineItem[];
   createdAt: Date;
   updatedAt: Date;
 }

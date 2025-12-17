@@ -18,16 +18,16 @@ AI-powered receipt scanner for Turkish receipts with OCR, price intelligence, an
 - [ ] 7. Create image preprocessing utilities (crop, enhance, compress)
 
 ### OCR & Receipt Parsing (2 tasks)
-- [ ] 8. Create OCR service using ML Kit text recognition
-- [ ] 9. Implement Turkish receipt parser (extract merchant, date, items, prices)
+- [x] 8. Create OCR service using ML Kit text recognition
+- [x] 9. Implement Turkish receipt parser (extract merchant, date, items, prices)
 
 ### Receipt Management (6 tasks)
-- [ ] 10. Implement receipt storage service (save receipt + image + line items)
-- [ ] 11. Create useReceipts hook for fetching and managing receipts
-- [ ] 12. Implement search/filter utilities for receipts
-- [ ] 13. Create receipt detail fetching logic with line items
-- [ ] 14. Create receipt update service for manual edits
-- [ ] 15. Implement line item CRUD operations
+- [x] 10. Implement receipt storage service (save receipt + image + line items)
+- [x] 11. Create useReceipts hook for fetching and managing receipts
+- [x] 12. Implement search/filter utilities for receipts
+- [x] 13. Create receipt detail fetching logic with line items
+- [x] 14. Create receipt update service for manual edits
+- [x] 15. Implement line item CRUD operations
 
 ### Analytics & Intelligence (5 tasks)
 - [ ] 16. Create analytics service (calculate totals, categories, trends)
