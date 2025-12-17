@@ -33,7 +33,7 @@ export function Input({
         secureTextEntry={secureTextEntry}
         keyboardType={keyboardType}
         style={[styles.input, hasError ? styles.inputError : null]}
-        placeholderTextColor="#9CA3AF"
+        placeholderTextColor="#9B9A97"
       />
       {hasError ? <Text style={styles.errorText}>{error}</Text> : null}
     </View>
@@ -47,23 +47,25 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 13,
-    color: '#374151',
+    color: '#787774',
     marginBottom: 6,
+    fontWeight: '500',
   },
   input: {
-    height: 44,
+    height: 40,
     paddingHorizontal: 12,
-    borderRadius: 8,
+    borderRadius: 3,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: '#E9E9E7',
     backgroundColor: '#FFFFFF',
-    color: '#111827',
+    color: '#37352F',
+    fontSize: 15,
   },
   inputError: {
-    borderColor: '#DC2626',
+    borderColor: '#E03E3E',
   },
   errorText: {
-    color: '#DC2626',
+    color: '#E03E3E',
     fontSize: 12,
     marginTop: 6,
   },

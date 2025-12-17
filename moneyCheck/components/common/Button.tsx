@@ -9,33 +9,50 @@ interface ButtonProps {
 }
 
 export function Button({ title, onPress, variant = 'primary', disabled }: ButtonProps) {
-  const backgroundColor =
-    variant === 'primary' ? '#2563EB' : variant === 'secondary' ? '#E5E7EB' : '#DC2626';
-  const textColor = variant === 'primary' ? '#FFFFFF' : '#111827';
+  const getColors = () => {
+    if (variant === 'primary') {
+      return { bg: '#37352F', text: '#FFFFFF', border: '#37352F' };
+    } else if (variant === 'danger') {
+      return { bg: '#E03E3E', text: '#FFFFFF', border: '#E03E3E' };
+    } else {
+      return { bg: '#FFFFFF', text: '#37352F', border: '#E9E9E7' };
+    }
+  };
+
+  const colors = getColors();
 
   return (
     <TouchableOpacity
       onPress={onPress}
       disabled={disabled}
-      activeOpacity={0.8}
-      style={[styles.button, { backgroundColor, opacity: disabled ? 0.6 : 1 }]}
+      activeOpacity={0.7}
+      style={[
+        styles.button,
+        {
+          backgroundColor: colors.bg,
+          borderColor: colors.border,
+          opacity: disabled ? 0.5 : 1,
+        },
+      ]}
     >
-      <Text style={[styles.text, { color: textColor }]}>{title}</Text>
+      <Text style={[styles.text, { color: colors.text }]}>{title}</Text>
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
   button: {
-    paddingVertical: 12,
+    paddingVertical: 10,
     paddingHorizontal: 16,
-    borderRadius: 8,
+    borderRadius: 6,
     alignItems: 'center',
     justifyContent: 'center',
-    minHeight: 44,
+    minHeight: 40,
+    borderWidth: 1,
   },
   text: {
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 15,
+    fontWeight: '500',
+    letterSpacing: -0.2,
   },
 });

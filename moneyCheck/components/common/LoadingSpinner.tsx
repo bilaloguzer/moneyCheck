@@ -9,7 +9,7 @@ interface LoadingSpinnerProps {
   color?: string;
 }
 
-export function LoadingSpinner({ message, size = 'large', overlay = false, color = '#2563EB' }: LoadingSpinnerProps) {
+export function LoadingSpinner({ message, size = 'large', overlay = false, color = '#37352F' }: LoadingSpinnerProps) {
   const containerStyles = [styles.container, overlay ? styles.overlayContainer : styles.inlineContainer];
   const textStyle = [styles.message, overlay ? styles.messageOverlay : styles.messageInline];
 
@@ -37,15 +37,16 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.25)',
+    backgroundColor: 'rgba(55, 53, 47, 0.4)',
     zIndex: 1000,
   },
   message: {
     marginLeft: 8,
     fontSize: 14,
+    fontWeight: '500',
   },
   messageInline: {
-    color: '#111827',
+    color: '#37352F',
   },
   messageOverlay: {
     color: '#FFFFFF',
