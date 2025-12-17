@@ -1,175 +1,387 @@
-import React, { useEffect } from 'react';
-import { View, StyleSheet, TouchableOpacity, Text, ActivityIndicator } from 'react-native';
-import { CameraView as ExpoCameraView } from 'expo-camera';
-import { useCamera } from '../../lib/hooks/camera/useCamera';
-import { MaterialIcons } from '@expo/vector-icons';
+// Camera viewport with enhanced UI overlay and capture controls
+import React, { useEffect, useRef, useState } from 'react';
+import { View, StyleSheet, Text, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
+import { CameraView as ExpoCamera, CameraType, FlashMode as ExpoFlashMode, useCameraPermissions } from 'expo-camera';
+import * as ImagePicker from 'expo-image-picker';
+import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 
 interface CameraViewProps {
   onCapture: (uri: string) => void;
-  onClose?: () => void;
+  ratio?: string;
 }
 
-export function CameraView({ onCapture, onClose }: CameraViewProps) {
-  const {
-    cameraRef,
-    permission,
-    requestPermission,
-    type,
-    setType,
-    flash,
-    setFlash,
-    takePicture,
-    isReady
-  } = useCamera();
+interface CameraInstance {
+  takePictureAsync: (options?: any) => Promise<{ uri: string }>;
+}
+
+type FlashMode = 'off' | 'on' | 'auto';
+
+export function CameraView({ onCapture, ratio = '16:9' }: CameraViewProps) {
+  const [permission, requestPermission] = useCameraPermissions();
+  const [isReady, setIsReady] = useState(false);
+  const [flashMode, setFlashMode] = useState<FlashMode>('off');
+  const [isCapturing, setIsCapturing] = useState(false);
+  const cameraRef = useRef<CameraInstance | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
-    if (permission === false) {
-      // Could show an alert or just rely on the UI to show the permission button
+    if (!permission?.granted) {
+      requestPermission();
     }
-  }, [permission]);
+  }, []);
 
-  if (!isReady) {
-    return (
-      <View style={styles.container}>
-        <ActivityIndicator size="large" color="#007AFF" />
-      </View>
-    );
-  }
+  const takePicture = async () => {
+    if (!cameraRef.current || isCapturing) return;
+    
+    setIsCapturing(true);
+    try {
+      const photo = await cameraRef.current.takePictureAsync({ 
+        quality: 0.85,
+        skipProcessing: false,
+        exif: true,
+      });
+      onCapture(photo.uri);
+    } catch (err) {
+      console.warn('takePicture error', err);
+      Alert.alert('Error', 'Failed to capture photo. Please try again.');
+    } finally {
+      setIsCapturing(false);
+    }
+  };
 
-  if (permission === false) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.text}>No access to camera</Text>
-        <TouchableOpacity style={styles.button} onPress={requestPermission}>
-          <Text style={styles.buttonText}>Grant Permission</Text>
-        </TouchableOpacity>
-        {onClose && (
-            <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-                <MaterialIcons name="close" size={24} color="black" />
-            </TouchableOpacity>
-        )}
-      </View>
-    );
-  }
+  const pickFromGallery = async () => {
+    try {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      
+      if (status !== 'granted') {
+        Alert.alert('Permission Required', 'Please allow access to your photo library.');
+        return;
+      }
 
-  const handleCapture = async () => {
-    const uri = await takePicture();
-    if (uri) {
-      onCapture(uri);
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: false,
+        quality: 0.85,
+      });
+
+      if (!result.canceled && result.assets[0]) {
+        onCapture(result.assets[0].uri);
+      }
+    } catch (err) {
+      console.warn('pickFromGallery error', err);
+      Alert.alert('Error', 'Failed to open gallery. Please try again.');
     }
   };
 
   const toggleFlash = () => {
-    setFlash(flash === 'off' ? 'on' : 'off');
+    setFlashMode((current) => {
+      if (current === 'off') return 'on';
+      if (current === 'on') return 'auto';
+      return 'off';
+    });
   };
 
-  const toggleType = () => {
-    setType(type === 'back' ? 'front' : 'back');
+  const getFlashIcon = () => {
+    if (flashMode === 'off') return 'flash-off';
+    if (flashMode === 'on') return 'flash';
+    return 'flash-outline';
+  };
+
+  if (!permission) {
+    return (
+      <View style={styles.center}>
+        <ActivityIndicator size="large" color="#FFFFFF" />
+      </View>
+    );
+  }
+
+  if (!permission.granted) {
+    return (
+      <View style={styles.center}>
+        <Text style={styles.permissionText}>Camera permission is required. Please enable it in settings.</Text>
+        <TouchableOpacity 
+          style={styles.permissionButton}
+          onPress={requestPermission}
+        >
+          <Text style={styles.permissionButtonText}>Grant Permission</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  const getExpoFlashMode = (): ExpoFlashMode => {
+    if (flashMode === 'on') return 'on';
+    if (flashMode === 'auto') return 'auto';
+    return 'off';
   };
 
   return (
     <View style={styles.container}>
-      <ExpoCameraView
+      <ExpoCamera
         ref={cameraRef}
         style={styles.camera}
-        facing={type}
-        flash={flash}
+        facing="back"
+        flash={getExpoFlashMode()}
+        onCameraReady={() => setIsReady(true)}
       >
-        <View style={styles.controls}>
-          <View style={styles.topControls}>
-             {onClose && (
-              <TouchableOpacity style={styles.iconButton} onPress={onClose}>
-                <MaterialIcons name="close" size={30} color="white" />
-              </TouchableOpacity>
-            )}
-             <TouchableOpacity style={styles.iconButton} onPress={toggleFlash}>
-                <MaterialIcons name={flash === 'on' ? "flash-on" : "flash-off"} size={30} color="white" />
-            </TouchableOpacity>
-          </View>
+        {/* Top Controls Bar */}
+        <View style={styles.topBar}>
+          <TouchableOpacity
+            style={styles.topButton}
+            onPress={() => router.back()}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="close" size={28} color="#FFFFFF" />
+          </TouchableOpacity>
           
-          <View style={styles.bottomControls}>
-            <TouchableOpacity style={styles.iconButton} onPress={toggleType}>
-               <MaterialIcons name="flip-camera-ios" size={30} color="white" />
-            </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.topButton}
+            onPress={toggleFlash}
+            activeOpacity={0.7}
+          >
+            <Ionicons name={getFlashIcon()} size={26} color="#FFFFFF" />
+          </TouchableOpacity>
+        </View>
 
-            <TouchableOpacity style={styles.captureButton} onPress={handleCapture}>
-              <View style={styles.captureInner} />
-            </TouchableOpacity>
-            
-            <View style={styles.spacer} />
+        {/* Center Frame Overlay */}
+        <View style={styles.overlay} pointerEvents="none">
+          <View style={styles.frameContainer}>
+            <View style={styles.frame}>
+              <View style={[styles.corner, styles.cornerTopLeft]} />
+              <View style={[styles.corner, styles.cornerTopRight]} />
+              <View style={[styles.corner, styles.cornerBottomLeft]} />
+              <View style={[styles.corner, styles.cornerBottomRight]} />
+            </View>
+            <Text style={styles.instructionText}>
+              Position receipt within frame
+            </Text>
           </View>
         </View>
-      </ExpoCameraView>
+
+        {/* Bottom Controls Bar */}
+        <View style={styles.bottomBar}>
+          <TouchableOpacity
+            style={styles.sideButton}
+            onPress={pickFromGallery}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="images" size={28} color="#FFFFFF" />
+            <Text style={styles.sideButtonText}>Gallery</Text>
+          </TouchableOpacity>
+
+          <View style={styles.captureContainer}>
+            <TouchableOpacity
+              style={[
+                styles.captureButton,
+                (!isReady || isCapturing) && styles.captureButtonDisabled
+              ]}
+              onPress={takePicture}
+              disabled={!isReady || isCapturing}
+              activeOpacity={0.8}
+            >
+              {isCapturing ? (
+                <ActivityIndicator size="large" color="#FFFFFF" />
+              ) : (
+                <View style={styles.innerCircle} />
+              )}
+            </TouchableOpacity>
+            {isReady && (
+              <Text style={styles.captureHint}>Tap to capture</Text>
+            )}
+          </View>
+
+          <View style={styles.sideButton}>
+            {/* Placeholder for symmetry */}
+          </View>
+        </View>
+      </ExpoCamera>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  container: { 
     flex: 1,
-    justifyContent: 'center',
     backgroundColor: '#000',
   },
-  camera: {
+  camera: { 
     flex: 1,
   },
-  text: {
-    color: 'white',
+  center: { 
+    flex: 1, 
+    alignItems: 'center', 
+    justifyContent: 'center',
+    backgroundColor: '#000',
+    padding: 24,
+  },
+  permissionText: { 
+    color: '#FFFFFF', 
+    fontSize: 15,
+    paddingHorizontal: 24, 
     textAlign: 'center',
-    marginBottom: 20,
+    lineHeight: 22,
+    marginBottom: 24,
   },
-  button: {
-    backgroundColor: '#007AFF',
-    padding: 15,
-    borderRadius: 8,
-    alignSelf: 'center',
+  permissionButton: {
+    backgroundColor: '#37352F',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#E9E9E7',
   },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
+  permissionButtonText: {
+    color: '#FFFFFF',
+    fontSize: 15,
+    fontWeight: '500',
   },
-  controls: {
-    flex: 1,
-    justifyContent: 'space-between',
-    padding: 20,
-    backgroundColor: 'transparent',
-  },
-  topControls: {
+  
+  // Top Bar
+  topBar: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingTop: 40,
+    paddingTop: 48,
+    paddingHorizontal: 20,
+    paddingBottom: 16,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
   },
-  bottomControls: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  topButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: 'rgba(55, 53, 47, 0.7)',
     alignItems: 'center',
-    paddingBottom: 40,
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 3,
   },
-  iconButton: {
-    padding: 10,
+
+  // Center Overlay
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  frameContainer: {
+    alignItems: 'center',
+  },
+  frame: {
+    width: 320,
+    height: 420,
+    position: 'relative',
+  },
+  corner: {
+    position: 'absolute',
+    width: 24,
+    height: 24,
+    borderColor: '#FFFFFF',
+  },
+  cornerTopLeft: {
+    top: 0,
+    left: 0,
+    borderTopWidth: 3,
+    borderLeftWidth: 3,
+    borderTopLeftRadius: 6,
+  },
+  cornerTopRight: {
+    top: 0,
+    right: 0,
+    borderTopWidth: 3,
+    borderRightWidth: 3,
+    borderTopRightRadius: 6,
+  },
+  cornerBottomLeft: {
+    bottom: 0,
+    left: 0,
+    borderBottomWidth: 3,
+    borderLeftWidth: 3,
+    borderBottomLeftRadius: 6,
+  },
+  cornerBottomRight: {
+    bottom: 0,
+    right: 0,
+    borderBottomWidth: 3,
+    borderRightWidth: 3,
+    borderBottomRightRadius: 6,
+  },
+  instructionText: {
+    marginTop: 24,
+    fontSize: 15,
+    color: '#FFFFFF',
+    fontWeight: '500',
+    textAlign: 'center',
+    backgroundColor: 'rgba(55, 53, 47, 0.8)',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 6,
+    overflow: 'hidden',
+  },
+
+  // Bottom Bar
+  bottomBar: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'space-between',
+    paddingHorizontal: 24,
+    paddingBottom: 40,
+    paddingTop: 20,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+  },
+  sideButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 60,
+    gap: 6,
+  },
+  sideButtonText: {
+    fontSize: 12,
+    color: '#FFFFFF',
+    fontWeight: '500',
+  },
+  captureContainer: {
+    alignItems: 'center',
+    gap: 8,
   },
   captureButton: {
-    width: 70,
-    height: 70,
-    borderRadius: 35,
-    backgroundColor: 'rgba(255,255,255,0.3)',
-    justifyContent: 'center',
+    width: 76,
+    height: 76,
+    borderRadius: 38,
+    borderWidth: 4,
+    borderColor: '#FFFFFF',
     alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.4,
+    shadowRadius: 6,
+    elevation: 4,
   },
-  captureInner: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: 'white',
+  captureButtonDisabled: {
+    opacity: 0.5,
   },
-  spacer: {
-      width: 50,
+  innerCircle: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: '#FFFFFF',
   },
-  closeButton: {
-      position: 'absolute',
-      top: 40,
-      right: 20,
-      padding: 10,
-  }
+  captureHint: {
+    fontSize: 13,
+    color: '#FFFFFF',
+    fontWeight: '500',
+    textAlign: 'center',
+  },
 });
