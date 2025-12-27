@@ -163,6 +163,7 @@ export interface ReceiptQueryFilters {
   categoryId?: number;
   limit?: number;
   offset?: number;
+  searchQuery?: string; // For general search across stores and items
 }
 
 /**

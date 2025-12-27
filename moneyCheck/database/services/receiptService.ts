@@ -98,6 +98,19 @@ export async function getReceipts(
     params.push(`%${filters.storeName}%`);
   }
 
+  if (filters?.searchQuery) {
+    // Join with line_items to search by product name OR search store name
+    // Using a subquery for performance to get matching receipt IDs
+    sql += ` AND (
+      store_name LIKE ? OR 
+      id IN (
+        SELECT receipt_id FROM line_items WHERE name LIKE ?
+      )
+    )`;
+    const query = `%${filters.searchQuery}%`;
+    params.push(query, query);
+  }
+
   if (filters?.startDate) {
     sql += ' AND purchase_date >= ?';
     params.push(filters.startDate.toISOString());

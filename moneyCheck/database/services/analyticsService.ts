@@ -201,10 +201,50 @@ export async function getTopSpendingItems(
   const rows = await db.getAllAsync<any>(sql, ...params);
 
   return rows.map((row) => ({
-    name: row.name,
+    name: row.name || 'Unknown Item',
+    totalSpent: row.total_spent || 0,
+    purchaseCount: row.purchase_count || 0,
+    averagePrice: row.average_price || 0,
+  }));
+}
+
+/**
+ * Get daily spending
+ */
+export async function getDailySpending(
+  db: SQLite.SQLiteDatabase,
+  startDate?: Date,
+  endDate?: Date
+): Promise<{ date: string; totalSpent: number; receiptCount: number }[]> {
+  let sql = `
+    SELECT
+      strftime('%Y-%m-%d', purchase_date) as date,
+      SUM(total_amount) as total_spent,
+      COUNT(id) as receipt_count
+    FROM receipts
+    WHERE 1=1
+  `;
+
+  const params: any[] = [];
+
+  if (startDate) {
+    sql += ' AND purchase_date >= ?';
+    params.push(startDate.toISOString());
+  }
+
+  if (endDate) {
+    sql += ' AND purchase_date <= ?';
+    params.push(endDate.toISOString());
+  }
+
+  sql += ' GROUP BY date ORDER BY date';
+
+  const rows = await db.getAllAsync<any>(sql, ...params);
+
+  return rows.map((row) => ({
+    date: row.date,
     totalSpent: row.total_spent,
-    purchaseCount: row.purchase_count,
-    averagePrice: row.average_price,
+    receiptCount: row.receipt_count,
   }));
 }
 

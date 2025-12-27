@@ -76,15 +76,25 @@ export class ReceiptRepository {
     const offset = (page - 1) * limit;
     
     // Map domain filter to DB filter
-    const dbFilter = {
-      storeName: filter?.searchQuery, // Using search query as store name filter for now
+    const dbFilter: any = {
+      limit,
+      offset,
       startDate: filter?.startDate,
       endDate: filter?.endDate,
       minAmount: filter?.minAmount,
       maxAmount: filter?.maxAmount,
-      limit,
-      offset
+      searchQuery: filter?.merchantName // Mapping merchantName search to general search query
     };
+
+    if (filter?.merchantName) {
+        // If it's a specific merchant search, we can use storeName, 
+        // but if it's a general search bar input, use searchQuery.
+        // Assuming the filter object from UI might be reused for general search.
+        // Let's use searchQuery for broad search if the intent is "Search".
+        // For now, let's map merchantName to searchQuery to enable item search too!
+        dbFilter.searchQuery = filter.merchantName;
+        delete dbFilter.storeName; 
+    }
 
     const [receipts, totalCount] = await Promise.all([
       ReceiptService.getReceipts(this.db, dbFilter),
@@ -93,7 +103,7 @@ export class ReceiptRepository {
 
     return {
       data: receipts.map(r => this.mapToDomain(r)),
-      total: totalCount,
+      totalCount,
       page,
       limit,
       totalPages: Math.ceil(totalCount / limit)
