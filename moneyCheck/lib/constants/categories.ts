@@ -19,3 +19,10 @@ export const CATEGORY_DISPLAY_NAMES = {
   [SPENDING_CATEGORIES.CLEANING]: 'Temizlik',
   [SPENDING_CATEGORIES.OTHER]: 'Diğer',
 } as const;
+
+/**
+ * Get display name for a category key
+ */
+export function getCategoryDisplayName(categoryKey: string): string {
+  return CATEGORY_DISPLAY_NAMES[categoryKey as keyof typeof CATEGORY_DISPLAY_NAMES] || categoryKey;
+}

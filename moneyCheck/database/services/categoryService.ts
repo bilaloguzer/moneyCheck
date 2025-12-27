@@ -367,6 +367,20 @@ export async function bulkImportCategories(
 // ============================================================================
 
 /**
+ * Get category ID by name (case-insensitive)
+ */
+export async function getCategoryIdByName(
+  db: SQLite.SQLiteDatabase,
+  categoryName: string
+): Promise<number | null> {
+  const row = await db.getFirstAsync<{ id: number }>(
+    'SELECT id FROM categories WHERE LOWER(name) = LOWER(?)',
+    categoryName
+  );
+  return row?.id ?? null;
+}
+
+/**
  * Map database row to Category object with full details
  */
 async function mapRowToCategory(

@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useDatabaseContext } from '@/contexts/DatabaseContext';
 import * as AnalyticsService from '@/database/services/analyticsService';
+import { getCategoryDisplayName } from '@/lib/constants/categories';
 
 export interface AnalyticsData {
   totalSpent: number;
@@ -12,6 +13,7 @@ export interface AnalyticsData {
     value: number;
     color?: string;
     itemCount: number;
+    percentage?: number;
   }[];
   dailySpending: {
     date: string;
@@ -79,11 +81,15 @@ export function useAnalytics(range: TimeRange) {
       // Colors for chart
       const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'];
       
+      // Calculate total for percentages
+      const categoryTotal = categoryData.reduce((sum, cat) => sum + cat.totalSpent, 0);
+      
       const categoryBreakdown = categoryData.map((cat, index) => ({
-        name: cat.categoryName,
+        name: getCategoryDisplayName(cat.categoryName),
         value: cat.totalSpent,
         itemCount: cat.itemCount,
-        color: colors[index % colors.length]
+        color: colors[index % colors.length],
+        percentage: categoryTotal > 0 ? (cat.totalSpent / categoryTotal) * 100 : 0
       }));
 
       const dailySpending = dailyData.map(d => ({

@@ -3,6 +3,7 @@ import * as SQLite from 'expo-sqlite';
 import type { Receipt, ReceiptFilter, PaginatedResult } from '@/lib/types';
 import * as ReceiptService from '@/database/services/receiptService';
 import * as LineItemService from '@/database/services/lineItemService';
+import * as CategoryService from '@/database/services/categoryService';
 import { 
   CreateReceiptInput, 
   CreateLineItemInput,
@@ -47,13 +48,20 @@ export class ReceiptRepository {
             // Create items one by one to avoid nested transaction issues
             // (since LineItemService.createLineItems uses a transaction and we are already in one)
             for (const item of inputItems) {
+                // Try to resolve category string to category_id
+                let categoryId: number | null = null;
+                if (item.category && typeof item.category === 'string') {
+                    categoryId = await CategoryService.getCategoryIdByName(this.db, item.category);
+                }
+                
                 const lineItemInput: CreateLineItemInput = {
                     receiptId: receiptId,
                     name: item.name || item.productName,
                     quantity: item.quantity || 1,
                     unitPrice: item.price || item.unitPrice,
                     totalPrice: (item.price || item.unitPrice) * (item.quantity || 1),
-                    discount: item.discount || 0
+                    discount: item.discount || 0,
+                    categoryId: categoryId ?? undefined
                 };
                 await LineItemService.createLineItem(this.db, lineItemInput);
             }
@@ -131,6 +139,13 @@ export class ReceiptRepository {
 
   async addLineItem(receiptId: string, item: any): Promise<Receipt> {
     const rId = parseInt(receiptId, 10);
+    
+    // Try to resolve category string to category_id
+    let categoryId = item.categoryId;
+    if (item.category && typeof item.category === 'string' && !categoryId) {
+        categoryId = await CategoryService.getCategoryIdByName(this.db, item.category);
+    }
+    
     const lineItemInput: CreateLineItemInput = {
       receiptId: rId,
       name: item.productName || item.name,
@@ -138,7 +153,7 @@ export class ReceiptRepository {
       unitPrice: item.unitPrice || item.price,
       totalPrice: (item.unitPrice || item.price) * (item.quantity || 1),
       // Optional fields
-      categoryId: item.categoryId,
+      categoryId: categoryId,
       departmentName: item.departmentName,
       subcategoryType: item.subcategoryType
     };

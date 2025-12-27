@@ -65,17 +65,45 @@ export default function AnalyticsScreen() {
       <View style={styles.chartCard}>
           <Text style={styles.chartTitle}>Spending by Category</Text>
           {data?.categoryBreakdown && data.categoryBreakdown.length > 0 ? (
-            <View style={{ alignItems: 'center' }}>
-                <PieChart
-                    data={data.categoryBreakdown}
-                    donut
-                    showText
-                    textColor="black"
-                    radius={120}
-                    innerRadius={60}
-                    textSize={12}
-                    labelsPosition='outward'
-                />
+            <View>
+                <View style={{ alignItems: 'center' }}>
+                    <PieChart
+                        data={data.categoryBreakdown.map(cat => ({
+                            value: cat.value,
+                            color: cat.color || '#999',
+                            text: `${cat.percentage?.toFixed(0) || '0'}%`,
+                        }))}
+                        donut
+                        showText
+                        textColor="#37352F"
+                        radius={100}
+                        innerRadius={55}
+                        textSize={14}
+                        fontWeight="600"
+                        centerLabelComponent={() => (
+                            <View style={{ alignItems: 'center' }}>
+                                <Text style={{ fontSize: 20, fontWeight: '700', color: '#37352F' }}>
+                                    ₺{data.totalSpent.toFixed(0)}
+                                </Text>
+                                <Text style={{ fontSize: 12, color: '#787774' }}>Total</Text>
+                            </View>
+                        )}
+                    />
+                </View>
+                {/* Legend */}
+                <View style={styles.legendContainer}>
+                    {data.categoryBreakdown.map((cat, index) => (
+                        <View key={index} style={styles.legendItem}>
+                            <View style={[styles.legendColor, { backgroundColor: cat.color }]} />
+                            <View style={{ flex: 1 }}>
+                                <Text style={styles.legendName}>{cat.name}</Text>
+                                <Text style={styles.legendValue}>
+                                    ₺{cat.value.toFixed(2)} ({cat.percentage?.toFixed(1) || '0'}%)
+                                </Text>
+                            </View>
+                        </View>
+                    ))}
+                </View>
             </View>
           ) : (
             <Text style={styles.emptyText}>No category data for this period</Text>
@@ -216,6 +244,30 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#999',
     marginVertical: 20
+  },
+  legendContainer: {
+    marginTop: 24,
+  },
+  legendItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  legendColor: {
+    width: 16,
+    height: 16,
+    borderRadius: 4,
+    marginRight: 12,
+  },
+  legendName: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#37352F',
+    marginBottom: 2,
+  },
+  legendValue: {
+    fontSize: 12,
+    color: '#787774',
   },
   listSection: {
       paddingHorizontal: 20,

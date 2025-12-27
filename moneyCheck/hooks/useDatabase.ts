@@ -6,6 +6,7 @@
 import { useEffect, useState } from 'react';
 import * as SQLite from 'expo-sqlite';
 import { runMigrations } from '../database/migrations';
+import { seedCategories, needsSeedCategories } from '../database/seeds/categories';
 
 interface UseDatabaseResult {
   db: SQLite.SQLiteDatabase | null;
@@ -53,6 +54,14 @@ export function useDatabase(): UseDatabaseResult {
 
         // Run migrations
         await runMigrations(database);
+
+        if (!isMounted) return;
+
+        // Seed categories if needed
+        if (await needsSeedCategories(database)) {
+          console.log('Database needs initial categories, seeding...');
+          await seedCategories(database);
+        }
 
         if (!isMounted) return;
 
