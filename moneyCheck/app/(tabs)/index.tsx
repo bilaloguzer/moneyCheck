@@ -1,13 +1,50 @@
 // Home screen - main dashboard with recent receipts, quick stats, capture button
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { useRouter } from 'expo-router';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, RefreshControl } from 'react-native';
+import { useRouter, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { useReceiptList } from '@/lib/hooks/receipt/useReceiptList';
+import { ReceiptCard } from '@/components/receipt/ReceiptCard';
+import { useCallback, useState, useMemo } from 'react';
+import { Receipt } from '@/lib/types';
 
 export default function HomeScreen() {
   const router = useRouter();
+  const { receipts, loading, refetch } = useReceiptList(undefined, 1, 5); // Fetch top 5 receipts
+  const [refreshing, setRefreshing] = useState(false);
+
+  // Auto-refresh when screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [refetch])
+  );
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  }, [refetch]);
+
+  // Calculate stats from loaded receipts (Note: ideally should be a separate aggregated query)
+  // For now, we will use the data we have, but "This Month" requires checking dates.
+  // Since useReceiptList is paginated, this stat might be inaccurate if we only load 5.
+  // TODO: Create a separate hook for aggregated stats.
+  // For immediate feedback, we will display stats based on the *recent* fetch if we wanted, 
+  // but better to just show "Recent Activity" for now or use a separate stats hook.
+  
+  // Let's rely on the recent list for "Receipts" count at least if it's small, 
+  // but paginatedResult returns totalCount!
+  const totalReceipts = receipts?.totalCount || 0;
+  
+  // We can't easily calculate "This Month" total without fetching all receipts for this month.
+  // I'll update the UI to show "Total Receipts" and maybe remove "This Month" until we add that endpoint/hook.
+  // Or we can just calculate it from the displayed receipts as a placeholder "Recent Spending".
 
   return (
-    <View style={styles.container}>
+    <ScrollView 
+        style={styles.container}
+        refreshControl={<RefreshControl refreshing={refreshing || loading} onRefresh={onRefresh} />}
+    >
       <View style={styles.header}>
         <Text style={styles.title}>Welcome to moneyCheck</Text>
         <Text style={styles.subtitle}>Scan receipts and track your spending</Text>
@@ -25,21 +62,42 @@ export default function HomeScreen() {
         <Text style={styles.sectionTitle}>Quick Stats</Text>
         <View style={styles.statsGrid}>
           <View style={styles.statCard}>
-            <Text style={styles.statValue}>0</Text>
-            <Text style={styles.statLabel}>Receipts</Text>
+            <Text style={styles.statValue}>{totalReceipts}</Text>
+            <Text style={styles.statLabel}>Total Receipts</Text>
           </View>
+           {/* Placeholder for future specific stats */}
           <View style={styles.statCard}>
-            <Text style={styles.statValue}>₺0.00</Text>
-            <Text style={styles.statLabel}>This Month</Text>
+            <Text style={styles.statValue}>-</Text>
+            <Text style={styles.statLabel}>Analytics Coming Soon</Text>
           </View>
         </View>
       </View>
 
       <View style={styles.recentSection}>
-        <Text style={styles.sectionTitle}>Recent Receipts</Text>
-        <Text style={styles.emptyText}>No receipts yet. Scan your first receipt!</Text>
+        <View style={styles.sectionHeader}>
+             <Text style={styles.sectionTitle}>Recent Receipts</Text>
+             {totalReceipts > 0 && (
+                 <TouchableOpacity onPress={() => router.push('/(tabs)/history')}>
+                     <Text style={styles.seeAllText}>See All</Text>
+                 </TouchableOpacity>
+             )}
+        </View>
+        
+        {receipts?.data && receipts.data.length > 0 ? (
+            <View style={styles.list}>
+                {receipts.data.map((receipt: Receipt) => (
+                    <ReceiptCard 
+                        key={receipt.id} 
+                        receipt={receipt} 
+                        onPress={() => router.push(`/receipt/${receipt.id}`)}
+                    />
+                ))}
+            </View>
+        ) : (
+            <Text style={styles.emptyText}>No receipts yet. Scan your first receipt!</Text>
+        )}
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
@@ -50,7 +108,7 @@ const styles = StyleSheet.create({
   },
   header: {
     padding: 24,
-    paddingTop: 32,
+    paddingTop: 60, // increased top padding for status bar
     backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
     borderBottomColor: '#E9E9E7',
@@ -101,6 +159,17 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  seeAllText: {
+    color: '#2C9364',
+    fontSize: 14,
+    fontWeight: '600',
+  },
   statsGrid: {
     flexDirection: 'row',
     gap: 12,
@@ -126,6 +195,9 @@ const styles = StyleSheet.create({
   },
   recentSection: {
     padding: 24,
+  },
+  list: {
+    gap: 12,
   },
   emptyText: {
     textAlign: 'center',

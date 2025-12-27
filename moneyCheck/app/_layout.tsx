@@ -1,10 +1,11 @@
 // Root layout - wraps entire app with providers, handles initial loading and database setup
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { DatabaseProvider } from '@/contexts/DatabaseContext';
 
 export default function RootLayout() {
   return (
-    <>
+    <DatabaseProvider>
       <StatusBar style="auto" />
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
@@ -20,6 +21,6 @@ export default function RootLayout() {
         <Stack.Screen name="analytics/breakdown" options={{ title: 'Spending Breakdown' }} />
         <Stack.Screen name="settings/data-management" options={{ title: 'Data Management' }} />
       </Stack>
-    </>
+    </DatabaseProvider>
   );
 }

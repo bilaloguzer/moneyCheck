@@ -22,6 +22,7 @@ export interface LineItem {
   totalPrice: number;
   confidence: number;
   category?: string;
+  discount?: number;
 }
 
 export interface OCRResult {
@@ -39,6 +40,8 @@ export interface OCRResult {
   };
   items: Array<{
     name: string;
+    cleanName?: string;
+    category?: string;
     quantity: number;
     price: number;
     confidence: number;

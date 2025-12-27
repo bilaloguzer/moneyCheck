@@ -37,7 +37,8 @@
         {
           "cameraPermission": "Allow moneyCheck to access your camera to scan receipts."
         }
-      ]
+      ],
+      "react-native-document-scanner-plugin"
     ],
     "experiments": {
       "typedRoutes": true

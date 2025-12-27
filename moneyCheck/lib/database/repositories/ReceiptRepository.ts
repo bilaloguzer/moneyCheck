@@ -53,7 +53,7 @@ export class ReceiptRepository {
                     quantity: item.quantity || 1,
                     unitPrice: item.price || item.unitPrice,
                     totalPrice: (item.price || item.unitPrice) * (item.quantity || 1),
-                    // confidence: item.confidence // Removing this as it's not in CreateLineItemInput
+                    discount: item.discount || 0
                 };
                 await LineItemService.createLineItem(this.db, lineItemInput);
             }
@@ -189,7 +189,8 @@ export class ReceiptRepository {
         quantity: item.quantity,
         unitPrice: item.unitPrice,
         totalPrice: item.totalPrice,
-        category: item.category?.name // Flatten category name
+        category: item.category?.name, // Flatten category name
+        discount: item.discount || 0
     })) || [];
 
     return {
