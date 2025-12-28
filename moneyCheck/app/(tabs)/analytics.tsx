@@ -114,17 +114,46 @@ export default function AnalyticsScreen() {
       <View style={styles.chartCard}>
           <Text style={styles.chartTitle}>Spending Trend</Text>
           {data?.dailySpending && data.dailySpending.length > 0 ? (
-             <BarChart
-                data={data.dailySpending}
-                barWidth={22}
-                noOfSections={3}
-                barBorderRadius={4}
-                frontColor="#37352F"
-                yAxisThickness={0}
-                xAxisThickness={0}
-                width={screenWidth - 80}
-                isAnimated
-             />
+             <View style={{ overflow: 'hidden' }}>
+               <BarChart
+                  data={data.dailySpending}
+                  barWidth={22}
+                  noOfSections={4}
+                  barBorderRadius={4}
+                  frontColor="#37352F"
+                  yAxisThickness={1}
+                  yAxisColor="#E9E9E7"
+                  xAxisThickness={1}
+                  xAxisColor="#E9E9E7"
+                  yAxisTextStyle={{ color: '#787774', fontSize: 10 }}
+                  xAxisLabelTextStyle={{ color: '#787774', fontSize: 10 }}
+                  width={screenWidth - 100}
+                  height={180}
+                  spacing={screenWidth > 400 ? 24 : 16}
+                  isAnimated
+                  showValuesAsTopLabel
+                  topLabelTextStyle={{ color: '#37352F', fontSize: 10, fontWeight: '600' }}
+                  rulesColor="#E9E9E7"
+                  rulesThickness={1}
+                  hideRules={false}
+                  dashWidth={4}
+                  dashGap={4}
+                  renderTooltip={(item: any) => {
+                    return (
+                      <View style={{
+                        backgroundColor: '#37352F',
+                        padding: 8,
+                        borderRadius: 4,
+                        marginBottom: 6,
+                      }}>
+                        <Text style={{ color: '#FFF', fontSize: 12, fontWeight: '600' }}>
+                          ₺{item.value.toFixed(0)}
+                        </Text>
+                      </View>
+                    );
+                  }}
+               />
+             </View>
           ) : (
              <Text style={styles.emptyText}>No spending history for this period</Text>
           )}
