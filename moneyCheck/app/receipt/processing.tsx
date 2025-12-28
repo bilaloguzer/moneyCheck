@@ -143,14 +143,13 @@ export default function ProcessingScreen() {
         
         await repository.create(receiptData as any); // Type cast as our Receipt type definition vs repo input might have slight drift, mostly safe
         
-        Alert.alert('Success', 'Receipt saved successfully!', [
-            { text: 'OK', onPress: () => router.push('/(tabs)') }
-        ]);
+        // Navigate away immediately, don't show alert that can be dismissed
+        Alert.alert('Success', 'Receipt saved successfully!');
+        router.replace('/(tabs)/history');
         
     } catch (err) {
         console.error('Save Error:', err);
         Alert.alert('Error', 'Failed to save receipt.');
-    } finally {
         setSaving(false);
     }
   };

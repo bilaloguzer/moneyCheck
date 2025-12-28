@@ -62,6 +62,7 @@ export default function TabLayout() {
         name="analytics"
         options={{
           title: 'Analytics',
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="stats-chart" size={22} color={color} />
           ),

@@ -1,15 +1,22 @@
 // Image preview screen - preview captured image before processing, option to retake or proceed
 import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
-import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useRouter, useLocalSearchParams, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Button } from '@/components/common/Button';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 
 export default function ImagePreviewScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
   const imageUri = params.imageUri as string;
   const [isProcessing, setIsProcessing] = useState(false);
+
+  // Reset processing state when screen comes back into focus
+  useFocusEffect(
+    useCallback(() => {
+      setIsProcessing(false);
+    }, [])
+  );
 
   const handleRetake = () => {
     router.back();
