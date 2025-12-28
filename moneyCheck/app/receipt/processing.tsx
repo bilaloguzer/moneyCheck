@@ -7,6 +7,7 @@ import { Button } from '@/components/common/Button';
 import { useDatabaseContext } from '@/contexts/DatabaseContext';
 import { ReceiptRepository } from '@/lib/database/repositories/ReceiptRepository';
 import { Ionicons } from '@expo/vector-icons';
+import * as FileSystem from 'expo-file-system/legacy';
 
 export default function ProcessingScreen() {
   const params = useLocalSearchParams();
@@ -84,6 +85,33 @@ export default function ProcessingScreen() {
     try {
         const repository = new ReceiptRepository(db);
         
+        // Copy image to permanent directory
+        let permanentImagePath = imageUri;
+        if (imageUri) {
+            try {
+                const filename = imageUri.split('/').pop() || `receipt_${Date.now()}.jpg`;
+                const newPath = `${FileSystem.documentDirectory}receipts/${filename}`;
+                
+                // Create receipts directory if it doesn't exist
+                const receiptsDir = `${FileSystem.documentDirectory}receipts`;
+                const dirInfo = await FileSystem.getInfoAsync(receiptsDir);
+                if (!dirInfo.exists) {
+                    await FileSystem.makeDirectoryAsync(receiptsDir, { intermediates: true });
+                }
+                
+                // Copy file to permanent location
+                await FileSystem.copyAsync({
+                    from: imageUri,
+                    to: newPath
+                });
+                permanentImagePath = newPath;
+                console.log('Image saved to:', newPath);
+            } catch (err) {
+                console.error('Failed to save image:', err);
+                // Continue with original path if copy fails
+            }
+        }
+        
         // Calculate totals
         let calculatedTotal = 0;
         const finalItems = items.map(item => {
@@ -95,11 +123,12 @@ export default function ProcessingScreen() {
             
             return {
                 name: item.name,
+                productName: item.name,
                 quantity: qty,
                 unitPrice: price,
+                price: price,
                 discount: discount,
-                category: item.category,
-                price: total // Used for totalPrice in repo mapping if needed, but repo calculates it
+                category: item.category
             };
         });
         
@@ -107,7 +136,7 @@ export default function ProcessingScreen() {
             merchantName: merchant,
             date: new Date(date),
             total: calculatedTotal,
-            imagePath: imageUri,
+            imagePath: permanentImagePath,
             ocrConfidence: 0.9, // Simplified
             items: finalItems
         };
@@ -382,5 +411,11 @@ const styles = StyleSheet.create({
   totalValue: { fontSize: 24, fontWeight: 'bold', color: '#2C9364' },
   confidenceText: { fontSize: 13, marginTop: 4, fontWeight: '500' },
   
-  footer: { padding: 20, backgroundColor: 'white', borderTopWidth: 1, borderTopColor: '#E9E9E7' }
+  footer: { 
+    padding: 20, 
+    paddingBottom: 34, 
+    backgroundColor: 'white', 
+    borderTopWidth: 1, 
+    borderTopColor: '#E9E9E7' 
+  }
 });

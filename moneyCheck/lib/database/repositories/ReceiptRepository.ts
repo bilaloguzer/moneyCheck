@@ -210,6 +210,7 @@ export class ReceiptRepository {
     const items = (dbReceipt as any).lineItems?.map((item: DBLineItem) => ({
         id: item.id?.toString(),
         receiptId: item.receiptId.toString(),
+        name: item.name,
         productName: item.name,
         quantity: item.quantity,
         unitPrice: item.unitPrice,

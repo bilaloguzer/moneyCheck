@@ -52,6 +52,7 @@ export default function TabLayout() {
         name="history"
         options={{
           title: 'History',
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="list" size={22} color={color} />
           ),

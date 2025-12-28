@@ -12,7 +12,7 @@ export default function RootLayout() {
         <Stack.Screen name="receipt/capture" options={{ title: 'Scan Receipt' }} />
         <Stack.Screen name="receipt/preview" options={{ title: 'Preview' }} />
         <Stack.Screen name="receipt/processing" options={{ title: 'Processing...' }} />
-        <Stack.Screen name="receipt/[id]" options={{ title: 'Receipt Details' }} />
+        <Stack.Screen name="receipt/[id]" options={{ headerShown: false }} />
         <Stack.Screen name="receipt/[id]/edit" options={{ title: 'Edit Receipt' }} />
         <Stack.Screen name="receipt/[id]/compare" options={{ title: 'Price Comparison' }} />
         <Stack.Screen name="onboarding/welcome" options={{ headerShown: false }} />
