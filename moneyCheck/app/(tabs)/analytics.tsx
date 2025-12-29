@@ -114,10 +114,10 @@ export default function AnalyticsScreen() {
       <View style={styles.chartCard}>
           <Text style={styles.chartTitle}>Spending Trend</Text>
           {data?.dailySpending && data.dailySpending.length > 0 ? (
-             <View style={{ overflow: 'hidden' }}>
+             <ScrollView horizontal showsHorizontalScrollIndicator={true}>
                <BarChart
                   data={data.dailySpending}
-                  barWidth={22}
+                  barWidth={range === 'all' ? 30 : range === 'year' ? 35 : 22}
                   noOfSections={4}
                   barBorderRadius={4}
                   frontColor="#37352F"
@@ -126,10 +126,10 @@ export default function AnalyticsScreen() {
                   xAxisThickness={1}
                   xAxisColor="#E9E9E7"
                   yAxisTextStyle={{ color: '#787774', fontSize: 10 }}
-                  xAxisLabelTextStyle={{ color: '#787774', fontSize: 10 }}
-                  width={screenWidth - 100}
+                  xAxisLabelTextStyle={{ color: '#787774', fontSize: range === 'all' ? 9 : 10 }}
+                  width={Math.max(screenWidth - 100, data.dailySpending.length * (range === 'all' ? 50 : range === 'year' ? 55 : 40))}
                   height={180}
-                  spacing={screenWidth > 400 ? 24 : 16}
+                  spacing={range === 'all' ? 15 : range === 'year' ? 18 : screenWidth > 400 ? 24 : 16}
                   isAnimated
                   showValuesAsTopLabel
                   topLabelTextStyle={{ color: '#37352F', fontSize: 10, fontWeight: '600' }}
@@ -153,7 +153,7 @@ export default function AnalyticsScreen() {
                     );
                   }}
                />
-             </View>
+             </ScrollView>
           ) : (
              <Text style={styles.emptyText}>No spending history for this period</Text>
           )}

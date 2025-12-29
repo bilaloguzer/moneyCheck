@@ -249,6 +249,86 @@ export async function getDailySpending(
 }
 
 /**
+ * Get monthly spending for a date range (for year view)
+ */
+export async function getMonthlySpendingInRange(
+  db: SQLite.SQLiteDatabase,
+  startDate?: Date,
+  endDate?: Date
+): Promise<{ month: string; totalSpent: number; receiptCount: number }[]> {
+  let sql = `
+    SELECT
+      strftime('%Y-%m', purchase_date) as month,
+      SUM(total_amount) as total_spent,
+      COUNT(id) as receipt_count
+    FROM receipts
+    WHERE 1=1
+  `;
+
+  const params: any[] = [];
+
+  if (startDate) {
+    sql += ' AND purchase_date >= ?';
+    params.push(startDate.toISOString());
+  }
+
+  if (endDate) {
+    sql += ' AND purchase_date <= ?';
+    params.push(endDate.toISOString());
+  }
+
+  sql += ' GROUP BY month ORDER BY month';
+
+  const rows = await db.getAllAsync<any>(sql, ...params);
+
+  return rows.map((row) => ({
+    month: row.month,
+    totalSpent: row.total_spent,
+    receiptCount: row.receipt_count,
+  }));
+}
+
+/**
+ * Get year-month spending for all time (for all view)
+ */
+export async function getYearMonthSpending(
+  db: SQLite.SQLiteDatabase,
+  startDate?: Date,
+  endDate?: Date
+): Promise<{ yearMonth: string; totalSpent: number; receiptCount: number }[]> {
+  let sql = `
+    SELECT
+      strftime('%Y-%m', purchase_date) as year_month,
+      SUM(total_amount) as total_spent,
+      COUNT(id) as receipt_count
+    FROM receipts
+    WHERE 1=1
+  `;
+
+  const params: any[] = [];
+
+  if (startDate) {
+    sql += ' AND purchase_date >= ?';
+    params.push(startDate.toISOString());
+  }
+
+  if (endDate) {
+    sql += ' AND purchase_date <= ?';
+    params.push(endDate.toISOString());
+  }
+
+  sql += ' GROUP BY year_month ORDER BY year_month';
+
+  const rows = await db.getAllAsync<any>(sql, ...params);
+
+  return rows.map((row) => ({
+    yearMonth: row.year_month,
+    totalSpent: row.total_spent,
+    receiptCount: row.receipt_count,
+  }));
+}
+
+/**
  * Get spending trends (day of week)
  */
 export async function getSpendingByDayOfWeek(

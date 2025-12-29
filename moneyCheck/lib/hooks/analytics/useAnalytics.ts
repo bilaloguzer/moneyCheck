@@ -62,19 +62,35 @@ export function useAnalytics(range: TimeRange) {
       }
 
       // Parallelize queries
+      let dailyData;
+      
+      // Choose the appropriate spending data based on range
+      if (range === 'year') {
+        // For year view, get monthly spending
+        dailyData = await AnalyticsService.getMonthlySpendingInRange(db, startDate, endDate);
+      } else if (range === 'all') {
+        // For all view, get year-month spending
+        dailyData = await AnalyticsService.getYearMonthSpending(db, startDate, endDate);
+      } else {
+        // For week and month views, get daily spending
+        dailyData = await AnalyticsService.getDailySpending(db, startDate, endDate);
+      }
+      
       const [
         categoryData,
-        dailyData,
         topItemsData
       ] = await Promise.all([
         AnalyticsService.getCategorySpendingSummary(db, startDate, endDate),
-        AnalyticsService.getDailySpending(db, startDate, endDate),
         AnalyticsService.getTopSpendingItems(db, 5, startDate, endDate)
       ]);
 
       // Calculate totals from daily data (or we could use getTotalSpending with date range if added)
-      const totalSpent = dailyData.reduce((sum, day) => sum + day.totalSpent, 0);
-      const receiptCount = dailyData.reduce((sum, day) => sum + day.receiptCount, 0);
+      const totalSpent = Array.isArray(dailyData) 
+        ? dailyData.reduce((sum, day) => sum + (day.totalSpent || 0), 0) 
+        : 0;
+      const receiptCount = Array.isArray(dailyData) 
+        ? dailyData.reduce((sum, day) => sum + (day.receiptCount || 0), 0) 
+        : 0;
       const averageReceipt = receiptCount > 0 ? totalSpent / receiptCount : 0;
 
       // Transform for UI
@@ -92,12 +108,41 @@ export function useAnalytics(range: TimeRange) {
         percentage: categoryTotal > 0 ? (cat.totalSpent / categoryTotal) * 100 : 0
       }));
 
-      const dailySpending = dailyData.map(d => ({
-        date: d.date,
-        value: d.totalSpent,
-        label: range === 'week' ? new Date(d.date).toLocaleDateString('en-US', { weekday: 'short' }) 
-             : new Date(d.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-      }));
+      // Transform daily/monthly/year-month data based on range
+      let dailySpending;
+      if (range === 'year') {
+        // Monthly data for year view
+        dailySpending = (dailyData as any[]).map(d => {
+          const [year, month] = d.month.split('-');
+          const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+          const monthIndex = parseInt(month) - 1;
+          return {
+            date: d.month,
+            value: d.totalSpent,
+            label: monthNames[monthIndex]
+          };
+        });
+      } else if (range === 'all') {
+        // Year-month data for all view
+        dailySpending = (dailyData as any[]).map(d => {
+          const [year, month] = d.yearMonth.split('-');
+          const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+          const monthIndex = parseInt(month) - 1;
+          return {
+            date: d.yearMonth,
+            value: d.totalSpent,
+            label: `${monthNames[monthIndex]} ${year}`
+          };
+        });
+      } else {
+        // Daily data for week and month views
+        dailySpending = (dailyData as any[]).map(d => ({
+          date: d.date,
+          value: d.totalSpent,
+          label: range === 'week' ? new Date(d.date).toLocaleDateString('en-US', { weekday: 'short' }) 
+               : new Date(d.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+        }));
+      }
 
       const topItems = topItemsData.map(item => ({
         name: item.name,
