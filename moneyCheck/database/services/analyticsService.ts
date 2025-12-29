@@ -175,11 +175,13 @@ export async function getTopSpendingItems(
   let sql = `
     SELECT
       li.name,
+      c.name as category_name,
       SUM(li.total_price) as total_spent,
       COUNT(li.id) as purchase_count,
       AVG(li.total_price) as average_price
     FROM line_items li
     LEFT JOIN receipts r ON li.receipt_id = r.id
+    LEFT JOIN categories c ON li.category_id = c.id
     WHERE 1=1
   `;
 
@@ -195,13 +197,14 @@ export async function getTopSpendingItems(
     params.push(endDate.toISOString());
   }
 
-  sql += ' GROUP BY li.name ORDER BY total_spent DESC LIMIT ?';
+  sql += ' GROUP BY li.name, c.name ORDER BY total_spent DESC LIMIT ?';
   params.push(limit);
 
   const rows = await db.getAllAsync<any>(sql, ...params);
 
   return rows.map((row) => ({
     name: row.name || 'Unknown Item',
+    category: row.category_name || 'other',
     totalSpent: row.total_spent || 0,
     purchaseCount: row.purchase_count || 0,
     averagePrice: row.average_price || 0,

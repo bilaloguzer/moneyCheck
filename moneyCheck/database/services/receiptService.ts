@@ -320,6 +320,12 @@ function mapRowToLineItem(row: any): any {
     unitPrice: row.unit_price,
     totalPrice: row.total_price,
     categoryId: row.category_id,
+    // Include category object with name if available
+    category: row.category_name ? { 
+      id: row.category_id,
+      name: row.category_name,
+      departmentId: row.department_id
+    } : undefined,
     departmentName: row.department_name,
     subcategoryType: row.subcategory_type,
     discount: row.discount,

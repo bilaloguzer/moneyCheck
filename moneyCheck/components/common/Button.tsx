@@ -1,14 +1,16 @@
 // Reusable button component with variants (primary, secondary, danger)
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, ViewStyle } from 'react-native';
 
 interface ButtonProps {
   title: string;
   onPress: () => void;
   variant?: 'primary' | 'secondary' | 'danger';
   disabled?: boolean;
+  style?: ViewStyle;
+  containerStyle?: ViewStyle;
 }
 
-export function Button({ title, onPress, variant = 'primary', disabled }: ButtonProps) {
+export function Button({ title, onPress, variant = 'primary', disabled, style, containerStyle }: ButtonProps) {
   const getColors = () => {
     if (variant === 'primary') {
       return { bg: '#37352F', text: '#FFFFFF', border: '#37352F' };
@@ -33,6 +35,8 @@ export function Button({ title, onPress, variant = 'primary', disabled }: Button
           borderColor: colors.border,
           opacity: disabled ? 0.5 : 1,
         },
+        containerStyle,
+        style,
       ]}
     >
       <Text style={[styles.text, { color: colors.text }]}>{title}</Text>

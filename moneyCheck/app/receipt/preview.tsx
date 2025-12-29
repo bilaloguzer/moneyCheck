@@ -4,6 +4,8 @@ import { useRouter, useLocalSearchParams, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Button } from '@/components/common/Button';
 import { useState, useCallback } from 'react';
+import { showErrorToast } from '@/lib/utils/toast';
+import { hapticMedium, hapticError, hapticLight } from '@/lib/utils/haptics';
 
 export default function ImagePreviewScreen() {
   const router = useRouter();
@@ -19,11 +21,13 @@ export default function ImagePreviewScreen() {
   );
 
   const handleRetake = () => {
+    hapticLight();
     router.back();
   };
 
   const handleConfirm = async () => {
     setIsProcessing(true);
+    hapticMedium();
     try {
       // TODO: Process image with OCR
       // For now, just navigate to processing screen
@@ -33,7 +37,8 @@ export default function ImagePreviewScreen() {
       });
     } catch (error) {
       console.error('Error processing image:', error);
-      Alert.alert('Error', 'Failed to process image. Please try again.');
+      hapticError();
+      showErrorToast('Failed to process image. Please try again.');
       setIsProcessing(false);
     }
   };

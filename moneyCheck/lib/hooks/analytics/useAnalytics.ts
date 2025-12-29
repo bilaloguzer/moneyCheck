@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useDatabaseContext } from '@/contexts/DatabaseContext';
 import * as AnalyticsService from '@/database/services/analyticsService';
-import { getCategoryDisplayName } from '@/lib/constants/categories';
+import { getCategoryDisplayName, getCategoryColor } from '@/lib/constants/categories';
 
 export interface AnalyticsData {
   totalSpent: number;
@@ -22,6 +22,7 @@ export interface AnalyticsData {
   }[];
   topItems: {
     name: string;
+    category: string;
     totalSpent: number;
     count: number;
   }[];
@@ -94,17 +95,14 @@ export function useAnalytics(range: TimeRange) {
       const averageReceipt = receiptCount > 0 ? totalSpent / receiptCount : 0;
 
       // Transform for UI
-      // Colors for chart
-      const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'];
-      
       // Calculate total for percentages
       const categoryTotal = categoryData.reduce((sum, cat) => sum + cat.totalSpent, 0);
       
-      const categoryBreakdown = categoryData.map((cat, index) => ({
+      const categoryBreakdown = categoryData.map((cat) => ({
         name: getCategoryDisplayName(cat.categoryName),
         value: cat.totalSpent,
         itemCount: cat.itemCount,
-        color: colors[index % colors.length],
+        color: getCategoryColor(cat.categoryName),
         percentage: categoryTotal > 0 ? (cat.totalSpent / categoryTotal) * 100 : 0
       }));
 
@@ -146,6 +144,7 @@ export function useAnalytics(range: TimeRange) {
 
       const topItems = topItemsData.map(item => ({
         name: item.name,
+        category: item.category,
         totalSpent: item.totalSpent,
         count: item.purchaseCount
       }));

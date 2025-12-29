@@ -4,6 +4,8 @@ import { useRouter } from 'expo-router';
 import { CameraView } from '@/components/camera/CameraView';
 import { Ionicons } from '@expo/vector-icons';
 import * as FileSystem from 'expo-file-system';
+import { showErrorToast } from '@/lib/utils/toast';
+import { hapticMedium, hapticError } from '@/lib/utils/haptics';
 
 // We need to dynamically import or handle the plugin safely because it might crash if not linked
 let DocumentScanner: any;
@@ -17,6 +19,7 @@ export default function ReceiptCaptureScreen() {
   const router = useRouter();
 
   const handleCapture = (uri: string) => {
+    hapticMedium();
     router.push({
       pathname: '/receipt/preview',
       params: { imageUri: uri },
@@ -25,7 +28,8 @@ export default function ReceiptCaptureScreen() {
   
   const scanDocument = async () => {
     if (!DocumentScanner) {
-        alert("Document Scanner module is not available. Please rebuild the app.");
+        hapticError();
+        showErrorToast('Document Scanner module is not available. Please rebuild the app.');
         return;
     }
     try {
@@ -36,7 +40,9 @@ export default function ReceiptCaptureScreen() {
         handleCapture(scannedImages[0]);
       }
     } catch (error) {
-        console.error("Document scanner error", error);
+        console.error('Document scanner error', error);
+        hapticError();
+        showErrorToast('Failed to scan document');
     }
   };
 

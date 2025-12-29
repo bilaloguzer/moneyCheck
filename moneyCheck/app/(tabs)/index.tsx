@@ -6,6 +6,9 @@ import { useReceiptList } from '@/lib/hooks/receipt/useReceiptList';
 import { ReceiptCard } from '@/components/receipt/ReceiptCard';
 import { useCallback, useState, useMemo } from 'react';
 import { Receipt } from '@/lib/types';
+import { SkeletonAnalyticsCard, SkeletonList } from '@/components/common/Skeleton';
+import { EmptyReceipts } from '@/components/common/EmptyState';
+import { hapticLight, hapticMedium } from '@/lib/utils/haptics';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -52,7 +55,10 @@ export default function HomeScreen() {
 
       <TouchableOpacity
         style={styles.scanButton}
-        onPress={() => router.push('/receipt/capture')}
+        onPress={() => {
+          hapticMedium();
+          router.push('/receipt/capture');
+        }}
       >
         <Ionicons name="camera" size={32} color="#fff" />
         <Text style={styles.scanButtonText}>Scan Receipt</Text>
@@ -60,41 +66,65 @@ export default function HomeScreen() {
 
       <View style={styles.quickStats}>
         <Text style={styles.sectionTitle}>Quick Stats</Text>
-        <View style={styles.statsGrid}>
-          <View style={styles.statCard}>
-            <Text style={styles.statValue}>{totalReceipts}</Text>
-            <Text style={styles.statLabel}>Total Receipts</Text>
+        {loading && !refreshing && !receipts ? (
+          <View style={styles.statsGrid}>
+            <SkeletonAnalyticsCard />
+            <SkeletonAnalyticsCard />
           </View>
-           {/* Placeholder for future specific stats */}
-          <View style={styles.statCard}>
-            <Text style={styles.statValue}>-</Text>
-            <Text style={styles.statLabel}>Analytics Coming Soon</Text>
+        ) : (
+          <View style={styles.statsGrid}>
+            <View style={styles.statCard}>
+              <Text style={styles.statValue}>{totalReceipts}</Text>
+              <Text style={styles.statLabel}>Total Receipts</Text>
+            </View>
+            {/* Placeholder for future specific stats */}
+            <View style={styles.statCard}>
+              <Text style={styles.statValue}>-</Text>
+              <Text style={styles.statLabel}>Analytics Coming Soon</Text>
+            </View>
           </View>
-        </View>
+        )}
       </View>
 
       <View style={styles.recentSection}>
         <View style={styles.sectionHeader}>
              <Text style={styles.sectionTitle}>Recent Receipts</Text>
              {totalReceipts > 0 && (
-                 <TouchableOpacity onPress={() => router.push('/(tabs)/history')}>
+                 <TouchableOpacity onPress={() => {
+                   hapticLight();
+                   router.push('/(tabs)/history');
+                 }}>
                      <Text style={styles.seeAllText}>See All</Text>
                  </TouchableOpacity>
              )}
         </View>
         
-        {receipts?.data && receipts.data.length > 0 ? (
+        {loading && !refreshing && !receipts ? (
+          <View style={{ paddingHorizontal: 20 }}>
+            <SkeletonList count={3} />
+          </View>
+        ) : receipts?.data && receipts.data.length > 0 ? (
             <View style={styles.list}>
                 {receipts.data.map((receipt: Receipt) => (
                     <ReceiptCard 
                         key={receipt.id} 
                         receipt={receipt} 
-                        onPress={() => router.push(`/receipt/${receipt.id}`)}
+                        onPress={() => {
+                          hapticLight();
+                          router.push(`/receipt/${receipt.id}`);
+                        }}
                     />
                 ))}
             </View>
         ) : (
-            <Text style={styles.emptyText}>No receipts yet. Scan your first receipt!</Text>
+            <View style={{ paddingHorizontal: 20, paddingTop: 20 }}>
+              <EmptyReceipts 
+                onAddReceipt={() => {
+                  hapticMedium();
+                  router.push('/receipt/capture');
+                }} 
+              />
+            </View>
         )}
       </View>
     </ScrollView>

@@ -6,6 +6,8 @@ import type { CameraView as CameraViewType } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { showErrorToast } from '@/lib/utils/toast';
+import { hapticError, hapticSuccess, hapticLight } from '@/lib/utils/haptics';
 
 interface CameraViewProps {
   onCapture: (uri: string) => void;
@@ -56,10 +58,12 @@ export function CameraView({ onCapture, ratio = '16:9' }: CameraViewProps) {
       // We will assume the user frames it well or we can use the document scanner plugin later.
       // For now, let's just pass the URI. 
       
+      hapticSuccess();
       onCapture(photo.uri);
     } catch (err) {
       console.warn('takePicture error', err);
-      Alert.alert('Error', 'Failed to capture photo. Please try again.');
+      hapticError();
+      showErrorToast('Failed to capture photo. Please try again.');
     } finally {
       setIsCapturing(false);
     }
@@ -70,7 +74,8 @@ export function CameraView({ onCapture, ratio = '16:9' }: CameraViewProps) {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
       
       if (status !== 'granted') {
-        Alert.alert('Permission Required', 'Please allow access to your photo library.');
+        hapticError();
+        showErrorToast('Please allow access to your photo library.');
         return;
       }
 
@@ -81,15 +86,18 @@ export function CameraView({ onCapture, ratio = '16:9' }: CameraViewProps) {
       });
 
       if (!result.canceled && result.assets[0]) {
+        hapticSuccess();
         onCapture(result.assets[0].uri);
       }
     } catch (err) {
       console.warn('pickFromGallery error', err);
-      Alert.alert('Error', 'Failed to open gallery. Please try again.');
+      hapticError();
+      showErrorToast('Failed to open gallery. Please try again.');
     }
   };
 
   const toggleFlash = () => {
+    hapticLight();
     setFlashMode((current) => {
       if (current === 'off') return 'on';
       if (current === 'on') return 'auto';

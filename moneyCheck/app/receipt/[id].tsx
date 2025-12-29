@@ -7,6 +7,10 @@ import { useEffect, useState } from 'react';
 import { Receipt } from '@/lib/types';
 import { Ionicons } from '@expo/vector-icons';
 import { Button } from '@/components/common/Button';
+import { PieChart } from 'react-native-gifted-charts';
+import { getCategoryDisplayName, getCategoryColor } from '@/lib/constants/categories';
+import { showErrorToast, showSuccessToast } from '@/lib/utils/toast';
+import { hapticSuccess, hapticError, hapticWarning } from '@/lib/utils/haptics';
 
 export default function ReceiptDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -15,6 +19,13 @@ export default function ReceiptDetailScreen() {
   const [receipt, setReceipt] = useState<Receipt | null>(null);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
+  const [categoryStats, setCategoryStats] = useState<{
+    name: string;
+    value: number;
+    color: string;
+    percentage: number;
+    count: number;
+  }[]>([]);
 
   useEffect(() => {
     if (!db || !id) return;
@@ -26,9 +37,38 @@ export default function ReceiptDetailScreen() {
         console.log('Loaded receipt:', data);
         console.log('Image path:', data?.imagePath);
         setReceipt(data);
+        
+        // Calculate category statistics
+        if (data?.items) {
+          const categoryMap = new Map<string, { total: number; count: number }>();
+          let totalAmount = 0;
+          
+          data.items.forEach(item => {
+            const category = item.category || 'other';
+            const itemTotal = (item.quantity || 1) * (item.unitPrice || 0) - (item.discount || 0);
+            totalAmount += itemTotal;
+            
+            const current = categoryMap.get(category) || { total: 0, count: 0 };
+            categoryMap.set(category, {
+              total: current.total + itemTotal,
+              count: current.count + 1
+            });
+          });
+          
+          const stats = Array.from(categoryMap.entries()).map(([category, data]) => ({
+            name: getCategoryDisplayName(category),
+            value: data.total,
+            color: getCategoryColor(category),
+            percentage: totalAmount > 0 ? (data.total / totalAmount) * 100 : 0,
+            count: data.count
+          })).sort((a, b) => b.value - a.value);
+          
+          setCategoryStats(stats);
+        }
       } catch (error) {
         console.error('Failed to load receipt:', error);
-        Alert.alert('Error', 'Failed to load receipt details');
+        hapticError();
+        showErrorToast('Failed to load receipt details');
       } finally {
         setLoading(false);
       }
@@ -40,6 +80,7 @@ export default function ReceiptDetailScreen() {
   const handleDelete = async () => {
     if (!db || !id) return;
 
+    hapticWarning();
     Alert.alert(
       'Delete Receipt',
       'Are you sure you want to delete this receipt? This action cannot be undone.',
@@ -53,12 +94,13 @@ export default function ReceiptDetailScreen() {
             try {
               const repository = new ReceiptRepository(db);
               await repository.delete(parseInt(id));
-              Alert.alert('Success', 'Receipt deleted successfully', [
-                { text: 'OK', onPress: () => router.back() }
-              ]);
+              hapticSuccess();
+              showSuccessToast('Receipt deleted successfully');
+              router.back();
             } catch (error) {
               console.error('Failed to delete receipt:', error);
-              Alert.alert('Error', 'Failed to delete receipt');
+              hapticError();
+              showErrorToast('Failed to delete receipt');
               setDeleting(false);
             }
           }
@@ -155,35 +197,99 @@ export default function ReceiptDetailScreen() {
           </View>
         </View>
 
+        {/* Category Analysis */}
+        {categoryStats.length > 0 && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Category Breakdown</Text>
+            <View style={{ alignItems: 'center', marginBottom: 20 }}>
+              <PieChart
+                data={categoryStats.map(cat => ({
+                  value: cat.value,
+                  color: cat.color,
+                  text: `${cat.percentage.toFixed(0)}%`,
+                }))}
+                donut
+                showText
+                textColor="#37352F"
+                radius={80}
+                innerRadius={45}
+                textSize={12}
+                fontWeight="600"
+                centerLabelComponent={() => (
+                  <View style={{ alignItems: 'center' }}>
+                    <Text style={{ fontSize: 16, fontWeight: '700', color: '#37352F' }}>
+                      ₺{receipt.total?.toFixed(0)}
+                    </Text>
+                    <Text style={{ fontSize: 10, color: '#787774' }}>Total</Text>
+                  </View>
+                )}
+              />
+            </View>
+            <View style={styles.statsContainer}>
+              {categoryStats.map((stat, index) => (
+                <View key={index} style={styles.statRow}>
+                  <View style={styles.statLeft}>
+                    <View style={[styles.colorDot, { backgroundColor: stat.color }]} />
+                    <Text style={styles.statName}>{stat.name}</Text>
+                    <Text style={styles.statCount}>({stat.count})</Text>
+                  </View>
+                  <View style={styles.statRight}>
+                    <Text style={styles.statValue}>₺{stat.value.toFixed(2)}</Text>
+                    <Text style={styles.statPercentage}>{stat.percentage.toFixed(1)}%</Text>
+                  </View>
+                </View>
+              ))}
+            </View>
+          </View>
+        )}
+
         {/* Line Items */}
         {receipt.items && receipt.items.length > 0 ? (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Items ({receipt.items.length})</Text>
-            {receipt.items.map((item, index) => (
-              <View key={index} style={styles.itemCard}>
-                <View style={styles.itemHeader}>
-                  <Text style={styles.itemName}>{item.name || 'Unknown Item'}</Text>
-                  <Text style={styles.itemPrice}>
-                    {((item.quantity || 1) * (item.unitPrice || 0) - (item.discount || 0)).toFixed(2)} ₺
-                  </Text>
-                </View>
-                <View style={styles.itemDetails}>
-                  <Text style={styles.itemDetailText}>
-                    {item.quantity || 1} × {(item.unitPrice || 0).toFixed(2)} ₺
-                  </Text>
-                  {(item.discount && item.discount > 0) ? (
-                    <Text style={styles.itemDiscount}>
-                      -{item.discount.toFixed(2)} ₺ discount
-                    </Text>
-                  ) : null}
-                  {item.category ? (
-                    <View style={styles.categoryBadge}>
-                      <Text style={styles.categoryText}>{item.category}</Text>
+            {receipt.items.map((item, index) => {
+              const categoryColor = getCategoryColor(item.category || 'other');
+              return (
+                <View 
+                  key={index} 
+                  style={[
+                    styles.itemCard,
+                    { 
+                      backgroundColor: `${categoryColor}15`,
+                      borderLeftWidth: 4,
+                      borderLeftColor: categoryColor,
+                    }
+                  ]}
+                >
+                  <View style={styles.itemHeader}>
+                    <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                      <View style={[styles.categoryDot, { backgroundColor: categoryColor }]} />
+                      <Text style={styles.itemName}>{item.name || 'Unknown Item'}</Text>
                     </View>
-                  ) : null}
+                    <Text style={styles.itemPrice}>
+                      {((item.quantity || 1) * (item.unitPrice || 0) - (item.discount || 0)).toFixed(2)} ₺
+                    </Text>
+                  </View>
+                  <View style={styles.itemDetails}>
+                    <Text style={styles.itemDetailText}>
+                      {item.quantity || 1} × {(item.unitPrice || 0).toFixed(2)} ₺
+                    </Text>
+                    {(item.discount && item.discount > 0) ? (
+                      <Text style={styles.itemDiscount}>
+                        -{item.discount.toFixed(2)} ₺ discount
+                      </Text>
+                    ) : null}
+                    {item.category ? (
+                      <View style={[styles.categoryBadge, { backgroundColor: categoryColor, borderColor: categoryColor }]}>
+                        <Text style={[styles.categoryText, { color: '#FFFFFF' }]}>
+                          {getCategoryDisplayName(item.category)}
+                        </Text>
+                      </View>
+                    ) : null}
+                  </View>
                 </View>
-              </View>
-            ))}
+              );
+            })}
           </View>
         ) : null}
 
@@ -295,8 +401,16 @@ const styles = StyleSheet.create({
   },
   itemCard: {
     paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E9E9E7',
+    paddingHorizontal: 12,
+    marginBottom: 8,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#E9E9E7',
+  },
+  categoryDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
   },
   itemHeader: {
     flexDirection: 'row',
@@ -342,7 +456,51 @@ const styles = StyleSheet.create({
   categoryText: {
     fontSize: 11,
     color: '#787774',
+    fontWeight: '600',
+  },
+  statsContainer: {
+    gap: 8,
+  },
+  statRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E9E9E720',
+  },
+  statLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    flex: 1,
+  },
+  colorDot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+  },
+  statName: {
+    fontSize: 14,
     fontWeight: '500',
+    color: '#37352F',
+  },
+  statCount: {
+    fontSize: 12,
+    color: '#787774',
+  },
+  statRight: {
+    alignItems: 'flex-end',
+    gap: 2,
+  },
+  statValue: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#37352F',
+  },
+  statPercentage: {
+    fontSize: 11,
+    color: '#787774',
   },
   confidenceContainer: {
     flexDirection: 'row',

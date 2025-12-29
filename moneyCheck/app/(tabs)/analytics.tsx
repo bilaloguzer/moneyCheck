@@ -4,6 +4,10 @@ import { useCallback, useState } from 'react';
 import { useFocusEffect } from 'expo-router';
 import { useAnalytics, TimeRange } from '@/lib/hooks/analytics/useAnalytics';
 import { PieChart, BarChart } from 'react-native-gifted-charts';
+import { getCategoryColor, getCategoryDisplayName } from '@/lib/constants/categories';
+import { SkeletonAnalyticsCard, SkeletonList } from '@/components/common/Skeleton';
+import { EmptyAnalytics } from '@/components/common/EmptyState';
+import { hapticSelection } from '@/lib/utils/haptics';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -30,7 +34,10 @@ export default function AnalyticsScreen() {
               <TouchableOpacity 
                 key={p} 
                 style={[styles.periodButton, range === p && styles.periodButtonActive]}
-                onPress={() => setRange(p)}
+                onPress={() => {
+                  hapticSelection();
+                  setRange(p);
+                }}
               >
                   <Text style={[styles.periodText, range === p && styles.periodTextActive]}>
                     {p.charAt(0).toUpperCase() + p.slice(1)}
@@ -39,6 +46,36 @@ export default function AnalyticsScreen() {
           ))}
       </View>
   );
+
+  // Show skeleton loading state
+  if (loading && !data) {
+    return (
+      <ScrollView style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Analytics</Text>
+          {renderPeriodSelector()}
+        </View>
+        <View style={{ paddingHorizontal: 20 }}>
+          <SkeletonAnalyticsCard />
+          <SkeletonAnalyticsCard />
+          <SkeletonList count={3} />
+        </View>
+      </ScrollView>
+    );
+  }
+
+  // Show empty state if no data
+  if (!loading && (!data || (data.receiptCount === 0))) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Analytics</Text>
+          {renderPeriodSelector()}
+        </View>
+        <EmptyAnalytics />
+      </View>
+    );
+  }
 
   return (
     <ScrollView 
@@ -162,18 +199,39 @@ export default function AnalyticsScreen() {
       {/* Top Items List */}
       <View style={styles.listSection}>
           <Text style={styles.sectionTitle}>Top Items</Text>
-          {data?.topItems && data.topItems.map((item, index) => (
-              <View key={index} style={styles.listItem}>
+          {data?.topItems && data.topItems.map((item, index) => {
+              const categoryColor = getCategoryColor(item.category || 'other');
+              return (
+                <View 
+                  key={index} 
+                  style={[
+                    styles.listItem,
+                    { 
+                      backgroundColor: `${categoryColor}15`,
+                      borderLeftWidth: 4,
+                      borderLeftColor: categoryColor,
+                    }
+                  ]}
+                >
                   <View style={styles.rankBadge}>
                       <Text style={styles.rankText}>{index + 1}</Text>
                   </View>
-                  <View style={{ flex: 1 }}>
-                      <Text style={styles.itemName}>{item.name}</Text>
-                      <Text style={styles.itemMeta}>{item.count} purchases</Text>
+                  <View style={{ flex: 1, gap: 4 }}>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                        <View style={[styles.categoryDot, { backgroundColor: categoryColor }]} />
+                        <Text style={styles.itemName}>{item.name}</Text>
+                      </View>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                        <Text style={styles.itemMeta}>{item.count} purchases</Text>
+                        <View style={[styles.itemCategoryBadge, { backgroundColor: categoryColor }]}>
+                          <Text style={styles.itemCategoryText}>{getCategoryDisplayName(item.category)}</Text>
+                        </View>
+                      </View>
                   </View>
                   <Text style={styles.itemPrice}>₺{item.totalSpent.toFixed(2)}</Text>
-              </View>
-          ))}
+                </View>
+              );
+          })}
           {(!data?.topItems || data.topItems.length === 0) && <Text style={styles.emptyText}>No items found</Text>}
       </View>
 
@@ -345,5 +403,20 @@ const styles = StyleSheet.create({
       fontSize: 15,
       fontWeight: '600',
       color: '#37352F',
+  },
+  categoryDot: {
+      width: 10,
+      height: 10,
+      borderRadius: 5,
+  },
+  itemCategoryBadge: {
+      paddingHorizontal: 6,
+      paddingVertical: 2,
+      borderRadius: 4,
+  },
+  itemCategoryText: {
+      fontSize: 10,
+      color: '#FFFFFF',
+      fontWeight: '600',
   },
 });

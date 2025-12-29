@@ -282,6 +282,11 @@ function mapRowToLineItem(row: any): LineItem {
     unitPrice: row.unit_price,
     totalPrice: row.total_price,
     categoryId: row.category_id,
+    // Include category object with name if available
+    category: row.category_name ? { 
+      id: row.category_id,
+      name: row.category_name 
+    } : undefined,
     departmentName: row.department_name,
     subcategoryType: row.subcategory_type,
     discount: row.discount,
@@ -289,5 +294,5 @@ function mapRowToLineItem(row: any): LineItem {
     notes: row.notes,
     createdAt: new Date(row.created_at),
     updatedAt: new Date(row.updated_at),
-  };
+  } as LineItem;
 }

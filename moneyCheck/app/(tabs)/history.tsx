@@ -5,6 +5,9 @@ import { ReceiptCard } from '@/components/receipt/ReceiptCard';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { Receipt } from '@/lib/types';
+import { SkeletonList } from '@/components/common/Skeleton';
+import { EmptyReceipts } from '@/components/common/EmptyState';
+import { hapticLight } from '@/lib/utils/haptics';
 
 export default function HistoryScreen() {
   const router = useRouter();
@@ -26,8 +29,13 @@ export default function HistoryScreen() {
 
   if (loading && !refreshing && !receipts) {
     return (
-        <View style={styles.center}>
-            <ActivityIndicator size="large" color="#37352F" />
+        <View style={styles.container}>
+          <View style={styles.header}>
+            <Text style={styles.title}>History</Text>
+          </View>
+          <View style={{ padding: 20 }}>
+            <SkeletonList count={5} />
+          </View>
         </View>
     );
   }
@@ -45,19 +53,17 @@ export default function HistoryScreen() {
           <View style={styles.list}>
               {receipts.data.map((receipt: Receipt) => (
                   <ReceiptCard 
-                      key={receipt.id} 
-                      receipt={receipt} 
-                      onPress={() => router.push(`/receipt/${receipt.id}`)}
+                    key={receipt.id} 
+                    receipt={receipt} 
+                    onPress={() => {
+                      hapticLight();
+                      router.push(`/receipt/${receipt.id}`);
+                    }} 
                   />
               ))}
           </View>
       ) : (
-          <View style={styles.content}>
-            <Text style={styles.emptyText}>No receipts yet</Text>
-            <Text style={styles.emptySubtext}>
-              Your scanned receipts will appear here
-            </Text>
-          </View>
+          <EmptyReceipts onAddReceipt={() => router.push('/receipt/capture')} />
       )}
     </ScrollView>
   );
