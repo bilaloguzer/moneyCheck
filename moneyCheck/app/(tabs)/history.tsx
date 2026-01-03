@@ -1,6 +1,6 @@
 // History screen - list of all receipts with search and filter options
 import { View, Text, StyleSheet, ScrollView, RefreshControl, ActivityIndicator, TouchableOpacity } from 'react-native';
-import { useReceiptList } from '@/lib/hooks/receipt/useReceiptList';
+import { useReceiptListSupabase } from '@/lib/hooks/receipt/useReceiptListSupabase';
 import { ReceiptCard } from '@/components/receipt/ReceiptCard';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
@@ -11,7 +11,7 @@ import { hapticLight } from '@/lib/utils/haptics';
 
 export default function HistoryScreen() {
   const router = useRouter();
-  const { receipts, loading, refetch } = useReceiptList(undefined, 1, 50); // Fetch up to 50 for now
+  const { receipts, loading, refetch } = useReceiptListSupabase(50, 0); // Fetch up to 50 for now
   const [refreshing, setRefreshing] = useState(false);
 
   // Auto-refresh when screen comes into focus

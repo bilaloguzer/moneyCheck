@@ -1,13 +1,43 @@
 // Settings screen - app settings, language, data management, export, account deletion
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function SettingsScreen() {
   const router = useRouter();
+  const { signOut, user } = useAuth();
+
+  const handleSignOut = async () => {
+    Alert.alert('Sign Out', 'Are you sure you want to sign out?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Sign Out',
+        style: 'destructive',
+        onPress: async () => {
+          await signOut();
+          router.replace('/auth/login');
+        },
+      },
+    ]);
+  };
 
   return (
     <ScrollView style={styles.container}>
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Account</Text>
+        <View style={styles.settingItem}>
+          <Text style={styles.settingText}>Email</Text>
+          <Text style={styles.settingValue}>{user?.email || 'Not logged in'}</Text>
+        </View>
+        <TouchableOpacity style={styles.settingItem} onPress={handleSignOut}>
+          <View style={styles.settingLeft}>
+            <Ionicons name="log-out-outline" size={24} color="#E03E3E" />
+            <Text style={[styles.settingText, { color: '#E03E3E' }]}>Sign Out</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Data</Text>
         <TouchableOpacity

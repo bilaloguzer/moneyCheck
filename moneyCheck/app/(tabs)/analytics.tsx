@@ -2,7 +2,7 @@
 import { View, Text, StyleSheet, ScrollView, RefreshControl, ActivityIndicator, TouchableOpacity, Dimensions } from 'react-native';
 import { useCallback, useState } from 'react';
 import { useFocusEffect } from 'expo-router';
-import { useAnalytics, TimeRange } from '@/lib/hooks/analytics/useAnalytics';
+import { useAnalyticsSupabase, TimeRange } from '@/lib/hooks/analytics/useAnalyticsSupabase';
 import { PieChart, BarChart } from 'react-native-gifted-charts';
 import { getCategoryColor, getCategoryDisplayName } from '@/lib/constants/categories';
 import { SkeletonAnalyticsCard, SkeletonList } from '@/components/common/Skeleton';
@@ -14,7 +14,7 @@ const screenWidth = Dimensions.get('window').width;
 export default function AnalyticsScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [range, setRange] = useState<TimeRange>('month');
-  const { data, loading, refetch } = useAnalytics(range);
+  const { data, loading, refetch } = useAnalyticsSupabase(range);
 
   useFocusEffect(
     useCallback(() => {
@@ -185,7 +185,7 @@ export default function AnalyticsScreen() {
                       }}>
                         <Text style={{ color: '#FFF', fontSize: 12, fontWeight: '600' }}>
                           ₺{item.value.toFixed(0)}
-                        </Text>
+        </Text>
                       </View>
                     );
                   }}

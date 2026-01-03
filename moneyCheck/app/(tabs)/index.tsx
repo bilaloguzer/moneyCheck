@@ -2,9 +2,9 @@
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, RefreshControl } from 'react-native';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { useReceiptList } from '@/lib/hooks/receipt/useReceiptList';
+import { useReceiptListSupabase } from '@/lib/hooks/receipt/useReceiptListSupabase';
 import { ReceiptCard } from '@/components/receipt/ReceiptCard';
-import { useCallback, useState, useMemo } from 'react';
+import { useCallback, useState } from 'react';
 import { Receipt } from '@/lib/types';
 import { SkeletonAnalyticsCard, SkeletonList } from '@/components/common/Skeleton';
 import { EmptyReceipts } from '@/components/common/EmptyState';
@@ -12,7 +12,7 @@ import { hapticLight, hapticMedium } from '@/lib/utils/haptics';
 
 export default function HomeScreen() {
   const router = useRouter();
-  const { receipts, loading, refetch } = useReceiptList(undefined, 1, 5); // Fetch top 5 receipts
+  const { receipts, loading, refetch } = useReceiptListSupabase(5, 0); // Fetch top 5 receipts
   const [refreshing, setRefreshing] = useState(false);
 
   // Auto-refresh when screen comes into focus
