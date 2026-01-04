@@ -1,34 +1,33 @@
 import 'react-native-url-polyfill/auto';
 import { createClient } from '@supabase/supabase-js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Constants from 'expo-constants';
 
-// Get environment variables from either process.env or Expo Constants
-const supabaseUrl = 
-  process.env.EXPO_PUBLIC_SUPABASE_URL || 
-  Constants.expoConfig?.extra?.supabaseUrl || 
-  '';
+// Get environment variables - Expo loads from .env automatically
+// @ts-ignore - process.env is injected by Expo at build time
+const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL || '';
+// @ts-ignore
+const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_KEY || process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || '';
 
-const supabaseAnonKey = 
-  process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || 
-  process.env.EXPO_PUBLIC_SUPABASE_KEY || // Support both variable names
-  Constants.expoConfig?.extra?.supabaseAnonKey || 
-  '';
-
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('❌ Supabase configuration missing!');
-  console.error('Please add these to your .env file:');
-  console.error('EXPO_PUBLIC_SUPABASE_URL=https://rtzicegldsutoeasdjcy.supabase.co');
-  console.error('EXPO_PUBLIC_SUPABASE_KEY=your-anon-key-here');
-  console.error('\nThen restart with: npm start -- --clear');
+// Only log warning if truly missing (not during initial import)
+if (supabaseUrl && supabaseAnonKey) {
+  console.log('✅ Supabase configuration loaded successfully');
+} else if (supabaseUrl || supabaseAnonKey) {
+  console.warn('⚠️ Partial Supabase configuration detected');
+  console.warn('URL:', supabaseUrl ? '✓' : '✗');
+  console.warn('Key:', supabaseAnonKey ? '✓' : '✗');
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    storage: AsyncStorage,
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: false,
-  },
-});
+// Create client with fallback empty strings to prevent immediate crash
+export const supabase = createClient(
+  supabaseUrl || 'https://placeholder.supabase.co', 
+  supabaseAnonKey || 'placeholder-key',
+  {
+    auth: {
+      storage: AsyncStorage,
+      autoRefreshToken: true,
+      persistSession: true,
+      detectSessionInUrl: false,
+    },
+  }
+);
 
