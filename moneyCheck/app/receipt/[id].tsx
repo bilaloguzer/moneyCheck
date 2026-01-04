@@ -290,6 +290,13 @@ export default function ReceiptDetailScreen() {
                       </View>
                     ) : null}
                   </View>
+                  <TouchableOpacity
+                    style={styles.compareButton}
+                    onPress={() => router.push(`/receipt/${id}/compare?productName=${encodeURIComponent(item.cleanName || item.name)}`)}
+                  >
+                    <Ionicons name="analytics-outline" size={16} color="#2C9364" />
+                    <Text style={styles.compareButtonText}>Compare Prices</Text>
+                  </TouchableOpacity>
                 </View>
               );
             })}
@@ -533,6 +540,24 @@ const styles = StyleSheet.create({
   },
   editButtonText: {
     fontSize: 15,
+    fontWeight: '600',
+    color: '#2C9364',
+  },
+  compareButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    marginTop: 12,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    backgroundColor: '#2C936410',
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#2C9364',
+  },
+  compareButtonText: {
+    fontSize: 13,
     fontWeight: '600',
     color: '#2C9364',
   },

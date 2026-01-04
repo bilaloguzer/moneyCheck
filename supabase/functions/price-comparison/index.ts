@@ -1,85 +1,83 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4';
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-interface PriceComparisonRequest {
-  productName: string;
-  merchantId?: string;
-  limit?: number;
-}
-
-interface PriceComparisonResponse {
-  productName: string;
-  averagePrice: number;
-  minPrice: number;
-  maxPrice: number;
-  currentPrice?: number;
-  priceHistory: {
-    merchant: string;
-    price: number;
-    date: string;
-    quantity: number;
-    unit: string;
-  }[];
-  recommendations: string[];
-}
-
 serve(async (req) => {
+  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
   }
 
   try {
+    const { productName, merchantId } = await req.json();
+
+    if (!productName) {
+      return new Response(
+        JSON.stringify({ error: 'Product name is required' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
       {
-        auth: {
-          persistSession: false,
+        global: {
+          headers: { Authorization: req.headers.get('Authorization')! },
         },
       }
     );
 
-    const { productName, merchantId, limit = 20 }: PriceComparisonRequest = await req.json();
+    // Get user ID from the auth header
+    const {
+      data: { user },
+    } = await supabaseClient.auth.getUser();
 
-    if (!productName) {
+    if (!user) {
       return new Response(
-        JSON.stringify({ error: 'productName is required' }),
-        {
-          status: 400,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
+        JSON.stringify({ error: 'Unauthorized' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    // Search for similar products using trigram similarity
-    const { data: items, error } = await supabaseClient
+    // Query line items for this product name (fuzzy matching with ILIKE)
+    const { data: lineItems, error: queryError } = await supabaseClient
       .from('line_items')
       .select(`
         id,
+        name,
         clean_name,
         unit_price,
         quantity,
         unit,
-        created_at,
-        receipts (
+        discount,
+        receipts!inner (
+          id,
           merchant_name,
-          purchase_date
+          purchase_date,
+          user_id
         )
       `)
-      .ilike('clean_name', `%${productName}%`)
-      .order('created_at', { ascending: false })
-      .limit(limit);
+      .eq('receipts.user_id', user.id)
+      .or(
+        `clean_name.ilike.%${productName}%,name.ilike.%${productName}%`
+      )
+      .order('receipts.purchase_date', { ascending: false })
+      .limit(50);
 
-    if (error) {
-      throw error;
+    if (queryError) {
+      console.error('Query error:', queryError);
+      return new Response(
+        JSON.stringify({ error: queryError.message }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
-    if (!items || items.length === 0) {
+    if (!lineItems || lineItems.length === 0) {
       return new Response(
         JSON.stringify({
           productName,
@@ -87,69 +85,110 @@ serve(async (req) => {
           minPrice: 0,
           maxPrice: 0,
           priceHistory: [],
-          recommendations: ['No price data found for this product.'],
+          recommendations: ['No price history found for this product.'],
         }),
-        {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
     // Calculate statistics
-    const prices = items.map((item) => item.unit_price);
-    const averagePrice = prices.reduce((sum, p) => sum + p, 0) / prices.length;
+    const prices = lineItems.map((item) => item.unit_price);
+    const totalPrice = prices.reduce((sum, price) => sum + price, 0);
+    const averagePrice = totalPrice / prices.length;
     const minPrice = Math.min(...prices);
     const maxPrice = Math.max(...prices);
 
     // Build price history
-    const priceHistory = items.map((item) => ({
-      merchant: item.receipts.merchant_name,
+    const priceHistory = lineItems.map((item) => ({
+      merchant: (item.receipts as any).merchant_name || 'Unknown',
       price: item.unit_price,
-      date: item.receipts.purchase_date,
+      date: (item.receipts as any).purchase_date,
       quantity: item.quantity,
-      unit: item.unit,
+      unit: item.unit || 'pcs',
     }));
+
+    // Find cheapest merchant
+    const merchantPrices = new Map<string, { prices: number[]; count: number }>();
+    lineItems.forEach((item) => {
+      const merchantName = (item.receipts as any).merchant_name || 'Unknown';
+      const current = merchantPrices.get(merchantName) || { prices: [], count: 0 };
+      current.prices.push(item.unit_price);
+      current.count++;
+      merchantPrices.set(merchantName, current);
+    });
+
+    const merchantAverages = Array.from(merchantPrices.entries()).map(
+      ([merchant, data]) => ({
+        merchant,
+        avgPrice: data.prices.reduce((sum, p) => sum + p, 0) / data.prices.length,
+        count: data.count,
+      })
+    );
+    merchantAverages.sort((a, b) => a.avgPrice - b.avgPrice);
+    const cheapestMerchant = merchantAverages[0];
 
     // Generate recommendations
     const recommendations: string[] = [];
-    const currentPrice = merchantId
-      ? items.find((item) => item.receipts.merchant_name === merchantId)?.unit_price
-      : undefined;
 
-    if (currentPrice) {
-      const priceDiff = ((currentPrice - averagePrice) / averagePrice) * 100;
-      if (priceDiff > 20) {
-        recommendations.push(`This price is ${priceDiff.toFixed(0)}% above average. Consider other merchants.`);
-      } else if (priceDiff < -20) {
-        recommendations.push(`Great deal! This price is ${Math.abs(priceDiff).toFixed(0)}% below average.`);
+    // Price trend
+    if (priceHistory.length >= 2) {
+      const recentPrice = priceHistory[0].price;
+      const oldPrice = priceHistory[priceHistory.length - 1].price;
+      const priceDiff = recentPrice - oldPrice;
+      const percentChange = ((priceDiff / oldPrice) * 100).toFixed(1);
+
+      if (priceDiff > 0) {
+        recommendations.push(
+          `Price increased by ${percentChange}% (from ₺${oldPrice.toFixed(2)} to ₺${recentPrice.toFixed(2)})`
+        );
+      } else if (priceDiff < 0) {
+        recommendations.push(
+          `Price decreased by ${Math.abs(parseFloat(percentChange))}% (from ₺${oldPrice.toFixed(2)} to ₺${recentPrice.toFixed(2)})`
+        );
       } else {
-        recommendations.push('This price is around average.');
+        recommendations.push(`Price has remained stable at ₺${recentPrice.toFixed(2)}`);
       }
     }
 
-    const cheapestMerchant = priceHistory.reduce((min, item) =>
-      item.price < min.price ? item : min
+    // Average price comparison
+    recommendations.push(`Average price: ₺${averagePrice.toFixed(2)}`);
+
+    // Cheapest merchant
+    if (cheapestMerchant) {
+      recommendations.push(
+        `Cheapest at ${cheapestMerchant.merchant} (avg: ₺${cheapestMerchant.avgPrice.toFixed(2)}, ${cheapestMerchant.count} purchase${cheapestMerchant.count > 1 ? 's' : ''})`
+      );
+    }
+
+    // Price range insight
+    const priceRange = maxPrice - minPrice;
+    if (priceRange > 0) {
+      const percentRange = ((priceRange / minPrice) * 100).toFixed(0);
+      recommendations.push(
+        `Price varies by ${percentRange}% across merchants (₺${minPrice.toFixed(2)} - ₺${maxPrice.toFixed(2)})`
+      );
+    }
+
+    return new Response(
+      JSON.stringify({
+        productName,
+        averagePrice,
+        minPrice,
+        maxPrice,
+        priceHistory,
+        recommendations,
+        cheapestMerchant: {
+          name: cheapestMerchant?.merchant,
+          price: cheapestMerchant?.avgPrice,
+        },
+      }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
-    recommendations.push(`Cheapest found at ${cheapestMerchant.merchant} for ₺${cheapestMerchant.price.toFixed(2)}.`);
-
-    const response: PriceComparisonResponse = {
-      productName,
-      averagePrice: parseFloat(averagePrice.toFixed(2)),
-      minPrice: parseFloat(minPrice.toFixed(2)),
-      maxPrice: parseFloat(maxPrice.toFixed(2)),
-      currentPrice,
-      priceHistory,
-      recommendations,
-    };
-
-    return new Response(JSON.stringify(response), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
   } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    console.error('Edge Function error:', error);
+    return new Response(
+      JSON.stringify({ error: error.message }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
   }
 });
-

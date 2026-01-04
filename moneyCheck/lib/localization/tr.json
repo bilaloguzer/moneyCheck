@@ -143,5 +143,21 @@
     "networkError": "Ağ hatası. Lütfen bağlantınızı kontrol edin.",
     "unauthorized": "Devam etmek için giriş yapın",
     "unknown": "Bilinmeyen bir hata oluştu"
+  },
+  "priceComparison": {
+    "title": "Fiyat Karşılaştırma",
+    "searchPlaceholder": "Ürün ara...",
+    "scanBarcode": "Barkod Tara",
+    "average": "Ortalama",
+    "min": "Min",
+    "max": "Maks",
+    "priceTrend": "Fiyat Trendi",
+    "insights": "İçgörüler",
+    "priceHistory": "Fiyat Geçmişi",
+    "records": "kayıt",
+    "searchPrompt": "Ürün Ara",
+    "searchDescription": "Fiyatları karşılaştırmak için bir ürün adı girin veya barkod tarayın",
+    "comparePrices": "Fiyatları Karşılaştır",
+    "noHistory": "Bu ürün için fiyat geçmişi bulunamadı"
   }
 }

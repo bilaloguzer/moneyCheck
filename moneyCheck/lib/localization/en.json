@@ -143,5 +143,21 @@
     "networkError": "Network error. Please check your connection.",
     "unauthorized": "Please sign in to continue",
     "unknown": "An unknown error occurred"
+  },
+  "priceComparison": {
+    "title": "Price Comparison",
+    "searchPlaceholder": "Search product...",
+    "scanBarcode": "Scan Barcode",
+    "average": "Average",
+    "min": "Min",
+    "max": "Max",
+    "priceTrend": "Price Trend",
+    "insights": "Insights",
+    "priceHistory": "Price History",
+    "records": "records",
+    "searchPrompt": "Search for a Product",
+    "searchDescription": "Enter a product name or scan a barcode to compare prices",
+    "comparePrices": "Compare Prices",
+    "noHistory": "No price history found for this product"
   }
 }
