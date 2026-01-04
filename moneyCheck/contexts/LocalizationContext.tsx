@@ -1,7 +1,7 @@
 import { I18n } from 'i18n-js';
 import * as Localization from 'expo-localization';
-import en from '../localization/en.json';
-import tr from '../localization/tr.json';
+import en from '@/lib/localization/en.json';
+import tr from '@/lib/localization/tr.json';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
