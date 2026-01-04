@@ -3,6 +3,7 @@ import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { DatabaseProvider } from '@/contexts/DatabaseContext';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
+import { LocalizationProvider } from '@/contexts/LocalizationContext';
 import { useEffect } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 
@@ -54,11 +55,13 @@ function RootLayoutNav() {
 
 export default function RootLayout() {
   return (
-    <DatabaseProvider>
-      <AuthProvider>
-        <StatusBar style="auto" />
-        <RootLayoutNav />
-      </AuthProvider>
-    </DatabaseProvider>
+    <LocalizationProvider>
+      <DatabaseProvider>
+        <AuthProvider>
+          <StatusBar style="auto" />
+          <RootLayoutNav />
+        </AuthProvider>
+      </DatabaseProvider>
+    </LocalizationProvider>
   );
 }

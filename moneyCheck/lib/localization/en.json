@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "SmartSpend"
+    "name": "moneyCheck"
   },
   "tabs": {
     "home": "Home",
@@ -14,17 +14,134 @@
     "delete": "Delete",
     "edit": "Edit",
     "loading": "Loading...",
-    "error": "An error occurred"
+    "error": "An error occurred",
+    "success": "Success",
+    "back": "Back",
+    "close": "Close",
+    "apply": "Apply",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort"
+  },
+  "auth": {
+    "welcome": "Welcome Back",
+    "createAccount": "Create Account",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "signOut": "Sign Out",
+    "email": "Email",
+    "password": "Password",
+    "alreadyHaveAccount": "Already have an account? Sign In",
+    "dontHaveAccount": "Don't have an account? Sign Up",
+    "signInToContinue": "Sign in to continue",
+    "signUpToStart": "Sign up to start tracking your receipts",
+    "signOutConfirm": "Are you sure you want to sign out?"
+  },
+  "home": {
+    "title": "Welcome to moneyCheck",
+    "subtitle": "Scan receipts and track your spending",
+    "scanReceipt": "Scan Receipt",
+    "quickStats": "Quick Stats",
+    "recentReceipts": "Recent Receipts",
+    "totalReceipts": "Total Receipts",
+    "totalSpent": "Total Spent",
+    "seeAll": "See All",
+    "noReceipts": "No receipts yet. Scan your first receipt!"
   },
   "receipt": {
     "capture": "Scan Receipt",
     "merchant": "Merchant",
     "date": "Date",
-    "total": "Total",
-    "items": "Items"
+    "total": "Total Amount",
+    "items": "Items",
+    "details": "Receipt Details",
+    "edit": "Edit Receipt",
+    "delete": "Delete Receipt",
+    "deleteConfirm": "Are you sure you want to delete this receipt? This action cannot be undone.",
+    "deleted": "Receipt deleted successfully",
+    "saved": "Receipt saved successfully",
+    "updated": "Receipt updated successfully",
+    "processing": "Processing...",
+    "categoryBreakdown": "Category Breakdown",
+    "noImage": "No image available",
+    "ocrConfidence": "OCR Confidence",
+    "status": "Status",
+    "quantity": "Quantity",
+    "unitPrice": "Unit Price",
+    "discount": "Discount",
+    "lineTotal": "Line Total",
+    "unit": "Unit",
+    "addItem": "Add Item",
+    "itemName": "Item Name",
+    "grandTotal": "Total",
+    "saveChanges": "Save Changes"
   },
-  "onboarding": {
-    "welcome": "Welcome to SmartSpend",
-    "kvkk_title": "Privacy and Data Security"
+  "history": {
+    "title": "History",
+    "searchPlaceholder": "Search by merchant or amount...",
+    "receiptsFound": "{{count}} receipt found",
+    "receiptsFound_plural": "{{count}} receipts found",
+    "noReceipts": "No receipts yet",
+    "noReceiptsSubtext": "Your scanned receipts will appear here",
+    "noMatching": "No matching receipts",
+    "tryDifferent": "Try a different search term",
+    "sortAndFilter": "Sort & Filter",
+    "sortBy": "Sort By",
+    "sortByDate": "Date",
+    "sortByAmount": "Amount",
+    "order": "Order",
+    "newestFirst": "Newest First",
+    "oldestFirst": "Oldest First",
+    "applyFilters": "Apply Filters"
+  },
+  "analytics": {
+    "title": "Analytics",
+    "period": {
+      "week": "Week",
+      "month": "Month",
+      "year": "Year",
+      "all": "All Time"
+    },
+    "totalSpent": "Total Spent",
+    "receipts": "Receipts",
+    "averageReceipt": "Avg Receipt",
+    "spendingByCategory": "Spending by Category",
+    "spendingTrend": "Spending Trend",
+    "topItems": "Top Items",
+    "purchases": "purchases",
+    "noData": "No data for this period",
+    "noCategoryData": "No category data for this period",
+    "noItems": "No items found"
+  },
+  "settings": {
+    "title": "Settings",
+    "account": "Account",
+    "data": "Data",
+    "preferences": "Preferences",
+    "about": "About",
+    "language": "Language",
+    "dataManagement": "Data Management",
+    "export": "Export Data",
+    "version": "Version",
+    "notLoggedIn": "Not logged in",
+    "selectLanguage": "Select Language",
+    "languageChanged": "Language changed successfully"
+  },
+  "categories": {
+    "groceries": "Groceries",
+    "household": "Household",
+    "beverages": "Beverages",
+    "snacks": "Snacks",
+    "personal_care": "Personal Care",
+    "cleaning": "Cleaning",
+    "other": "Other"
+  },
+  "errors": {
+    "failedToLoad": "Failed to load",
+    "failedToSave": "Failed to save",
+    "failedToDelete": "Failed to delete",
+    "networkError": "Network error. Please check your connection.",
+    "unauthorized": "Please sign in to continue",
+    "unknown": "An unknown error occurred"
   }
 }
