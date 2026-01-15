@@ -1,3 +1,4 @@
+import { I18nManager } from 'react-native';
 import { I18n } from 'i18n-js';
 import * as Localization from 'expo-localization';
 import en from '@/lib/localization/en.json';
@@ -11,7 +12,15 @@ const i18n = new I18n({
 });
 
 // Set the locale once at the beginning of your app
-i18n.locale = Localization.locale;
+const getDeviceLocale = () => {
+  const locales = Localization.getLocales();
+  if (locales && locales.length > 0) {
+    return locales[0].languageTag;
+  }
+  return 'en';
+};
+
+i18n.locale = getDeviceLocale();
 i18n.enableFallback = true;
 i18n.defaultLocale = 'en';
 
@@ -44,7 +53,7 @@ interface LocalizationProviderProps {
 }
 
 export const LocalizationProvider = ({ children }: LocalizationProviderProps) => {
-  const [locale, setLocaleState] = useState(i18n.locale);
+  const [locale, setLocaleState] = useState(i18n.locale || 'en');
 
   useEffect(() => {
     // Load saved language preference
@@ -76,7 +85,7 @@ export const LocalizationProvider = ({ children }: LocalizationProviderProps) =>
     return i18n.t(key, options);
   };
 
-  const isRTL = Localization.isRTL;
+  const isRTL = I18nManager.isRTL;
 
   return (
     <LocalizationContext.Provider value={{ t, locale, setLocale, isRTL }}>
@@ -87,4 +96,3 @@ export const LocalizationProvider = ({ children }: LocalizationProviderProps) =>
 
 // Export i18n instance for direct use if needed
 export { i18n };
-

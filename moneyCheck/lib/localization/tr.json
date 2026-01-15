@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "moneyCheck"
+    "name": "SmartSpend"
   },
   "tabs": {
     "home": "Ana Sayfa",
@@ -14,150 +14,17 @@
     "delete": "Sil",
     "edit": "Düzenle",
     "loading": "Yükleniyor...",
-    "error": "Bir hata oluştu",
-    "success": "Başarılı",
-    "back": "Geri",
-    "close": "Kapat",
-    "apply": "Uygula",
-    "search": "Ara",
-    "filter": "Filtrele",
-    "sort": "Sırala"
-  },
-  "auth": {
-    "welcome": "Tekrar Hoş Geldiniz",
-    "createAccount": "Hesap Oluştur",
-    "signIn": "Giriş Yap",
-    "signUp": "Kayıt Ol",
-    "signOut": "Çıkış Yap",
-    "email": "E-posta",
-    "password": "Şifre",
-    "alreadyHaveAccount": "Zaten hesabınız var mı? Giriş Yapın",
-    "dontHaveAccount": "Hesabınız yok mu? Kayıt Olun",
-    "signInToContinue": "Devam etmek için giriş yapın",
-    "signUpToStart": "Fişlerinizi takip etmeye başlamak için kayıt olun",
-    "signOutConfirm": "Çıkış yapmak istediğinizden emin misiniz?"
-  },
-  "home": {
-    "title": "moneyCheck'e Hoş Geldiniz",
-    "subtitle": "Fişleri tarayın ve harcamalarınızı takip edin",
-    "scanReceipt": "Fiş Tara",
-    "quickStats": "Hızlı İstatistikler",
-    "recentReceipts": "Son Fişler",
-    "totalReceipts": "Toplam Fiş",
-    "totalSpent": "Toplam Harcama",
-    "seeAll": "Tümünü Gör",
-    "noReceipts": "Henüz fiş yok. İlk fişinizi tarayın!"
+    "error": "Bir hata oluştu"
   },
   "receipt": {
     "capture": "Fiş Tara",
     "merchant": "Mağaza",
     "date": "Tarih",
-    "total": "Toplam Tutar",
-    "items": "Ürünler",
-    "details": "Fiş Detayları",
-    "edit": "Fişi Düzenle",
-    "delete": "Fişi Sil",
-    "deleteConfirm": "Bu fişi silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.",
-    "deleted": "Fiş başarıyla silindi",
-    "saved": "Fiş başarıyla kaydedildi",
-    "updated": "Fiş başarıyla güncellendi",
-    "processing": "İşleniyor...",
-    "categoryBreakdown": "Kategori Dağılımı",
-    "noImage": "Görsel mevcut değil",
-    "ocrConfidence": "OCR Güvenilirliği",
-    "status": "Durum",
-    "quantity": "Miktar",
-    "unitPrice": "Birim Fiyat",
-    "discount": "İndirim",
-    "lineTotal": "Satır Toplamı",
-    "unit": "Birim",
-    "addItem": "Ürün Ekle",
-    "itemName": "Ürün Adı",
-    "grandTotal": "Genel Toplam",
-    "saveChanges": "Değişiklikleri Kaydet"
+    "total": "Toplam",
+    "items": "Ürünler"
   },
-  "history": {
-    "title": "Geçmiş",
-    "searchPlaceholder": "Mağaza veya tutar ile ara...",
-    "receiptsFound": "{{count}} fiş bulundu",
-    "receiptsFound_plural": "{{count}} fiş bulundu",
-    "noReceipts": "Henüz fiş yok",
-    "noReceiptsSubtext": "Taradığınız fişler burada görünecek",
-    "noMatching": "Eşleşen fiş bulunamadı",
-    "tryDifferent": "Farklı bir arama terimi deneyin",
-    "sortAndFilter": "Sırala ve Filtrele",
-    "sortBy": "Sıralama",
-    "sortByDate": "Tarih",
-    "sortByAmount": "Tutar",
-    "order": "Sıra",
-    "newestFirst": "Önce Yeniler",
-    "oldestFirst": "Önce Eskiler",
-    "applyFilters": "Filtreleri Uygula"
-  },
-  "analytics": {
-    "title": "Analiz",
-    "period": {
-      "week": "Hafta",
-      "month": "Ay",
-      "year": "Yıl",
-      "all": "Tüm Zamanlar"
-    },
-    "totalSpent": "Toplam Harcama",
-    "receipts": "Fişler",
-    "averageReceipt": "Ort. Fiş",
-    "spendingByCategory": "Kategoriye Göre Harcama",
-    "spendingTrend": "Harcama Trendi",
-    "topItems": "En Çok Alınanlar",
-    "purchases": "alışveriş",
-    "noData": "Bu dönem için veri yok",
-    "noCategoryData": "Bu dönem için kategori verisi yok",
-    "noItems": "Ürün bulunamadı"
-  },
-  "settings": {
-    "title": "Ayarlar",
-    "account": "Hesap",
-    "data": "Veri",
-    "preferences": "Tercihler",
-    "about": "Hakkında",
-    "language": "Dil",
-    "dataManagement": "Veri Yönetimi",
-    "export": "Veriyi Dışa Aktar",
-    "version": "Sürüm",
-    "notLoggedIn": "Giriş yapılmadı",
-    "selectLanguage": "Dil Seçin",
-    "languageChanged": "Dil başarıyla değiştirildi"
-  },
-  "categories": {
-    "groceries": "Market",
-    "household": "Ev Eşyaları",
-    "beverages": "İçecekler",
-    "snacks": "Atıştırmalıklar",
-    "personal_care": "Kişisel Bakım",
-    "cleaning": "Temizlik",
-    "other": "Diğer"
-  },
-  "errors": {
-    "failedToLoad": "Yükleme başarısız",
-    "failedToSave": "Kaydetme başarısız",
-    "failedToDelete": "Silme başarısız",
-    "networkError": "Ağ hatası. Lütfen bağlantınızı kontrol edin.",
-    "unauthorized": "Devam etmek için giriş yapın",
-    "unknown": "Bilinmeyen bir hata oluştu"
-  },
-  "priceComparison": {
-    "title": "Fiyat Karşılaştırma",
-    "searchPlaceholder": "Ürün ara...",
-    "scanBarcode": "Barkod Tara",
-    "average": "Ortalama",
-    "min": "Min",
-    "max": "Maks",
-    "priceTrend": "Fiyat Trendi",
-    "insights": "İçgörüler",
-    "priceHistory": "Fiyat Geçmişi",
-    "records": "kayıt",
-    "searchPrompt": "Ürün Ara",
-    "searchDescription": "Fiyatları karşılaştırmak için bir ürün adı girin veya barkod tarayın",
-    "comparePrices": "Fiyatları Karşılaştır",
-    "noHistory": "Bu ürün için fiyat geçmişi bulunamadı"
+  "onboarding": {
+    "welcome": "SmartSpend'e Hoş Geldiniz",
+    "kvkk_title": "Gizlilik ve Veri Güvenliği"
   }
 }

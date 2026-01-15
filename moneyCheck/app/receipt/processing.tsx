@@ -8,8 +8,6 @@ import { useDatabaseContext } from '@/contexts/DatabaseContext';
 import { ReceiptRepository } from '@/lib/database/repositories/ReceiptRepository';
 import { Ionicons } from '@expo/vector-icons';
 import * as FileSystem from 'expo-file-system/legacy';
-import { showErrorToast, showSuccessToast, showUserFriendlyError } from '@/lib/utils/toast';
-import { hapticSuccess, hapticError, hapticLight } from '@/lib/utils/haptics';
 
 export default function ProcessingScreen() {
   const params = useLocalSearchParams();
@@ -68,10 +66,7 @@ export default function ProcessingScreen() {
 
       } catch (err) {
         console.error('OCR Error:', err);
-        const errorMessage = err instanceof Error ? err.message : 'Unknown error';
-        setError(errorMessage);
-        hapticError();
-        showUserFriendlyError(err, 'Failed to process receipt');
+        setError(err instanceof Error ? err.message : 'Unknown error');
       } finally {
         setLoading(false);
       }
@@ -82,8 +77,7 @@ export default function ProcessingScreen() {
 
   const handleSave = async () => {
     if (!db) {
-        hapticError();
-        showErrorToast('Database not initialized');
+        Alert.alert('Error', 'Database not initialized');
         return;
     }
     
@@ -149,15 +143,13 @@ export default function ProcessingScreen() {
         
         await repository.create(receiptData as any); // Type cast as our Receipt type definition vs repo input might have slight drift, mostly safe
         
-        hapticSuccess();
-        showSuccessToast('Receipt saved successfully!');
-        // Navigate away immediately
+        // Navigate away immediately, don't show alert that can be dismissed
+        Alert.alert('Success', 'Receipt saved successfully!');
         router.replace('/(tabs)/history');
         
     } catch (err) {
         console.error('Save Error:', err);
-        hapticError();
-        showUserFriendlyError(err, 'Failed to save receipt');
+        Alert.alert('Error', 'Failed to save receipt.');
         setSaving(false);
     }
   };
@@ -169,14 +161,12 @@ export default function ProcessingScreen() {
   };
   
   const removeItem = (index: number) => {
-      hapticLight();
       const newItems = [...items];
       newItems.splice(index, 1);
       setItems(newItems);
   };
   
   const addItem = () => {
-      hapticLight();
       setItems([...items, { name: '', category: 'other', quantity: '1', unitPrice: '0', discount: '0', unit: 'pcs' }]);
   };
 

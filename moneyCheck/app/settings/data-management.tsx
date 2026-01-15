@@ -1,14 +1,71 @@
 // Data management screen - manage user data (export, delete, view storage usage)
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Button } from '@/components/common/Button';
+import { useState } from 'react';
+import { ExportService } from '@/lib/services/export/ExportService';
+import { SupabaseReceiptService } from '@/lib/services/SupabaseReceiptService';
+import { useRouter } from 'expo-router';
 
 export default function DataManagementScreen() {
+  const router = useRouter();
+  const [exporting, setExporting] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  const handleExport = async () => {
+    setExporting(true);
+    try {
+      const { error } = await ExportService.exportToCSV();
+      if (error) throw error;
+      // Success export opens share sheet directly, no alert needed normally, 
+      // but let's confirm if not obvious
+    } catch (error: any) {
+      if (error.message !== 'Sharing not available on this device') {
+        Alert.alert('Export Failed', error.message || 'Unknown error');
+      } else {
+         Alert.alert('Error', 'Sharing is not available on this device');
+      }
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const handleDeleteAll = () => {
+    Alert.alert(
+      'Delete All Data',
+      'Are you absolutely sure? This will permanently delete ALL your receipts. This action cannot be undone.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete Everything',
+          style: 'destructive',
+          onPress: async () => {
+            setDeleting(true);
+            try {
+              const { error } = await SupabaseReceiptService.deleteAllData();
+              if (error) throw error;
+              Alert.alert('Success', 'All your data has been deleted.');
+              router.replace('/(tabs)/history');
+            } catch (error: any) {
+              Alert.alert('Delete Failed', error.message || 'Unknown error');
+            } finally {
+              setDeleting(false);
+            }
+          },
+        },
+      ]
+    );
+  };
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>EXPORT DATA</Text>
-        <TouchableOpacity style={styles.option}>
+        <TouchableOpacity 
+          style={styles.option} 
+          onPress={handleExport}
+          disabled={exporting}
+        >
           <View style={styles.optionLeft}>
             <Ionicons name="download-outline" size={22} color="#787774" />
             <View style={styles.optionText}>
@@ -18,7 +75,11 @@ export default function DataManagementScreen() {
               </Text>
             </View>
           </View>
-          <Ionicons name="chevron-forward" size={20} color="#9B9A97" />
+          {exporting ? (
+             <ActivityIndicator size="small" color="#37352F" />
+          ) : (
+             <Ionicons name="chevron-forward" size={20} color="#9B9A97" />
+          )}
         </TouchableOpacity>
       </View>
 
@@ -29,7 +90,7 @@ export default function DataManagementScreen() {
             <Ionicons name="folder-outline" size={22} color="#787774" />
             <View style={styles.optionText}>
               <Text style={styles.optionTitle}>Storage Used</Text>
-              <Text style={styles.optionDescription}>0 MB</Text>
+              <Text style={styles.optionDescription}>Calculated on export</Text>
             </View>
           </View>
         </View>
@@ -43,9 +104,10 @@ export default function DataManagementScreen() {
             This will permanently delete all your receipts and cannot be undone.
           </Text>
           <Button
-            title="Delete All Data"
+            title={deleting ? "Deleting..." : "Delete All Data"}
             variant="danger"
-            onPress={() => {}}
+            onPress={handleDeleteAll}
+            disabled={deleting}
           />
         </View>
       </View>

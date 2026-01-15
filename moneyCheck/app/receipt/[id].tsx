@@ -1,18 +1,22 @@
 // Receipt detail screen - view/edit receipt details with merchant, date, total, line items
 import { View, Text, StyleSheet, ScrollView, Image, ActivityIndicator, Alert, TouchableOpacity } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { SupabaseReceiptService } from '@/lib/services/SupabaseReceiptService';
+import { useDatabaseContext } from '@/contexts/DatabaseContext';
+import { ReceiptRepository } from '@/lib/database/repositories/ReceiptRepository';
 import { useEffect, useState } from 'react';
-import { Receipt } from '@/lib/types/receipt.types';
+import { Receipt } from '@/lib/types';
 import { Ionicons } from '@expo/vector-icons';
 import { Button } from '@/components/common/Button';
 import { PieChart } from 'react-native-gifted-charts';
 import { getCategoryDisplayName, getCategoryColor } from '@/lib/constants/categories';
+import { showErrorToast, showSuccessToast } from '@/lib/utils/toast';
+import { hapticSuccess, hapticError, hapticWarning } from '@/lib/utils/haptics';
 
 export default function ReceiptDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
-  const [receipt, setReceipt] = useState<(Receipt & { items: any[] }) | null>(null);
+  const { db } = useDatabaseContext();
+  const [receipt, setReceipt] = useState<Receipt | null>(null);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
   const [categoryStats, setCategoryStats] = useState<{
@@ -24,17 +28,14 @@ export default function ReceiptDetailScreen() {
   }[]>([]);
 
   useEffect(() => {
-    if (!id) return;
+    if (!db || !id) return;
     
     const loadReceipt = async () => {
       try {
-        const { data, error } = await SupabaseReceiptService.getReceiptById(id);
-        
-        if (error) {
-          throw error;
-        }
-        
+        const repository = new ReceiptRepository(db);
+        const data = await repository.findById(parseInt(id));
         console.log('Loaded receipt:', data);
+        console.log('Image path:', data?.imagePath);
         setReceipt(data);
         
         // Calculate category statistics
@@ -44,7 +45,7 @@ export default function ReceiptDetailScreen() {
           
           data.items.forEach(item => {
             const category = item.category || 'other';
-            const itemTotal = item.lineTotal || 0;
+            const itemTotal = (item.quantity || 1) * (item.unitPrice || 0) - (item.discount || 0);
             totalAmount += itemTotal;
             
             const current = categoryMap.get(category) || { total: 0, count: 0 };
@@ -66,18 +67,20 @@ export default function ReceiptDetailScreen() {
         }
       } catch (error) {
         console.error('Failed to load receipt:', error);
-        Alert.alert('Error', 'Failed to load receipt details');
+        hapticError();
+        showErrorToast('Failed to load receipt details');
       } finally {
         setLoading(false);
       }
     };
 
     loadReceipt();
-  }, [id]);
+  }, [db, id]);
 
   const handleDelete = async () => {
-    if (!id) return;
+    if (!db || !id) return;
 
+    hapticWarning();
     Alert.alert(
       'Delete Receipt',
       'Are you sure you want to delete this receipt? This action cannot be undone.',
@@ -89,13 +92,15 @@ export default function ReceiptDetailScreen() {
           onPress: async () => {
             setDeleting(true);
             try {
-              const { error } = await SupabaseReceiptService.deleteReceipt(id);
-              if (error) throw error;
-              Alert.alert('Success', 'Receipt deleted successfully');
+              const repository = new ReceiptRepository(db);
+              await repository.delete(parseInt(id));
+              hapticSuccess();
+              showSuccessToast('Receipt deleted successfully');
               router.back();
             } catch (error) {
               console.error('Failed to delete receipt:', error);
-              Alert.alert('Error', 'Failed to delete receipt');
+              hapticError();
+              showErrorToast('Failed to delete receipt');
               setDeleting(false);
             }
           }
@@ -146,10 +151,10 @@ export default function ReceiptDetailScreen() {
         </View>
 
         {/* Receipt Image */}
-        {receipt.imageUri ? (
+        {receipt.imagePath ? (
           <View style={styles.imageContainer}>
             <Image 
-              source={{ uri: receipt.imageUri }} 
+              source={{ uri: receipt.imagePath }} 
               style={styles.image}
               resizeMode="contain"
               onError={(error) => console.log('Image load error:', error.nativeEvent.error)}
@@ -186,18 +191,10 @@ export default function ReceiptDetailScreen() {
             <View style={styles.infoContent}>
               <Text style={styles.infoLabel}>Total Amount</Text>
               <Text style={[styles.infoValue, styles.totalAmount]}>
-                {receipt.totalAmount?.toFixed(2)} ₺
+                {receipt.total?.toFixed(2)} ₺
               </Text>
             </View>
           </View>
-
-          <TouchableOpacity 
-            style={styles.editButton}
-            onPress={() => router.push(`/receipt/${id}/edit`)}
-          >
-            <Ionicons name="create-outline" size={18} color="#2C9364" />
-            <Text style={styles.editButtonText}>Edit Receipt</Text>
-          </TouchableOpacity>
         </View>
 
         {/* Category Analysis */}
@@ -221,7 +218,7 @@ export default function ReceiptDetailScreen() {
                 centerLabelComponent={() => (
                   <View style={{ alignItems: 'center' }}>
                     <Text style={{ fontSize: 16, fontWeight: '700', color: '#37352F' }}>
-                      ₺{receipt.totalAmount?.toFixed(0)}
+                      ₺{receipt.total?.toFixed(0)}
                     </Text>
                     <Text style={{ fontSize: 10, color: '#787774' }}>Total</Text>
                   </View>
@@ -275,7 +272,7 @@ export default function ReceiptDetailScreen() {
                   </View>
                   <View style={styles.itemDetails}>
                     <Text style={styles.itemDetailText}>
-                      {item.quantity || 1} {item.unit || 'pcs'} × {(item.unitPrice || 0).toFixed(2)} ₺
+                      {item.quantity || 1} × {(item.unitPrice || 0).toFixed(2)} ₺
                     </Text>
                     {(item.discount && item.discount > 0) ? (
                       <Text style={styles.itemDiscount}>
@@ -290,30 +287,21 @@ export default function ReceiptDetailScreen() {
                       </View>
                     ) : null}
                   </View>
-                  <TouchableOpacity
-                    style={styles.compareButton}
-                    onPress={() => router.push(`/receipt/${id}/compare?productName=${encodeURIComponent(item.cleanName || item.name)}`)}
-                  >
-                    <Ionicons name="analytics-outline" size={16} color="#2C9364" />
-                    <Text style={styles.compareButtonText}>Compare Prices</Text>
-                  </TouchableOpacity>
                 </View>
               );
             })}
           </View>
         ) : null}
 
-        {/* Status Badge */}
-        <View style={styles.confidenceContainer}>
-          <Ionicons 
-            name={receipt.status === 'completed' ? 'checkmark-circle' : 'time-outline'} 
-            size={16} 
-            color={receipt.status === 'completed' ? '#2C9364' : '#787774'} 
-          />
-          <Text style={styles.confidenceText}>
-            Status: {receipt.status}
-          </Text>
-        </View>
+        {/* OCR Confidence */}
+        {receipt.ocrConfidence !== undefined && (
+          <View style={styles.confidenceContainer}>
+            <Ionicons name="checkmark-circle-outline" size={16} color="#787774" />
+            <Text style={styles.confidenceText}>
+              OCR Confidence: {(receipt.ocrConfidence * 100).toFixed(0)}%
+            </Text>
+          </View>
+        )}
       </ScrollView>
     </View>
   );
@@ -524,41 +512,5 @@ const styles = StyleSheet.create({
   confidenceText: {
     fontSize: 13,
     color: '#787774',
-  },
-  editButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    marginTop: 8,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    backgroundColor: '#2C936410',
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#2C9364',
-  },
-  editButtonText: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#2C9364',
-  },
-  compareButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 6,
-    marginTop: 12,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    backgroundColor: '#2C936410',
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: '#2C9364',
-  },
-  compareButtonText: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#2C9364',
   },
 });

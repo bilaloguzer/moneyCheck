@@ -3,11 +3,9 @@ import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useLocalization } from '@/contexts/LocalizationContext';
 
 export default function TabLayout() {
   const insets = useSafeAreaInsets();
-  const { t } = useLocalization();
   
   return (
     <Tabs
@@ -44,7 +42,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: t('tabs.home'),
+          title: 'Home',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="home" size={22} color={color} />
           ),
@@ -53,7 +51,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="history"
         options={{
-          title: t('tabs.history'),
+          title: 'History',
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="list" size={22} color={color} />
@@ -63,7 +61,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="analytics"
         options={{
-          title: t('tabs.analytics'),
+          title: 'Analytics',
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="stats-chart" size={22} color={color} />
@@ -73,7 +71,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="settings"
         options={{
-          title: t('tabs.settings'),
+          title: 'Settings',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="settings" size={22} color={color} />
           ),

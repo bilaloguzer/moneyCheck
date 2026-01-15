@@ -2,24 +2,27 @@
 
 export interface Receipt {
   id: string;
-  merchantId: string;
+  merchantId?: string;
   merchantName: string;
-  date: Date;
-  total: number;
-  imagePath: string;
-  ocrConfidence: number;
+  date: string | Date;
+  totalAmount: number;
+  imageUri?: string;
+  status: 'processing' | 'completed' | 'failed';
   items?: LineItem[];
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string | Date;
+  updatedAt: string | Date;
+  ocrConfidence?: number;
 }
 
 export interface LineItem {
   id: string;
   receiptId: string;
-  productName: string;
+  name: string;
+  cleanName?: string;
   quantity: number;
+  unit?: string;
   unitPrice: number;
-  totalPrice: number;
+  lineTotal: number;
   confidence: number;
   category?: string;
   discount?: number;
