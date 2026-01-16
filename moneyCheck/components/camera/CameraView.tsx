@@ -1,117 +1,70 @@
 // Camera viewport with enhanced UI overlay and capture controls
 import React, { useEffect, useRef, useState } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
-import { CameraView as ExpoCamera, CameraType, FlashMode as ExpoFlashMode, useCameraPermissions } from 'expo-camera';
+import { View, StyleSheet, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { CameraView as ExpoCamera, CameraType, FlashMode as ExpoFlashMode } from 'expo-camera';
 import type { CameraView as CameraViewType } from 'expo-camera';
-import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { showErrorToast } from '@/lib/utils/toast';
-import { hapticError, hapticSuccess, hapticLight } from '@/lib/utils/haptics';
+import { useCamera } from '@/hooks/useCamera';
+import type { FlashMode } from '@/lib/types/camera.types';
 
 interface CameraViewProps {
   onCapture: (uri: string) => void;
   ratio?: string;
 }
 
-type FlashMode = 'off' | 'on' | 'auto';
-
 export function CameraView({ onCapture, ratio = '16:9' }: CameraViewProps) {
-  const [permission, requestPermission] = useCameraPermissions();
-  const [isReady, setIsReady] = useState(false);
-  const [flashMode, setFlashMode] = useState<FlashMode>('off');
-  const [zoom, setZoom] = useState(0);
-  const [isCapturing, setIsCapturing] = useState(false);
   const cameraRef = useRef<CameraViewType | null>(null);
   const router = useRouter();
+  const [isReady, setIsReady] = useState(false);
 
-  useEffect(() => {
-    if (!permission?.granted) {
-      requestPermission();
-    }
-  }, []);
+  const {
+    hasPermission,
+    permissionStatus,
+    requestPermission,
+    flashMode,
+    toggleFlash,
+    zoom,
+    increaseZoom,
+    decreaseZoom,
+    captureImage,
+    pickFromGallery,
+    isCapturing,
+  } = useCamera({
+    autoRequestPermission: true,
+    initialFlashMode: 'off',
+    initialZoom: 0,
+  });
 
   const handleZoomIn = () => {
-    setZoom((prev) => Math.min(prev + 0.05, 1));
+    increaseZoom(0.05);
   };
 
   const handleZoomOut = () => {
-    setZoom((prev) => Math.max(prev - 0.05, 0));
+    decreaseZoom(0.05);
   };
 
   const takePicture = async () => {
-    if (!cameraRef.current || isCapturing) return;
-    
-    setIsCapturing(true);
-    try {
-      const photo = await cameraRef.current.takePictureAsync({ 
-        quality: 0.85,
-        skipProcessing: false,
-        exif: true,
-      });
-      
-      // TODO: Implement auto-cropping if needed. 
-      // For now, we are capturing the full frame. 
-      // DocumentScanner plugin is usually better for auto-cropping.
-      // But user requested "auto crop".
-      // Since we are using expo-camera, real auto-crop is hard without OpenCV or ML.
-      // We will assume the user frames it well or we can use the document scanner plugin later.
-      // For now, let's just pass the URI. 
-      
-      hapticSuccess();
-      onCapture(photo.uri);
-    } catch (err) {
-      console.warn('takePicture error', err);
-      hapticError();
-      showErrorToast('Failed to capture photo. Please try again.');
-    } finally {
-      setIsCapturing(false);
+    const uri = await captureImage(cameraRef);
+    if (uri) {
+      onCapture(uri);
     }
   };
 
-  const pickFromGallery = async () => {
-    try {
-      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      
-      if (status !== 'granted') {
-        hapticError();
-        showErrorToast('Please allow access to your photo library.');
-        return;
-      }
-
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: false,
-        quality: 0.85,
-      });
-
-      if (!result.canceled && result.assets[0]) {
-        hapticSuccess();
-        onCapture(result.assets[0].uri);
-      }
-    } catch (err) {
-      console.warn('pickFromGallery error', err);
-      hapticError();
-      showErrorToast('Failed to open gallery. Please try again.');
+  const handleGalleryPick = async () => {
+    const uri = await pickFromGallery();
+    if (uri) {
+      onCapture(uri);
     }
   };
 
-  const toggleFlash = () => {
-    hapticLight();
-    setFlashMode((current) => {
-      if (current === 'off') return 'on';
-      if (current === 'on') return 'auto';
-      return 'off';
-    });
-  };
-
-  const getFlashIcon = () => {
+  const getFlashIcon = (): any => {
     if (flashMode === 'off') return 'flash-off';
     if (flashMode === 'on') return 'flash';
     return 'flash-outline';
   };
 
-  if (!permission) {
+  if (permissionStatus === 'undetermined') {
     return (
       <View style={styles.center}>
         <ActivityIndicator size="large" color="#FFFFFF" />
@@ -119,7 +72,7 @@ export function CameraView({ onCapture, ratio = '16:9' }: CameraViewProps) {
     );
   }
 
-  if (!permission.granted) {
+  if (!hasPermission) {
     return (
       <View style={styles.center}>
         <Text style={styles.permissionText}>Camera permission is required. Please enable it in settings.</Text>
@@ -187,7 +140,7 @@ export function CameraView({ onCapture, ratio = '16:9' }: CameraViewProps) {
         <View style={styles.bottomBar}>
           <TouchableOpacity
             style={styles.sideButton}
-            onPress={pickFromGallery}
+            onPress={handleGalleryPick}
             activeOpacity={0.7}
           >
             <Ionicons name="images" size={28} color="#FFFFFF" />

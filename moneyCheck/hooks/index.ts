@@ -5,3 +5,5 @@
 
 export * from './useDatabase';
 export * from './useDatabaseQuery';
+export * from './useCamera';
+
