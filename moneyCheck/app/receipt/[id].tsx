@@ -195,6 +195,18 @@ export default function ReceiptDetailScreen() {
               </Text>
             </View>
           </View>
+          
+          {/* Compare Prices Button */}
+          {receipt.items && receipt.items.length > 0 && (
+            <TouchableOpacity 
+              style={styles.comparePricesButton}
+              onPress={() => router.push(`/receipt/${id}/compare`)}
+            >
+              <Ionicons name="stats-chart-outline" size={20} color="#2C9364" />
+              <Text style={styles.comparePricesText}>Compare Prices</Text>
+              <Ionicons name="chevron-forward" size={16} color="#2C9364" />
+            </TouchableOpacity>
+          )}
         </View>
 
         {/* Category Analysis */}
@@ -501,6 +513,26 @@ const styles = StyleSheet.create({
   statPercentage: {
     fontSize: 11,
     color: '#787774',
+  },
+  comparePricesButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    backgroundColor: '#2C936410',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#2C9364',
+    marginTop: 16,
+  },
+  comparePricesText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#2C9364',
+    flex: 1,
+    textAlign: 'center',
   },
   confidenceContainer: {
     flexDirection: 'row',
