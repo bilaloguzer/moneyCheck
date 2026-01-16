@@ -19,7 +19,11 @@ export default function PriceComparisonScreen() {
   const [receiptData, setReceiptData] = useState<any>(null);
   const [priceHistory, setPriceHistory] = useState<PriceHistoryEntry[]>([]);
   const [priceStats, setPriceStats] = useState<PriceStats | null>(null);
-  const [marketComparison, setMarketComparison] = useState<ReturnType<typeof PriceComparisonService.getFullMarketComparison> | null>(null);
+  const [marketComparison, setMarketComparison] = useState<{
+    comparison: PriceComparison & { sampleSize?: number; isRealData: boolean };
+    marketData: any;
+    allPrices: any[];
+  } | null>(null);
   
   useEffect(() => {
     if (!db || !id) return;
@@ -68,11 +72,12 @@ export default function PriceComparisonScreen() {
       );
       setPriceStats(stats);
       
-      // Generate market comparison with mock data
-      const comparison = PriceComparisonService.getFullMarketComparison(
+      // Generate market comparison (hybrid: real + mock fallback)
+      const comparison = await PriceComparisonService.getFullMarketComparison(
         item.name,
         item.unitPrice,
-        receipt.merchantName || 'Unknown'
+        receipt.merchantName || 'Unknown',
+        true // Use real data when available
       );
       setMarketComparison(comparison);
     } catch (error) {
@@ -244,7 +249,21 @@ export default function PriceComparisonScreen() {
         {/* Market Comparison */}
         {marketComparison && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Market Comparison</Text>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>Market Comparison</Text>
+              <View style={styles.dataSourceBadge}>
+                <Ionicons 
+                  name={marketComparison.comparison.isRealData ? "people" : "flask"} 
+                  size={12} 
+                  color="#787774" 
+                />
+                <Text style={styles.dataSourceText}>
+                  {marketComparison.comparison.isRealData 
+                    ? `${marketComparison.comparison.sampleSize || 0} prices` 
+                    : 'Estimated'}
+                </Text>
+              </View>
+            </View>
             <View style={styles.marketCard}>
               <View style={styles.marketRow}>
                 <Text style={styles.marketLabel}>Market Average</Text>
@@ -410,6 +429,28 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#37352F',
     marginBottom: 16,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  dataSourceBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    backgroundColor: '#F7F6F3',
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#E9E9E7',
+  },
+  dataSourceText: {
+    fontSize: 10,
+    color: '#787774',
+    fontWeight: '600',
   },
   itemSelector: {
     flexDirection: 'row',

@@ -64,14 +64,41 @@ export class PriceComparisonService {
   }
 
   /**
-   * Compare user's price with market data
+   * Compare user's price with market data (hybrid: real + mock fallback)
    */
-  static compareWithMarket(
+  static async compareWithMarket(
     productName: string,
     userPrice: number,
-    userStore: string
-  ): PriceComparison {
-    const marketData = this.generateMockMarketData(productName, userPrice, userStore);
+    userStore: string,
+    useRealData: boolean = true
+  ): Promise<PriceComparison & { sampleSize?: number; isRealData: boolean }> {
+    let marketData: MarketPriceData & { sampleSize?: number; isRealData?: boolean };
+    let isRealData = false;
+    let sampleSize: number | undefined;
+
+    // Try to use real data first if enabled
+    if (useRealData) {
+      try {
+        const { SupabasePriceService } = await import('./SupabasePriceService');
+        const hasData = await SupabasePriceService.hasRealData(productName);
+        
+        if (hasData) {
+          const realData = await SupabasePriceService.getRealMarketData(productName);
+          marketData = realData;
+          isRealData = true;
+          sampleSize = realData.sampleSize;
+          console.log(`Using real data for "${productName}" (${sampleSize} data points)`);
+        } else {
+          marketData = this.generateMockMarketData(productName, userPrice, userStore);
+          console.log(`No real data for "${productName}", using mock data`);
+        }
+      } catch (error) {
+        console.warn('Failed to fetch real data, falling back to mock:', error);
+        marketData = this.generateMockMarketData(productName, userPrice, userStore);
+      }
+    } else {
+      marketData = this.generateMockMarketData(productName, userPrice, userStore);
+    }
 
     const difference = userPrice - marketData.averagePrice;
     const percentDifference = (difference / marketData.averagePrice) * 100;
@@ -105,6 +132,8 @@ export class PriceComparisonService {
       cheapestPrice: cheapest.price,
       mostExpensiveStore: mostExpensive.store,
       mostExpensivePrice: mostExpensive.price,
+      isRealData,
+      sampleSize,
     };
   }
 
@@ -121,17 +150,31 @@ export class PriceComparisonService {
   /**
    * Get full market comparison with price distribution
    */
-  static getFullMarketComparison(
+  static async getFullMarketComparison(
     productName: string,
     userPrice: number,
-    userStore: string
-  ): {
-    comparison: PriceComparison;
-    marketData: MarketPriceData;
+    userStore: string,
+    useRealData: boolean = true
+  ): Promise<{
+    comparison: PriceComparison & { sampleSize?: number; isRealData: boolean };
+    marketData: MarketPriceData & { sampleSize?: number; isRealData?: boolean };
     allPrices: (StorePriceEntry & { isUserPrice?: boolean })[];
-  } {
-    const comparison = this.compareWithMarket(productName, userPrice, userStore);
-    const marketData = this.generateMockMarketData(productName, userPrice, userStore);
+  }> {
+    const comparison = await this.compareWithMarket(productName, userPrice, userStore, useRealData);
+    
+    // Get the same market data that was used for comparison
+    let marketData: MarketPriceData & { sampleSize?: number; isRealData?: boolean };
+    
+    if (comparison.isRealData) {
+      try {
+        const { SupabasePriceService } = await import('./SupabasePriceService');
+        marketData = await SupabasePriceService.getRealMarketData(productName);
+      } catch (error) {
+        marketData = this.generateMockMarketData(productName, userPrice, userStore);
+      }
+    } else {
+      marketData = this.generateMockMarketData(productName, userPrice, userStore);
+    }
 
     // Combine market prices with user's price
     const allPrices = [
