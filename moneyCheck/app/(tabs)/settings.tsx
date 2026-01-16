@@ -1,13 +1,64 @@
 // Settings screen - app settings, language, data management, export, account deletion
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function SettingsScreen() {
   const router = useRouter();
+  const { signOut, user } = useAuth();
+
+  const handleLogout = async () => {
+    Alert.alert(
+      'Logout',
+      'Are you sure you want to logout?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Logout',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await signOut();
+              // Navigation will be handled automatically by auth state change
+            } catch (error: any) {
+              Alert.alert('Error', error.message || 'Failed to logout');
+            }
+          },
+        },
+      ]
+    );
+  };
 
   return (
     <ScrollView style={styles.container}>
+      {/* Account Section */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Account</Text>
+        {user && (
+          <View style={styles.settingItem}>
+            <View style={styles.settingLeft}>
+              <Ionicons name="person" size={24} color="#64748B" />
+              <Text style={styles.settingText}>Email</Text>
+            </View>
+            <Text style={styles.settingValue}>{user.email}</Text>
+          </View>
+        )}
+        <TouchableOpacity
+          style={[styles.settingItem, styles.dangerItem]}
+          onPress={handleLogout}
+        >
+          <View style={styles.settingLeft}>
+            <Ionicons name="log-out-outline" size={24} color="#E03E3E" />
+            <Text style={[styles.settingText, styles.dangerText]}>Logout</Text>
+          </View>
+          <Ionicons name="chevron-forward" size={24} color="#E03E3E" />
+        </TouchableOpacity>
+      </View>
+
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Data</Text>
         <TouchableOpacity
@@ -77,5 +128,12 @@ const styles = StyleSheet.create({
   settingValue: {
     fontSize: 15,
     color: '#787774',
+  },
+  dangerItem: {
+    borderBottomWidth: 0,
+  },
+  dangerText: {
+    color: '#E03E3E',
+    fontWeight: '500',
   },
 });
