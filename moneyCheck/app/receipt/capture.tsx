@@ -19,12 +19,17 @@ try {
   console.warn('DocumentScanner plugin not found or failed to load', e);
 }
 
+type HybridStep = 'qr_pending' | 'qr_scanned' | 'photo_capture';
+
 export default function ReceiptCaptureScreen() {
   const router = useRouter();
   const [isProcessing, setIsProcessing] = useState(false);
-  const [mode, setMode] = useState<QRScanMode>('photo'); // Toggle between 'photo' and 'qr'
+  const [mode, setMode] = useState<QRScanMode>('qr'); // Start with QR in hybrid mode
+  const [hybridStep, setHybridStep] = useState<HybridStep>('qr_pending');
+  const [qrData, setQRData] = useState<any>(null);
 
-  const handleCapture = async (uri: string) => {
+  // Handle photo capture (either standalone or after QR in hybrid mode)
+  const handlePhotoCapture = async (uri: string) => {
     hapticMedium();
     setIsProcessing(true);
 
@@ -48,11 +53,14 @@ export default function ReceiptCaptureScreen() {
       });
 
       // Navigate to preview with preprocessed image
+      // If we have QR data (hybrid mode), include it
       router.push({
         pathname: '/receipt/preview',
         params: { 
           imageUri: result.uri,
           originalUri: result.originalUri,
+          qrData: qrData ? JSON.stringify(qrData) : undefined,
+          source: qrData ? 'hybrid' : 'photo',
         },
       });
     } catch (error) {
@@ -63,15 +71,19 @@ export default function ReceiptCaptureScreen() {
       // Fallback: navigate with original image
       router.push({
         pathname: '/receipt/preview',
-        params: { imageUri: uri },
+        params: { 
+          imageUri: uri,
+          qrData: qrData ? JSON.stringify(qrData) : undefined,
+          source: qrData ? 'hybrid' : 'photo',
+        },
       });
     } finally {
       setIsProcessing(false);
     }
   };
   
-  // Handle QR code scanning
-  const handleQRScanned = async (qrData: string) => {
+  // Handle QR code scanning in hybrid mode
+  const handleQRScannedInHybrid = async (qrString: string) => {
     hapticSuccess();
     setIsProcessing(true);
     
@@ -79,32 +91,23 @@ export default function ReceiptCaptureScreen() {
       console.log('Processing QR code...');
       
       // Process QR code through our service
-      const result = await QRCodeService.processQRCode(qrData);
+      const result = await QRCodeService.processQRCode(qrString);
       
       if (!result.success || !result.data) {
         throw new Error(result.error || 'Failed to parse QR code');
       }
       
-      // Convert to OCR format for consistent processing
-      const ocrResult = QRCodeService.convertToOCRResult(result.data);
-      
       console.log('QR parsed successfully:', {
-        merchant: ocrResult.merchant.name,
-        total: ocrResult.total.value,
-        source: 'qr',
+        merchant: result.data.merchantName || result.data.merchantTitle,
+        total: result.data.totalAmount,
       });
       
-      // Navigate to preview with QR data
-      // We'll pass the OCR result as JSON string since route params don't support objects
-      router.push({
-        pathname: '/receipt/preview',
-        params: {
-          qrData: JSON.stringify(ocrResult),
-          source: 'qr',
-        },
-      });
+      // Store QR data and transition to photo capture
+      setQRData(result.data);
+      setHybridStep('qr_scanned');
+      setMode('photo'); // Switch to photo mode
       
-      showSuccessToast('QR code scanned successfully!');
+      showSuccessToast('✓ QR Scanned! Now take a photo of the receipt');
     } catch (error) {
       console.error('QR processing error:', error);
       hapticError();
@@ -137,29 +140,33 @@ export default function ReceiptCaptureScreen() {
   return (
     <View style={styles.container}>
       <CameraView 
-        onCapture={handleCapture} 
-        onQRScanned={handleQRScanned}
+        onCapture={handlePhotoCapture} 
+        onQRScanned={handleQRScannedInHybrid}
         mode={mode}
         ratio="4:3" 
       />
       
-      {/* Mode Toggle Button */}
-      {!isProcessing && (
+      {/* Hybrid Status Indicator */}
+      {hybridStep === 'qr_scanned' && !isProcessing && (
+        <View style={styles.hybridStatusBadge}>
+          <Ionicons name="checkmark-circle" size={20} color="#2C9364" />
+          <Text style={styles.hybridStatusText}>QR ✓ | Now take photo</Text>
+        </View>
+      )}
+      
+      {/* Skip QR Button (visible when waiting for QR) */}
+      {hybridStep === 'qr_pending' && mode === 'qr' && !isProcessing && (
         <TouchableOpacity 
-          style={styles.modeToggleButton} 
+          style={styles.skipQRButton} 
           onPress={() => {
-            setMode(mode === 'photo' ? 'qr' : 'photo');
+            setHybridStep('photo_capture');
+            setMode('photo');
             hapticMedium();
+            showSuccessToast('Switched to photo-only mode');
           }}
         >
-          <Ionicons 
-            name={mode === 'photo' ? 'qr-code' : 'camera'} 
-            size={24} 
-            color="white" 
-          />
-          <Text style={styles.modeToggleText}>
-            {mode === 'photo' ? 'Scan QR' : 'Take Photo'}
-          </Text>
+          <Ionicons name="camera" size={20} color="white" />
+          <Text style={styles.skipQRText}>Skip QR - Use Photo Only</Text>
         </TouchableOpacity>
       )}
       
@@ -235,5 +242,48 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: '600',
     fontSize: 14,
+  },
+  hybridStatusBadge: {
+    position: 'absolute',
+    top: 120,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    zIndex: 10,
+  },
+  hybridStatusText: {
+    backgroundColor: 'rgba(44, 147, 100, 0.95)',
+    color: 'white',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+    fontWeight: '600',
+    fontSize: 15,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    overflow: 'hidden',
+  },
+  skipQRButton: {
+    position: 'absolute',
+    bottom: 140,
+    left: 20,
+    right: 20,
+    backgroundColor: 'rgba(0,0,0,0.8)',
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+    zIndex: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.3)',
+  },
+  skipQRText: {
+    color: 'white',
+    fontWeight: '600',
+    fontSize: 15,
   },
 });

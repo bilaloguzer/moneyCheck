@@ -115,6 +115,160 @@ export class OCRService {
       throw error;
     }
   }
+  
+  /**
+   * Extract text from receipt image using QR code context as anchor data
+   * This provides much better accuracy by using known totals to validate line items
+   */
+  async extractTextWithQRContext(imagePath: string, qrContext: any): Promise<OCRResult> {
+    if (!OPENAI_API_KEY) {
+      console.warn('OpenAI API Key is missing. Please add EXPO_PUBLIC_OPENAI_API_KEY to your .env file.');
+      throw new Error('MISSING_API_KEY');
+    }
+
+    try {
+      // 1. Convert image to base64
+      const responseImage = await fetch(imagePath);
+      const blob = await responseImage.blob();
+      const base64Image = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64 = reader.result as string;
+          resolve(base64.split(',')[1]);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+
+      // 2. Prepare enhanced prompt with QR anchor data
+      const merchantName = qrContext.merchantName || qrContext.merchantTitle || 'Unknown';
+      const grandTotal = qrContext.totalAmount || 0;
+      const qrDate = qrContext.documentDate || new Date().toISOString();
+      const taxAmount = qrContext.taxAmount || 0;
+
+      const prompt = `
+        You have VERIFIED ANCHOR DATA from a QR code scan (100% accurate):
+        - Merchant: "${merchantName}"
+        - Grand Total: ${grandTotal} TL
+        - Date: ${qrDate}
+        - Tax Amount: ${taxAmount} TL
+        
+        Now analyze this receipt image and extract the line items.
+        
+        CRITICAL MATHEMATICAL RULES:
+        1. **The Grand Total MUST be ${grandTotal} TL** - This is VERIFIED from the QR code
+        2. **Your extracted items MUST sum to this exact total** (±0.50 TL tolerance for rounding)
+        3. **Use this total as your PRIMARY GUIDE to fix decimal point errors**
+        4. **Common Error Pattern**: Turkish receipts often show prices without decimal points
+           - If you see "695" and other items, it's likely 6.95 TL (not 695 TL)
+           - If you see "1750", it's likely 17.50 TL (not 1750 TL)
+           - If you see "10" next to a product and another number, "10" might be VAT rate (KDV %), not quantity
+        
+        5. **Validation Process**:
+           a. Extract all line items with quantities and prices
+           b. Calculate: Sum(quantity × unitPrice) for each item
+           c. Verify: Total of all line items ≈ ${grandTotal} TL
+           d. If mismatch: Adjust decimal points until sum matches ${grandTotal}
+        
+        6. **Bag Quantity Rule**: Shopping bags rarely exceed 5 units. If you see "43 bags", it's probably a code.
+        
+        7. **Monster Energy / Beverages**: "10" is often the VAT rate, not quantity. Check line total.
+        
+        Return STRICT JSON format:
+        {
+          "merchant": {
+            "name": "${merchantName}",
+            "confidence": 1.0
+          },
+          "date": {
+            "value": "${qrDate}",
+            "confidence": 1.0
+          },
+          "total": {
+            "value": ${grandTotal},
+            "confidence": 1.0
+          },
+          "items": [
+            {
+              "name": "Product Name",
+              "cleanName": "Clean Product Name",
+              "category": "groceries|household|beverages|snacks|personal_care|cleaning|other",
+              "quantity": 1,
+              "unitPrice": 10.50,
+              "lineTotal": 10.50,
+              "confidence": 0.9
+            }
+          ]
+        }
+        
+        FINAL CHECK BEFORE RETURNING:
+        - Sum of all item.lineTotal values = ${grandTotal} TL (±0.50)
+        - If not matching, FIX decimal points in prices
+        - Merchant name matches: ${merchantName}
+        
+        Return ONLY the JSON string, no markdown formatting.
+      `;
+
+      const payload = {
+        model: "gpt-4o",
+        messages: [
+          {
+            role: "user",
+            content: [
+              { type: "text", text: prompt },
+              {
+                type: "image_url",
+                image_url: {
+                  url: `data:image/jpeg;base64,${base64Image}`
+                }
+              }
+            ]
+          }
+        ],
+        max_tokens: 1500,
+        response_format: { type: "json_object" }
+      };
+
+      // 3. Call OpenAI API
+      const response = await axios.post(OPENAI_URL, payload, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${OPENAI_API_KEY}`
+        }
+      });
+
+      const data = response.data;
+      const content = data.choices?.[0]?.message?.content;
+      
+      if (!content) {
+        throw new Error('No text returned from OpenAI');
+      }
+
+      const jsonString = this.cleanJsonString(content);
+      const parsedData = JSON.parse(jsonString);
+
+      // Validate that items sum to QR total
+      const itemsTotal = parsedData.items?.reduce((sum: number, item: any) => 
+        sum + (item.lineTotal || 0), 0) || 0;
+      const diff = Math.abs(itemsTotal - grandTotal);
+      
+      console.log('QR-enhanced OCR validation:', {
+        qrTotal: grandTotal,
+        itemsTotal: itemsTotal.toFixed(2),
+        difference: diff.toFixed(2),
+        withinTolerance: diff <= 0.50
+      });
+
+      return this.mapResponseToOCRResult(parsedData, content);
+
+    } catch (error) {
+      console.error('QR-enhanced OCR processing error:', error);
+      if (axios.isAxiosError(error)) {
+        throw new Error(`OpenAI API request failed: ${error.response?.status} ${JSON.stringify(error.response?.data)}`);
+      }
+      throw error;
+    }
+  }
 
   private cleanJsonString(text: string): string {
     // Remove markdown code blocks if present (```json ... ```)

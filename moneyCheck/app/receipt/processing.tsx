@@ -12,6 +12,8 @@ import * as FileSystem from 'expo-file-system/legacy';
 export default function ProcessingScreen() {
   const params = useLocalSearchParams();
   const imageUri = params.imageUri as string;
+  const qrDataParam = params.qrData as string;
+  const source = (params.source as string) || 'photo';
   const router = useRouter();
   const { db } = useDatabaseContext();
   
@@ -28,13 +30,31 @@ export default function ProcessingScreen() {
 
   useEffect(() => {
     async function processImage() {
-      if (!imageUri) return;
+      if (!imageUri && !qrDataParam) return;
       
       try {
         const service = new OCRService();
-        console.log('Starting OCR processing for:', imageUri);
-        const data = await service.extractText(imageUri);
-        console.log('OCR Result:', data);
+        let data: OCRResult;
+        
+        // Check if we have hybrid mode (both QR data and photo)
+        if (source === 'hybrid' && qrDataParam && imageUri) {
+          console.log('Using HYBRID mode: QR + Photo for enhanced accuracy');
+          const qrData = JSON.parse(qrDataParam);
+          
+          // Use QR-context-aware OCR
+          data = await service.extractTextWithQRContext(imageUri, qrData);
+          
+          console.log('Hybrid OCR Result (QR-enhanced):', data);
+        } else if (imageUri) {
+          // Standard photo-only OCR
+          console.log('Using PHOTO-ONLY mode: Standard OCR');
+          data = await service.extractText(imageUri);
+          console.log('OCR Result:', data);
+        } else {
+          // QR-only mode (shouldn't reach processing screen, but handle it)
+          console.log('QR-only mode');
+          return;
+        }
         
         // Initialize form state
         setMerchant(data.merchant?.name || '');
@@ -73,7 +93,7 @@ export default function ProcessingScreen() {
     }
     
     processImage();
-  }, [imageUri]);
+  }, [imageUri, qrDataParam, source]);
 
   const handleSave = async () => {
     if (!db) {
@@ -227,7 +247,17 @@ export default function ProcessingScreen() {
     return (
       <View style={styles.center}>
         <ActivityIndicator size="large" color="#0000ff" />
-        <Text style={styles.text}>Processing Receipt with GPT-4o...</Text>
+        <Text style={styles.text}>
+          {source === 'hybrid' 
+            ? 'Processing with QR-Enhanced OCR...' 
+            : 'Processing Receipt with GPT-4o...'
+          }
+        </Text>
+        {source === 'hybrid' && (
+          <Text style={[styles.text, { fontSize: 14, color: '#2C9364' }]}>
+            Using QR totals to validate line items ✓
+          </Text>
+        )}
       </View>
     );
   }
