@@ -46,8 +46,7 @@ export default function HomeScreen() {
         refreshControl={<RefreshControl refreshing={refreshing || loading} onRefresh={onRefresh} />}
     >
       <View style={styles.header}>
-        <Text style={styles.title}>Welcome to moneyCheck</Text>
-        <Text style={styles.subtitle}>Scan receipts and track your spending</Text>
+        <Text style={styles.title}>Home</Text>
       </View>
 
       <TouchableOpacity
@@ -117,13 +116,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: '700',
     color: '#37352F',
-    marginBottom: 6,
     letterSpacing: -0.5,
-  },
-  subtitle: {
-    fontSize: 15,
-    color: '#787774',
-    lineHeight: 22,
   },
   scanButton: {
     backgroundColor: '#37352F',

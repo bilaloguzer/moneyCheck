@@ -35,6 +35,10 @@ export default function SettingsScreen() {
 
   return (
     <ScrollView style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.title}>Settings</Text>
+      </View>
+
       {/* Account Section */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Account</Text>
@@ -88,6 +92,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F7F6F3',
+  },
+  header: {
+    padding: 24,
+    paddingTop: 60,
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E9E9E7',
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: '#37352F',
+    letterSpacing: -0.5,
   },
   section: {
     marginTop: 24,
