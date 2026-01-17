@@ -1,12 +1,51 @@
 // Settings screen - app settings, language, data management, export, account deletion
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Switch, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/contexts/AuthContext';
+import { useState, useEffect } from 'react';
+import { SupabasePriceService } from '@/lib/services/price';
 
 export default function SettingsScreen() {
   const router = useRouter();
   const { signOut, user } = useAuth();
+  const [sharePriceData, setSharePriceData] = useState(false);
+  const [loadingPreference, setLoadingPreference] = useState(true);
+
+  // Load user preference on mount
+  useEffect(() => {
+    loadUserPreference();
+  }, []);
+
+  const loadUserPreference = async () => {
+    try {
+      const preference = await SupabasePriceService.getUserPreference();
+      setSharePriceData(preference);
+    } catch (error) {
+      console.error('Error loading preference:', error);
+    } finally {
+      setLoadingPreference(false);
+    }
+  };
+
+  const handleTogglePriceSharing = async (value: boolean) => {
+    try {
+      setSharePriceData(value);
+      await SupabasePriceService.setUserPreference(value);
+      
+      if (value) {
+        Alert.alert(
+          'Price Sharing Enabled',
+          'Your anonymized price data will help others find better deals. Product names are hashed for privacy.',
+          [{ text: 'OK' }]
+        );
+      }
+    } catch (error: any) {
+      console.error('Error updating preference:', error);
+      setSharePriceData(!value); // Revert on error
+      Alert.alert('Error', error.message || 'Failed to update preference');
+    }
+  };
 
   const handleLogout = async () => {
     Alert.alert(
@@ -61,6 +100,38 @@ export default function SettingsScreen() {
           </View>
           <Ionicons name="chevron-forward" size={24} color="#E03E3E" />
         </TouchableOpacity>
+      </View>
+
+      {/* Privacy & Sharing Section */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Privacy & Sharing</Text>
+        <View style={styles.settingItem}>
+          <View style={styles.settingLeft}>
+            <Ionicons name="shield-checkmark" size={24} color="#2C9364" />
+            <View style={{ flex: 1 }}>
+              <Text style={styles.settingText}>Share Price Data</Text>
+              <Text style={styles.settingDescription}>
+                Help others find better deals by sharing anonymized prices
+              </Text>
+            </View>
+          </View>
+          {loadingPreference ? (
+            <ActivityIndicator size="small" color="#787774" />
+          ) : (
+            <Switch
+              value={sharePriceData}
+              onValueChange={handleTogglePriceSharing}
+              trackColor={{ false: '#E9E9E7', true: '#2C936440' }}
+              thumbColor={sharePriceData ? '#2C9364' : '#787774'}
+            />
+          )}
+        </View>
+        <View style={styles.privacyNote}>
+          <Ionicons name="information-circle-outline" size={16} color="#787774" />
+          <Text style={styles.privacyNoteText}>
+            Product names are hashed for privacy. No personal data is shared.
+          </Text>
+        </View>
       </View>
 
       <View style={styles.section}>
@@ -145,6 +216,26 @@ const styles = StyleSheet.create({
   settingValue: {
     fontSize: 15,
     color: '#787774',
+  },
+  settingDescription: {
+    fontSize: 12,
+    color: '#787774',
+    marginTop: 4,
+    lineHeight: 16,
+  },
+  privacyNote: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 8,
+    paddingHorizontal: 16,
+    paddingBottom: 16,
+    paddingTop: 8,
+  },
+  privacyNoteText: {
+    flex: 1,
+    fontSize: 11,
+    color: '#787774',
+    lineHeight: 16,
   },
   dangerItem: {
     borderBottomWidth: 0,

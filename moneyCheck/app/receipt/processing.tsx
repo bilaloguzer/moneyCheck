@@ -143,6 +143,14 @@ export default function ProcessingScreen() {
         
         await repository.create(receiptData as any); // Type cast as our Receipt type definition vs repo input might have slight drift, mostly safe
         
+        
+        // Upload price data in background (non-blocking)
+        // Note: We don't have receipt ID here, but we can still upload with merchant name
+        uploadPriceData(finalItems, merchant).catch(err => {
+            console.error('Price upload failed (non-blocking):', err);
+            // Don't show error to user - this is optional background task
+        });
+        
         // Navigate away immediately, don't show alert that can be dismissed
         Alert.alert('Success', 'Receipt saved successfully!');
         router.replace('/(tabs)/history');
@@ -151,6 +159,28 @@ export default function ProcessingScreen() {
         console.error('Save Error:', err);
         Alert.alert('Error', 'Failed to save receipt.');
         setSaving(false);
+    }
+  }
+;
+
+  // Background function to upload price data
+  const uploadPriceData = async (processedItems: any[], storeName: string) => {
+    try {
+      const { SupabasePriceService } = await import('@/lib/services/price');
+      
+      // Create a receipt-like object for upload
+      const receiptForUpload = {
+        merchantName: storeName,
+        items: processedItems,
+      } as any;
+      
+      // This respects user opt-in preference internally
+      await SupabasePriceService.uploadReceiptPrices(receiptForUpload);
+      
+      console.log('Price data uploaded successfully');
+    } catch (error) {
+      console.error('Error uploading price data:', error);
+      // Fail silently - this is optional
     }
   };
   
