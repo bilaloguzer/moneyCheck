@@ -105,13 +105,13 @@ export default function SettingsScreen() {
       {/* Privacy & Sharing Section */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Privacy & Sharing</Text>
-        <View style={styles.settingItem}>
-          <View style={styles.settingLeft}>
+        <View style={styles.toggleContainer}>
+          <View style={styles.toggleContent}>
             <Ionicons name="shield-checkmark" size={24} color="#2C9364" />
-            <View style={{ flex: 1 }}>
+            <View style={styles.toggleTextContainer}>
               <Text style={styles.settingText}>Share Price Data</Text>
               <Text style={styles.settingDescription}>
-                Help others find better deals by sharing anonymized prices
+                Help others find better deals
               </Text>
             </View>
           </View>
@@ -202,6 +202,25 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#E9E9E7',
+  },
+  toggleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E9E9E7',
+  },
+  toggleContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    flex: 1,
+    marginRight: 12,
+  },
+  toggleTextContainer: {
+    flex: 1,
   },
   settingLeft: {
     flexDirection: 'row',
