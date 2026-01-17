@@ -7,16 +7,21 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useCamera } from '@/hooks/useCamera';
 import type { FlashMode } from '@/lib/types/camera.types';
+import type { QRScanMode } from '@/lib/types';
+import { BarcodeScanningResult } from 'expo-camera';
 
 interface CameraViewProps {
   onCapture: (uri: string) => void;
+  onQRScanned?: (data: string) => void;
+  mode?: QRScanMode;
   ratio?: string;
 }
 
-export function CameraView({ onCapture, ratio = '16:9' }: CameraViewProps) {
+export function CameraView({ onCapture, onQRScanned, mode = 'photo', ratio = '16:9' }: CameraViewProps) {
   const cameraRef = useRef<CameraViewType | null>(null);
   const router = useRouter();
   const [isReady, setIsReady] = useState(false);
+  const [qrDetected, setQrDetected] = useState(false);
 
   const {
     hasPermission,
@@ -35,6 +40,20 @@ export function CameraView({ onCapture, ratio = '16:9' }: CameraViewProps) {
     initialFlashMode: 'off',
     initialZoom: 0,
   });
+
+  // Handle QR code scanning
+  const handleBarcodeScanned = (result: BarcodeScanningResult) => {
+    if (mode !== 'qr' || !onQRScanned) return;
+    
+    const qrData = result.data;
+    if (qrData && !qrDetected) {
+      setQrDetected(true);
+      onQRScanned(qrData);
+      
+      // Reset detection after 2 seconds to allow rescanning
+      setTimeout(() => setQrDetected(false), 2000);
+    }
+  };
 
   const handleZoomIn = () => {
     increaseZoom(0.05);
@@ -101,6 +120,10 @@ export function CameraView({ onCapture, ratio = '16:9' }: CameraViewProps) {
         flash={getExpoFlashMode()}
         onCameraReady={() => setIsReady(true)}
         zoom={zoom}
+        barcodeScannerSettings={mode === 'qr' ? {
+          barcodeTypes: ['qr'],
+        } : undefined}
+        onBarcodeScanned={mode === 'qr' ? handleBarcodeScanned : undefined}
       >
         {/* Top Controls Bar */}
         <View style={styles.topBar}>
@@ -124,14 +147,19 @@ export function CameraView({ onCapture, ratio = '16:9' }: CameraViewProps) {
         {/* Center Frame Overlay */}
         <View style={styles.overlay} pointerEvents="none">
           <View style={styles.frameContainer}>
-            <View style={styles.frame}>
-              <View style={[styles.corner, styles.cornerTopLeft]} />
-              <View style={[styles.corner, styles.cornerTopRight]} />
-              <View style={[styles.corner, styles.cornerBottomLeft]} />
-              <View style={[styles.corner, styles.cornerBottomRight]} />
+            <View style={[styles.frame, mode === 'qr' && styles.qrFrame]}>
+              <View style={[styles.corner, styles.cornerTopLeft, qrDetected && styles.cornerDetected]} />
+              <View style={[styles.corner, styles.cornerTopRight, qrDetected && styles.cornerDetected]} />
+              <View style={[styles.corner, styles.cornerBottomLeft, qrDetected && styles.cornerDetected]} />
+              <View style={[styles.corner, styles.cornerBottomRight, qrDetected && styles.cornerDetected]} />
             </View>
             <Text style={styles.instructionText}>
-              Position receipt within frame
+              {mode === 'qr' 
+                ? qrDetected 
+                  ? '✓ QR Code Detected!' 
+                  : 'Point camera at QR code'
+                : 'Position receipt within frame'
+              }
             </Text>
           </View>
         </View>
@@ -369,5 +397,14 @@ const styles = StyleSheet.create({
   },
   zoomButton: {
     padding: 4,
+  },
+  
+  // QR Mode Styles
+  qrFrame: {
+    width: 280,
+    height: 280,
+  },
+  cornerDetected: {
+    borderColor: '#2C9364', // Green when QR detected
   },
 });

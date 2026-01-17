@@ -4,10 +4,12 @@ import { useRouter } from 'expo-router';
 import { CameraView } from '@/components/camera/CameraView';
 import { Ionicons } from '@expo/vector-icons';
 import * as FileSystem from 'expo-file-system';
-import { showErrorToast } from '@/lib/utils/toast';
-import { hapticMedium, hapticError } from '@/lib/utils/haptics';
+import { showErrorToast, showSuccessToast } from '@/lib/utils/toast';
+import { hapticMedium, hapticError, hapticSuccess } from '@/lib/utils/haptics';
 import { ImagePreprocessingService } from '@/lib/services/image';
+import { QRCodeService } from '@/lib/services/qr';
 import { useState } from 'react';
+import type { QRScanMode } from '@/lib/types';
 
 // We need to dynamically import or handle the plugin safely because it might crash if not linked
 let DocumentScanner: any;
@@ -20,6 +22,7 @@ try {
 export default function ReceiptCaptureScreen() {
   const router = useRouter();
   const [isProcessing, setIsProcessing] = useState(false);
+  const [mode, setMode] = useState<QRScanMode>('photo'); // Toggle between 'photo' and 'qr'
 
   const handleCapture = async (uri: string) => {
     hapticMedium();
@@ -67,6 +70,50 @@ export default function ReceiptCaptureScreen() {
     }
   };
   
+  // Handle QR code scanning
+  const handleQRScanned = async (qrData: string) => {
+    hapticSuccess();
+    setIsProcessing(true);
+    
+    try {
+      console.log('Processing QR code...');
+      
+      // Process QR code through our service
+      const result = await QRCodeService.processQRCode(qrData);
+      
+      if (!result.success || !result.data) {
+        throw new Error(result.error || 'Failed to parse QR code');
+      }
+      
+      // Convert to OCR format for consistent processing
+      const ocrResult = QRCodeService.convertToOCRResult(result.data);
+      
+      console.log('QR parsed successfully:', {
+        merchant: ocrResult.merchant.name,
+        total: ocrResult.total.value,
+        source: 'qr',
+      });
+      
+      // Navigate to preview with QR data
+      // We'll pass the OCR result as JSON string since route params don't support objects
+      router.push({
+        pathname: '/receipt/preview',
+        params: {
+          qrData: JSON.stringify(ocrResult),
+          source: 'qr',
+        },
+      });
+      
+      showSuccessToast('QR code scanned successfully!');
+    } catch (error) {
+      console.error('QR processing error:', error);
+      hapticError();
+      showErrorToast(error instanceof Error ? error.message : 'Failed to process QR code');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+  
   const scanDocument = async () => {
     if (!DocumentScanner) {
         hapticError();
@@ -89,7 +136,32 @@ export default function ReceiptCaptureScreen() {
 
   return (
     <View style={styles.container}>
-      <CameraView onCapture={handleCapture} ratio="4:3" />
+      <CameraView 
+        onCapture={handleCapture} 
+        onQRScanned={handleQRScanned}
+        mode={mode}
+        ratio="4:3" 
+      />
+      
+      {/* Mode Toggle Button */}
+      {!isProcessing && (
+        <TouchableOpacity 
+          style={styles.modeToggleButton} 
+          onPress={() => {
+            setMode(mode === 'photo' ? 'qr' : 'photo');
+            hapticMedium();
+          }}
+        >
+          <Ionicons 
+            name={mode === 'photo' ? 'qr-code' : 'camera'} 
+            size={24} 
+            color="white" 
+          />
+          <Text style={styles.modeToggleText}>
+            {mode === 'photo' ? 'Scan QR' : 'Take Photo'}
+          </Text>
+        </TouchableOpacity>
+      )}
       
       {/* Processing Overlay */}
       {isProcessing && (
@@ -143,5 +215,25 @@ const styles = StyleSheet.create({
   scannerText: {
       color: 'white',
       fontWeight: '600'
-  }
+  },
+  modeToggleButton: {
+    position: 'absolute',
+    top: 60,
+    left: 20,
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderRadius: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    zIndex: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.3)',
+  },
+  modeToggleText: {
+    color: 'white',
+    fontWeight: '600',
+    fontSize: 14,
+  },
 });
