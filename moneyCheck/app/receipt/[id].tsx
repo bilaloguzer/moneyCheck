@@ -1,6 +1,6 @@
 // Receipt detail screen - view/edit receipt details with merchant, date, total, line items
 import { View, Text, StyleSheet, ScrollView, Image, ActivityIndicator, Alert, TouchableOpacity } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import { useDatabaseContext } from '@/contexts/DatabaseContext';
 import { ReceiptRepository } from '@/lib/database/repositories/ReceiptRepository';
 import { useEffect, useState } from 'react';
@@ -137,10 +137,12 @@ export default function ReceiptDetailScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <ScrollView style={styles.scrollView} contentContainerStyle={styles.content}>
-        {/* Header */}
-        <View style={styles.header}>
+    <>
+      <Stack.Screen options={{ headerShown: false }} />
+      <View style={styles.container}>
+        <ScrollView style={styles.scrollView} contentContainerStyle={styles.content}>
+          {/* Header */}
+          <View style={styles.header}>
           <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
             <Ionicons name="arrow-back" size={24} color="#37352F" />
           </TouchableOpacity>
@@ -315,7 +317,8 @@ export default function ReceiptDetailScreen() {
           </View>
         )}
       </ScrollView>
-    </View>
+      </View>
+    </>
   );
 }
 

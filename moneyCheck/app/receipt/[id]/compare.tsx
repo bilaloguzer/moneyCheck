@@ -1,6 +1,6 @@
 // Price comparison screen - shows price comparisons and savings opportunities for receipt items
 import { View, Text, StyleSheet, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import { useState, useEffect } from 'react';
 import { useDatabaseContext } from '@/contexts/DatabaseContext';
 import { ReceiptRepository } from '@/lib/database/repositories/ReceiptRepository';
@@ -111,13 +111,15 @@ export default function PriceComparisonScreen() {
   const rankLabel = marketComparison ? PriceComparisonService.getRankLabel(marketComparison.comparison.rank) : '';
   
   return (
-    <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.headerButton}>
-          <Ionicons name="arrow-back" size={24} color="#37352F" />
-        </TouchableOpacity>
-        <Text style={styles.title}>Price Comparison</Text>
+    <>
+      <Stack.Screen options={{ headerShown: false }} />
+      <View style={styles.container}>
+        {/* Header */}
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => router.back()} style={styles.headerButton}>
+            <Ionicons name="arrow-back" size={24} color="#37352F" />
+          </TouchableOpacity>
+          <Text style={styles.title}>Price Comparison</Text>
         <View style={styles.headerButton} />
       </View>
       
@@ -345,7 +347,8 @@ export default function PriceComparisonScreen() {
           </View>
         )}
       </ScrollView>
-    </View>
+      </View>
+    </>
   );
 }
 
