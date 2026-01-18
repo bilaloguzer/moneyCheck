@@ -1,6 +1,6 @@
 // Receipt capture screen - camera with edge detection, capture button, gallery import
 import { View, StyleSheet, Platform, TouchableOpacity, Text, ActivityIndicator } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, Stack } from 'expo-router';
 import { CameraView } from '@/components/camera/CameraView';
 import { Ionicons } from '@expo/vector-icons';
 import * as FileSystem from 'expo-file-system';
@@ -94,7 +94,9 @@ export default function ReceiptCaptureScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <>
+      <Stack.Screen options={{ headerShown: false }} />
+      <View style={styles.container}>
       <CameraView 
         onCapture={handleCapture} 
         onCancel={() => {

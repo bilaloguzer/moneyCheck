@@ -113,10 +113,6 @@ export function CameraView({ onCapture, onCancel, ratio = '16:9' }: CameraViewPr
             </TouchableOpacity>
           )}
           
-          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-            <Ionicons name="arrow-back" size={24} color="white" />
-          </TouchableOpacity>
-          
           <TouchableOpacity
             style={styles.flashButton}
             onPress={toggleFlash}
