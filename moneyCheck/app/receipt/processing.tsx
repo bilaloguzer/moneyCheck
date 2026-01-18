@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet, ScrollView, TextInput, Alert, TouchableOpacity, Keyboard, TouchableWithoutFeedback, KeyboardAvoidingView, Platform } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import { OCRService } from '@/lib/services/ocr/OCRService';
 import type { OCRResult, Receipt } from '@/lib/types';
 import { Button } from '@/components/common/Button';
@@ -43,17 +43,23 @@ export default function ProcessingScreen() {
         if (qrDetection.hasQR && qrDetection.qrData) {
           console.log('✓ QR Code detected! Using hybrid mode.');
           
-          // Try to parse QR data
-          const QRCodeService = (await import('@/lib/services/qr')).QRCodeService;
-          const qrResult = await QRCodeService.processQRCode(qrDetection.qrData);
-          
-          if (qrResult.success && qrResult.data) {
-            console.log('QR parsed successfully → Using QR-enhanced OCR');
-            // Use hybrid OCR with QR validation
-            data = await service.extractTextWithQRContext(imageUri, qrResult.data);
-          } else {
-            console.log('QR parse failed → Falling back to standard OCR');
-            // QR detection successful but parsing failed, use standard OCR
+          // Try to parse QR data with error handling
+          try {
+            const QRCodeService = (await import('@/lib/services/qr')).QRCodeService;
+            const qrResult = await QRCodeService.processQRCode(qrDetection.qrData);
+            
+            if (qrResult.success && qrResult.data) {
+              console.log('QR parsed successfully → Using QR-enhanced OCR');
+              // Use hybrid OCR with QR validation
+              data = await service.extractTextWithQRContext(imageUri, qrResult.data);
+            } else {
+              console.log('QR parse failed → Falling back to standard OCR');
+              // QR detection successful but parsing failed, use standard OCR
+              data = await service.extractText(imageUri);
+            }
+          } catch (qrError) {
+            console.log('QR parsing error, falling back to standard OCR:', qrError);
+            // If QR parsing fails, just use standard OCR
             data = await service.extractText(imageUri);
           }
         } else {
@@ -253,27 +259,31 @@ export default function ProcessingScreen() {
 
   if (loading) {
     return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color="#0000ff" />
-        <Text style={styles.text}>Processing Receipt...</Text>
-        <Text style={[styles.text, { fontSize: 13, color: '#787774', marginTop: 8 }]}>
-          Automatically detecting QR codes
-        </Text>
-      </View>
+      <>
+        <Stack.Screen options={{ headerShown: false }} />
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#37352F" />
+        </View>
+      </>
     );
   }
 
   if (error) {
     return (
-      <View style={styles.center}>
-        <Text style={styles.error}>Error: {error}</Text>
-        <Button title="Go Back" onPress={() => router.back()} />
-      </View>
+      <>
+        <Stack.Screen options={{ headerShown: false }} />
+        <View style={styles.center}>
+          <Text style={styles.error}>Error: {error}</Text>
+          <Button title="Go Back" onPress={() => router.back()} />
+        </View>
+      </>
     );
   }
 
   return (
-    <View style={styles.mainContainer}>
+    <>
+      <Stack.Screen options={{ headerShown: false }} />
+      <View style={styles.mainContainer}>
       <KeyboardAvoidingView 
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ flex: 1 }}
@@ -417,13 +427,40 @@ export default function ProcessingScreen() {
       </KeyboardAvoidingView>
     
     <View style={styles.footer}>
-        <Button 
-            title={saving ? "Saving..." : "Save Receipt"} 
-            onPress={handleSave} 
-            disabled={saving} 
-        />
+        <View style={styles.footerButtons}>
+          <TouchableOpacity 
+            onPress={() => router.replace('/(tabs)')} 
+            style={styles.footerActionButton}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="close-circle-outline" size={20} color="#E03E3E" />
+            <Text style={[styles.footerActionButtonText, { color: '#E03E3E' }]}>Cancel</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            onPress={() => router.back()} 
+            style={styles.footerActionButton}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="camera-outline" size={20} color="#37352F" />
+            <Text style={styles.footerActionButtonText}>Retake</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            onPress={handleSave}
+            style={[styles.footerActionButton, styles.saveButton]}
+            activeOpacity={0.7}
+            disabled={saving}
+          >
+            <Ionicons name="checkmark-circle" size={20} color="#FFFFFF" />
+            <Text style={[styles.footerActionButtonText, { color: '#FFFFFF' }]}>
+              {saving ? 'Saving...' : 'Save'}
+            </Text>
+          </TouchableOpacity>
+        </View>
     </View>
     </View>
+    </>
   );
 }
 
@@ -432,9 +469,36 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   content: { padding: 20, paddingBottom: 100 },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center', gap: 20, backgroundColor: '#F7F6F3' },
+  loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F7F6F3' },
+  actionButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 12,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E9E9E7',
+  },
+  actionButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#E9E9E7',
+    backgroundColor: '#FFFFFF',
+  },
+  actionButtonText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#37352F',
+  },
   text: { fontSize: 18, color: '#37352F' },
   error: { color: '#E03E3E', fontSize: 16, marginBottom: 20, textAlign: 'center' },
-  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, color: '#37352F' },
+  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, color: '#37352F', marginTop: 20 },
   subtitle: { fontSize: 18, fontWeight: '600', marginTop: 10, marginBottom: 10, color: '#37352F' },
   section: { backgroundColor: 'white', padding: 15, borderRadius: 8, marginBottom: 20, borderWidth: 1, borderColor: '#E9E9E7' },
   
@@ -476,6 +540,34 @@ const styles = StyleSheet.create({
     paddingBottom: 34, 
     backgroundColor: 'white', 
     borderTopWidth: 1, 
-    borderTopColor: '#E9E9E7' 
-  }
+    borderTopColor: '#E9E9E7',
+  },
+  footerButtons: {
+    flexDirection: 'row',
+    gap: 12,
+    alignItems: 'stretch',
+  },
+  footerActionButton: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#E9E9E7',
+    backgroundColor: '#FFFFFF',
+    gap: 4,
+    flex: 1,
+  },
+  footerActionButtonText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#37352F',
+  },
+  saveButton: {
+    backgroundColor: '#2C9364',
+    borderColor: '#2C9364',
+    flex: 2,
+  },
 });

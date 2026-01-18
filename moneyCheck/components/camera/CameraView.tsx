@@ -7,6 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useCamera } from '@/hooks/useCamera';
 import type { FlashMode } from '@/lib/types/camera.types';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface CameraViewProps {
   onCapture: (uri: string) => void;
@@ -18,6 +19,7 @@ export function CameraView({ onCapture, onCancel, ratio = '16:9' }: CameraViewPr
   const cameraRef = useRef<CameraViewType | null>(null);
   const router = useRouter();
   const [isReady, setIsReady] = useState(false);
+  const insets = useSafeAreaInsets();
 
   const {
     hasPermission,
@@ -105,16 +107,19 @@ export function CameraView({ onCapture, onCancel, ratio = '16:9' }: CameraViewPr
         zoom={zoom}
       >
         {/* Top Controls Bar */}
-        <View style={styles.topBar}>
+        <View style={[styles.topBar, { paddingTop: insets.top + 12 }]}>
           {/* Cancel Button */}
           {onCancel && (
-            <TouchableOpacity onPress={onCancel} style={styles.cancelButton}>
+            <TouchableOpacity 
+              onPress={onCancel} 
+              style={[styles.cancelButton, { top: insets.top + 12 }]}
+            >
               <Ionicons name="close" size={28} color="white" />
             </TouchableOpacity>
           )}
           
           <TouchableOpacity
-            style={styles.flashButton}
+            style={[styles.flashButton, { top: insets.top + 12 }]}
             onPress={toggleFlash}
             activeOpacity={0.7}
           >
@@ -228,7 +233,6 @@ const styles = StyleSheet.create({
     right: 0,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingTop: 48,
     paddingHorizontal: 20,
     paddingBottom: 16,
     backgroundColor: 'rgba(0, 0, 0, 0.3)',
@@ -385,7 +389,6 @@ const styles = StyleSheet.create({
     padding: 12,
     position: 'absolute',
     left: 20, // Align with paddingHorizontal of topBar
-    top: 48, // Align with paddingTop of topBar
     zIndex: 1,
     backgroundColor: 'rgba(55, 53, 47, 0.7)',
     borderRadius: 22,
@@ -396,6 +399,9 @@ const styles = StyleSheet.create({
   },
   flashButton: {
     padding: 12,
+    position: 'absolute',
+    right: 20, // Align with paddingHorizontal of topBar on the right
+    zIndex: 1,
     backgroundColor: 'rgba(55, 53, 47, 0.7)',
     borderRadius: 22,
     width: 44,

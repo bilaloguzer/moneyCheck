@@ -1,6 +1,6 @@
 // Image preview screen - preview captured image before processing, option to retake or proceed
 import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
-import { useRouter, useLocalSearchParams, useFocusEffect } from 'expo-router';
+import { useRouter, useLocalSearchParams, useFocusEffect, Stack } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Button } from '@/components/common/Button';
 import { useState, useCallback } from 'react';
@@ -62,7 +62,22 @@ export default function ImagePreviewScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <>
+      <Stack.Screen options={{ headerShown: false }} />
+      <View style={styles.container}>
+        {/* Custom Header */}
+        <View style={styles.header}>
+          <TouchableOpacity 
+            onPress={() => router.back()} 
+            style={styles.backButton}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="arrow-back" size={24} color="#37352F" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Preview</Text>
+          <View style={styles.headerRight} />
+        </View>
+
       <View style={styles.imageContainer}>
         {imageUri ? (
           <Image
@@ -137,6 +152,7 @@ export default function ImagePreviewScreen() {
         </View>
       </View>
     </View>
+    </>
   );
 }
 
@@ -158,6 +174,33 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#37352F',
     marginTop: 16,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 24,
+    paddingTop: 60,
+    paddingBottom: 16,
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E9E9E7',
+  },
+  backButton: {
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#37352F',
+    flex: 1,
+    textAlign: 'center',
+  },
+  headerRight: {
+    width: 40,
   },
   imageContainer: {
     flex: 1,

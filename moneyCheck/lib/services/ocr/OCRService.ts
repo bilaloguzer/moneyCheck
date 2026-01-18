@@ -99,18 +99,41 @@ export class OCRService {
       // 4. Parse OpenAI Response
       const content = data.choices?.[0]?.message?.content;
       if (!content) {
-        throw new Error('No text returned from OpenAI');
+        console.error('OpenAI API returned no content. Response:', JSON.stringify(data));
+        throw new Error('OpenAI returned empty response. Please check your API key and quota.');
       }
 
       const jsonString = this.cleanJsonString(content);
-      const parsedData = JSON.parse(jsonString);
+      
+      if (!jsonString || jsonString.trim().length === 0) {
+        console.error('Cleaned JSON string is empty. Original content:', content);
+        throw new Error('OpenAI returned invalid response format');
+      }
+      
+      let parsedData;
+      try {
+        parsedData = JSON.parse(jsonString);
+      } catch (parseError) {
+        console.error('JSON Parse Error. String to parse:', jsonString);
+        throw new Error(`Failed to parse OpenAI response: ${parseError instanceof Error ? parseError.message : 'Unknown error'}`);
+      }
 
       return this.mapResponseToOCRResult(parsedData, content);
 
     } catch (error) {
       console.error('OCR processing error:', error);
       if (axios.isAxiosError(error)) {
-        throw new Error(`OpenAI API request failed: ${error.response?.status} ${JSON.stringify(error.response?.data)}`);
+        const status = error.response?.status;
+        const statusText = error.response?.statusText;
+        const errorData = error.response?.data;
+        
+        if (status === 401) {
+          throw new Error('Invalid OpenAI API key. Please check your EXPO_PUBLIC_OPENAI_API_KEY in .env file.');
+        } else if (status === 429) {
+          throw new Error('OpenAI API rate limit exceeded or quota reached. Please check your API usage.');
+        }
+        
+        throw new Error(`OpenAI API error (${status} ${statusText}): ${JSON.stringify(errorData)}`);
       }
       throw error;
     }

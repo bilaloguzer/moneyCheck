@@ -25,6 +25,12 @@ export default function HomeScreen() {
     setRefreshing(false);
   }, [refetch]);
 
+  // Calculate total spending from all receipts
+  const totalSpending = useMemo(() => {
+    if (!receipts?.data) return 0;
+    return receipts.data.reduce((sum: number, receipt: Receipt) => sum + receipt.total, 0);
+  }, [receipts]);
+
   // Calculate stats from loaded receipts (Note: ideally should be a separate aggregated query)
   // For now, we will use the data we have, but "This Month" requires checking dates.
   // Since useReceiptList is paginated, this stat might be inaccurate if we only load 5.
@@ -64,10 +70,9 @@ export default function HomeScreen() {
             <Text style={styles.statValue}>{totalReceipts}</Text>
             <Text style={styles.statLabel}>Total Receipts</Text>
           </View>
-           {/* Placeholder for future specific stats */}
           <View style={styles.statCard}>
-            <Text style={styles.statValue}>-</Text>
-            <Text style={styles.statLabel}>Analytics Coming Soon</Text>
+            <Text style={styles.statValue}>₺{totalSpending.toFixed(2)}</Text>
+            <Text style={styles.statLabel}>Total Spending</Text>
           </View>
         </View>
       </View>
