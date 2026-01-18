@@ -5,7 +5,7 @@ import { CameraView } from '@/components/camera/CameraView';
 import { Ionicons } from '@expo/vector-icons';
 import * as FileSystem from 'expo-file-system';
 import { showErrorToast, showSuccessToast } from '@/lib/utils/toast';
-import { hapticMedium, hapticError, hapticSuccess } from '@/lib/utils/haptics';
+import { hapticMedium, hapticError, hapticSuccess, hapticLight } from '@/lib/utils/haptics';
 import { ImagePreprocessingService } from '@/lib/services/image';
 import { QRCodeService } from '@/lib/services/qr';
 import { useState } from 'react';
@@ -97,6 +97,10 @@ export default function ReceiptCaptureScreen() {
     <View style={styles.container}>
       <CameraView 
         onCapture={handleCapture} 
+        onCancel={() => {
+          hapticLight();
+          router.replace('/(tabs)');
+        }}
         ratio="4:3" 
       />
       

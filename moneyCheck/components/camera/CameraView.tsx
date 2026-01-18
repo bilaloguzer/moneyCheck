@@ -10,10 +10,11 @@ import type { FlashMode } from '@/lib/types/camera.types';
 
 interface CameraViewProps {
   onCapture: (uri: string) => void;
+  onCancel?: () => void;
   ratio?: string;
 }
 
-export function CameraView({ onCapture, ratio = '16:9' }: CameraViewProps) {
+export function CameraView({ onCapture, onCancel, ratio = '16:9' }: CameraViewProps) {
   const cameraRef = useRef<CameraViewType | null>(null);
   const router = useRouter();
   const [isReady, setIsReady] = useState(false);
@@ -105,16 +106,19 @@ export function CameraView({ onCapture, ratio = '16:9' }: CameraViewProps) {
       >
         {/* Top Controls Bar */}
         <View style={styles.topBar}>
-          <TouchableOpacity
-            style={styles.topButton}
-            onPress={() => router.back()}
-            activeOpacity={0.7}
-          >
-            <Ionicons name="close" size={28} color="#FFFFFF" />
+          {/* Cancel Button */}
+          {onCancel && (
+            <TouchableOpacity onPress={onCancel} style={styles.cancelButton}>
+              <Ionicons name="close" size={28} color="white" />
+            </TouchableOpacity>
+          )}
+          
+          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+            <Ionicons name="arrow-back" size={24} color="white" />
           </TouchableOpacity>
           
           <TouchableOpacity
-            style={styles.topButton}
+            style={styles.flashButton}
             onPress={toggleFlash}
             activeOpacity={0.7}
           >
@@ -233,7 +237,7 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
     backgroundColor: 'rgba(0, 0, 0, 0.3)',
   },
-  topButton: {
+  topButton: { // This style is no longer used for the top buttons, but kept for reference if needed elsewhere.
     width: 44,
     height: 44,
     borderRadius: 22,
@@ -369,6 +373,39 @@ const styles = StyleSheet.create({
   },
   zoomButton: {
     padding: 4,
+  },
+  
+  // Top Bar Buttons
+  backButton: {
+    padding: 12,
+    backgroundColor: 'rgba(55, 53, 47, 0.7)',
+    borderRadius: 22,
+    width: 44,
+    height: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  cancelButton: {
+    padding: 12,
+    position: 'absolute',
+    left: 20, // Align with paddingHorizontal of topBar
+    top: 48, // Align with paddingTop of topBar
+    zIndex: 1,
+    backgroundColor: 'rgba(55, 53, 47, 0.7)',
+    borderRadius: 22,
+    width: 44,
+    height: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  flashButton: {
+    padding: 12,
+    backgroundColor: 'rgba(55, 53, 47, 0.7)',
+    borderRadius: 22,
+    width: 44,
+    height: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   
   // QR Mode Styles
