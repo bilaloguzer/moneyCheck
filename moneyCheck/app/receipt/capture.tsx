@@ -133,7 +133,7 @@ export default function ReceiptCaptureScreen() {
         maxNumDocuments: 1
       });
       if (scannedImages && scannedImages.length > 0) {
-        handleCapture(scannedImages[0]);
+        handlePhotoCapture(scannedImages[0]);
       }
     } catch (error) {
         console.error('Document scanner error', error);
