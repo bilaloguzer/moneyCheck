@@ -113,14 +113,6 @@ export default function ReceiptCaptureScreen() {
           <Text style={styles.processingText}>Enhancing image...</Text>
         </View>
       )}
-      
-      {/* Optional: Add a floating button to trigger system document scanner if preferred */}
-      {DocumentScanner && !isProcessing && (
-        <TouchableOpacity style={styles.scannerButton} onPress={scanDocument}>
-          <Ionicons name="scan" size={24} color="white" />
-          <Text style={styles.scannerText}>Auto-Crop Scan</Text>
-        </TouchableOpacity>
-      )}
     </View>
     </>
   );
