@@ -73,6 +73,7 @@ export function CameraView({ onCapture, onQRScanned, mode = 'photo', ratio = '16
   const handleGalleryPick = async () => {
     const uri = await pickFromGallery();
     if (uri) {
+      // Gallery picks should always use photo mode, not QR mode
       onCapture(uri);
     }
   };

@@ -53,14 +53,17 @@ export default function ReceiptCaptureScreen() {
       });
 
       // Navigate to preview with preprocessed image
-      // If we have QR data (hybrid mode), include it
+      // If we have QR data (hybrid mode) AND we're in qr_scanned state, include it
+      // Otherwise treat as photo-only (handles gallery picks correctly)
+      const isHybridMode = qrData && hybridStep === 'qr_scanned';
+      
       router.push({
         pathname: '/receipt/preview',
         params: { 
           imageUri: result.uri,
           originalUri: result.originalUri,
-          qrData: qrData ? JSON.stringify(qrData) : undefined,
-          source: qrData ? 'hybrid' : 'photo',
+          qrData: isHybridMode ? JSON.stringify(qrData) : undefined,
+          source: isHybridMode ? 'hybrid' : 'photo',
         },
       });
     } catch (error) {
@@ -69,12 +72,14 @@ export default function ReceiptCaptureScreen() {
       showErrorToast('Failed to process image');
       
       // Fallback: navigate with original image
+      const isHybridMode = qrData && hybridStep === 'qr_scanned';
+      
       router.push({
         pathname: '/receipt/preview',
         params: { 
           imageUri: uri,
-          qrData: qrData ? JSON.stringify(qrData) : undefined,
-          source: qrData ? 'hybrid' : 'photo',
+          qrData: isHybridMode ? JSON.stringify(qrData) : undefined,
+          source: isHybridMode ? 'hybrid' : 'photo',
         },
       });
     } finally {
