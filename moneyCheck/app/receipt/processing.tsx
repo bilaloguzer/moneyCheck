@@ -12,8 +12,6 @@ import * as FileSystem from 'expo-file-system/legacy';
 export default function ProcessingScreen() {
   const params = useLocalSearchParams();
   const imageUri = params.imageUri as string;
-  const qrDataParam = params.qrData as string;
-  const source = (params.source as string) || 'photo';
   const router = useRouter();
   const { db } = useDatabaseContext();
   
@@ -30,31 +28,41 @@ export default function ProcessingScreen() {
 
   useEffect(() => {
     async function processImage() {
-      if (!imageUri && !qrDataParam) return;
+      if (!imageUri) return;
       
       try {
         const service = new OCRService();
         let data: OCRResult;
         
-        // Check if we have hybrid mode (both QR data and photo)
-        if (source === 'hybrid' && qrDataParam && imageUri) {
-          console.log('Using HYBRID mode: QR + Photo for enhanced accuracy');
-          const qrData = JSON.parse(qrDataParam);
+        console.log('Starting automatic QR detection...');
+        
+        // Step 1: Automatically detect QR code in image
+        const qrDetection = await service.detectAndExtractQR(imageUri);
+        
+        // Step 2: Process based on QR detection result
+        if (qrDetection.hasQR && qrDetection.qrData) {
+          console.log('✓ QR Code detected! Using hybrid mode.');
           
-          // Use QR-context-aware OCR
-          data = await service.extractTextWithQRContext(imageUri, qrData);
+          // Try to parse QR data
+          const QRCodeService = (await import('@/lib/services/qr')).QRCodeService;
+          const qrResult = await QRCodeService.processQRCode(qrDetection.qrData);
           
-          console.log('Hybrid OCR Result (QR-enhanced):', data);
-        } else if (imageUri) {
-          // Standard photo-only OCR
-          console.log('Using PHOTO-ONLY mode: Standard OCR');
-          data = await service.extractText(imageUri);
-          console.log('OCR Result:', data);
+          if (qrResult.success && qrResult.data) {
+            console.log('QR parsed successfully → Using QR-enhanced OCR');
+            // Use hybrid OCR with QR validation
+            data = await service.extractTextWithQRContext(imageUri, qrResult.data);
+          } else {
+            console.log('QR parse failed → Falling back to standard OCR');
+            // QR detection successful but parsing failed, use standard OCR
+            data = await service.extractText(imageUri);
+          }
         } else {
-          // QR-only mode (shouldn't reach processing screen, but handle it)
-          console.log('QR-only mode');
-          return;
+          console.log('No QR code detected → Using standard OCR');
+          // No QR detected, use standard photo OCR
+          data = await service.extractText(imageUri);
         }
+        
+        console.log('OCR processing complete');
         
         // Initialize form state
         setMerchant(data.merchant?.name || '');
@@ -93,7 +101,7 @@ export default function ProcessingScreen() {
     }
     
     processImage();
-  }, [imageUri, qrDataParam, source]);
+  }, [imageUri]);
 
   const handleSave = async () => {
     if (!db) {
@@ -247,17 +255,10 @@ export default function ProcessingScreen() {
     return (
       <View style={styles.center}>
         <ActivityIndicator size="large" color="#0000ff" />
-        <Text style={styles.text}>
-          {source === 'hybrid' 
-            ? 'Processing with QR-Enhanced OCR...' 
-            : 'Processing Receipt with GPT-4o...'
-          }
+        <Text style={styles.text}>Processing Receipt...</Text>
+        <Text style={[styles.text, { fontSize: 13, color: '#787774', marginTop: 8 }]}>
+          Automatically detecting QR codes
         </Text>
-        {source === 'hybrid' && (
-          <Text style={[styles.text, { fontSize: 14, color: '#2C9364' }]}>
-            Using QR totals to validate line items ✓
-          </Text>
-        )}
       </View>
     );
   }

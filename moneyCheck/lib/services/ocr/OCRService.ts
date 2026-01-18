@@ -117,6 +117,101 @@ export class OCRService {
   }
   
   /**
+   * Automatically detect and extract QR code from receipt image
+   * Uses GPT-4o Vision to read QR codes from static images
+   * Works for both camera captures and gallery uploads
+   */
+  async detectAndExtractQR(imagePath: string): Promise<{
+    hasQR: boolean;
+    qrData: string | null;
+  }> {
+    if (!OPENAI_API_KEY) {
+      console.warn('OpenAI API Key is missing.');
+      return { hasQR: false, qrData: null };
+    }
+
+    try {
+      // Convert image to base64
+      const responseImage = await fetch(imagePath);
+      const blob = await responseImage.blob();
+      const base64Image = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64 = reader.result as string;
+          resolve(base64.split(',')[1]);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+
+      const prompt = `
+        Analyze this receipt image carefully.
+        
+        Task: Detect if there is a QR code present in the image.
+        
+        If you find a QR code:
+        - Extract the complete text content from the QR code
+        - Return JSON: {"hasQR": true, "qrText": "the extracted text from QR"}
+        
+        If no QR code is present or you cannot read it:
+        - Return JSON: {"hasQR": false, "qrText": null}
+        
+        IMPORTANT: Only return the JSON object, no markdown formatting, no explanation.
+      `;
+
+      const payload = {
+        model: "gpt-4o",
+        messages: [
+          {
+            role: "user",
+            content: [
+              { type: "text", text: prompt },
+              {
+                type: "image_url",
+                image_url: {
+                  url: `data:image/jpeg;base64,${base64Image}`
+                }
+              }
+            ]
+          }
+        ],
+        max_tokens: 500,
+        response_format: { type: "json_object" }
+      };
+
+      const response = await axios.post(OPENAI_URL, payload, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${OPENAI_API_KEY}`
+        }
+      });
+
+      const content = response.data.choices?.[0]?.message?.content;
+      
+      if (!content) {
+        return { hasQR: false, qrData: null };
+      }
+
+      const result = JSON.parse(content);
+      
+      console.log('QR Detection Result:', {
+        hasQR: result.hasQR,
+        qrDataLength: result.qrText?.length || 0
+      });
+
+      return {
+        hasQR: result.hasQR === true,
+        qrData: result.qrText || null
+      };
+
+    } catch (error) {
+      console.error('QR detection error:', error);
+      // Don't fail the whole process if QR detection fails
+      return { hasQR: false, qrData: null };
+    }
+  }
+  
+  /**
    * Extract text from receipt image using QR code context as anchor data
    * This provides much better accuracy by using known totals to validate line items
    */
