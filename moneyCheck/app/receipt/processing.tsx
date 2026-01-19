@@ -304,6 +304,25 @@ export default function ProcessingScreen() {
   
   const updateItem = (index: number, field: string, value: string) => {
       const newItems = [...items];
+
+      // Prevent negative prices for unitPrice and discount fields
+      if (field === 'unitPrice' || field === 'discount') {
+          const numValue = parseFloat(value);
+          if (numValue < 0) {
+              return; // Don't update if negative
+          }
+
+          // Prevent discount from being greater than total price
+          if (field === 'discount') {
+              const qty = parseFloat(items[index].quantity) || 1;
+              const price = parseFloat(items[index].unitPrice) || 0;
+              const totalPrice = qty * price;
+              if (numValue > totalPrice) {
+                  return; // Don't update if discount exceeds total price
+              }
+          }
+      }
+
       newItems[index] = { ...newItems[index], [field]: value };
       setItems(newItems);
   };

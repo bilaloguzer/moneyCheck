@@ -1,5 +1,5 @@
 // Receipt detail screen - view/edit receipt details with merchant, date, total, line items
-import { View, Text, StyleSheet, ScrollView, Image, ActivityIndicator, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Image, ActivityIndicator, Alert, TouchableOpacity, Modal } from 'react-native';
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import { useDatabaseContext } from '@/contexts/DatabaseContext';
 import { ReceiptRepository } from '@/lib/database/repositories/ReceiptRepository';
@@ -21,6 +21,7 @@ export default function ReceiptDetailScreen() {
   const [receipt, setReceipt] = useState<Receipt | null>(null);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
+  const [isFullScreen, setIsFullScreen] = useState(false);
   const [categoryStats, setCategoryStats] = useState<{
     name: string;
     value: number;
@@ -160,7 +161,11 @@ export default function ReceiptDetailScreen() {
 
         {/* Receipt Image */}
         {receipt.imagePath ? (
-          <View style={styles.imageContainer}>
+          <TouchableOpacity
+            style={styles.imageContainer}
+            onPress={() => setIsFullScreen(true)}
+            activeOpacity={0.9}
+          >
             <Image
               source={{ uri: receipt.imagePath }}
               style={styles.image}
@@ -168,7 +173,7 @@ export default function ReceiptDetailScreen() {
               onError={(error) => console.log('Image load error:', error.nativeEvent.error)}
               onLoad={() => console.log('Image loaded successfully')}
             />
-          </View>
+          </TouchableOpacity>
         ) : (
           <View style={[styles.imageContainer, { justifyContent: 'center', alignItems: 'center' }]}>
             <Ionicons name="image-outline" size={48} color="#E9E9E7" />
@@ -324,6 +329,32 @@ export default function ReceiptDetailScreen() {
           </View>
         )}
       </ScrollView>
+
+      {/* Fullscreen Image Modal */}
+      <Modal
+        visible={isFullScreen}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setIsFullScreen(false)}
+      >
+        <TouchableOpacity
+          style={styles.fullscreenContainer}
+          activeOpacity={1}
+          onPress={() => setIsFullScreen(false)}
+        >
+          <Image
+            source={{ uri: receipt?.imagePath || '' }}
+            style={styles.fullscreenImage}
+            resizeMode="contain"
+          />
+          <TouchableOpacity
+            style={styles.closeButton}
+            onPress={() => setIsFullScreen(false)}
+          >
+            <Ionicons name="close" size={32} color="#FFFFFF" />
+          </TouchableOpacity>
+        </TouchableOpacity>
+      </Modal>
       </View>
     </>
   );
@@ -554,5 +585,23 @@ const styles = StyleSheet.create({
   confidenceText: {
     fontSize: 13,
     color: '#787774',
+  },
+  fullscreenContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.95)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  fullscreenImage: {
+    width: '100%',
+    height: '100%',
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 60,
+    right: 20,
+    padding: 8,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    borderRadius: 20,
   },
 });
