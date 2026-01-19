@@ -162,7 +162,12 @@
     "enhancingImage": "Görsel iyileştiriliyor...",
     "processingFailed": "Görsel işlenemedi",
     "scanFailed": "Belge taranamadı",
-    "scannerUnavailable": "Belge Tarayıcı modülü mevcut değil. Lütfen uygulamayı yeniden derleyin."
+    "scannerUnavailable": "Belge Tarayıcı modülü mevcut değil. Lütfen uygulamayı yeniden derleyin.",
+    "uploadPDF": "PDF Yükle",
+    "processingPDF": "PDF işleniyor...",
+    "pdfProcessingFailed": "PDF işlenemedi",
+    "pdfNoInvoiceData": "PDF'de fatura verisi bulunamadı. Lütfen geçerli bir e-arşiv faturası olduğundan emin olun.",
+    "pdfSelectionCancelled": "PDF seçimi iptal edildi"
   },
   "processing": {
     "editConfirm": "Düzenle ve Onayla",

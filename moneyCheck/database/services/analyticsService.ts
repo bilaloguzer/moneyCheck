@@ -15,19 +15,25 @@ import {
 export async function getCategorySpendingSummary(
   db: SQLite.SQLiteDatabase,
   startDate?: Date,
-  endDate?: Date
+  endDate?: Date,
+  locale: string = 'en'
 ): Promise<CategorySpendingSummary[]> {
+  const nameColumn = locale === 'tr' ? 'name_tr' : 'name_en';
+  const uncategorized = locale === 'tr' ? 'Kategorisiz' : 'Uncategorized';
+
   let sql = `
     SELECT
-      c.id as category_id,
-      c.name as category_name,
-      d.name as department_name,
+      COALESCE(sub.id, c.id, d.id) as category_id,
+      COALESCE(sub.${nameColumn}, c.${nameColumn}, d.${nameColumn}, '${uncategorized}') as category_name,
+      d.${nameColumn} as department_name,
+      COALESCE(sub.color_code, c.color_code, d.color_code) as color_code,
       SUM(li.total_price) as total_spent,
       COUNT(li.id) as item_count,
       AVG(li.total_price) as average_price
     FROM line_items li
+    LEFT JOIN subcategories sub ON li.subcategory_id = sub.id
     LEFT JOIN categories c ON li.category_id = c.id
-    LEFT JOIN departments d ON c.department_id = d.id
+    LEFT JOIN departments d ON li.department_id = d.id
     LEFT JOIN receipts r ON li.receipt_id = r.id
     WHERE 1=1
   `;
@@ -44,7 +50,7 @@ export async function getCategorySpendingSummary(
     params.push(endDate.toISOString());
   }
 
-  sql += ' GROUP BY c.id, c.name, d.name ORDER BY total_spent DESC';
+  sql += ` GROUP BY COALESCE(sub.id, c.id, d.id), COALESCE(sub.${nameColumn}, c.${nameColumn}, d.${nameColumn}, '${uncategorized}'), d.${nameColumn}, COALESCE(sub.color_code, c.color_code, d.color_code) ORDER BY total_spent DESC`;
 
   const rows = await db.getAllAsync<any>(sql, ...params);
 
@@ -52,6 +58,7 @@ export async function getCategorySpendingSummary(
     categoryId: row.category_id,
     categoryName: row.category_name ?? 'Uncategorized',
     departmentName: row.department_name,
+    colorCode: row.color_code,
     totalSpent: row.total_spent,
     itemCount: row.item_count,
     averagePrice: row.average_price,
@@ -64,7 +71,8 @@ export async function getCategorySpendingSummary(
 export async function getDateRangeSpendingSummary(
   db: SQLite.SQLiteDatabase,
   startDate: Date,
-  endDate: Date
+  endDate: Date,
+  locale: string = 'en'
 ): Promise<DateRangeSpendingSummary> {
   // Get overall totals
   const totalRow = await db.getFirstAsync<any>(
@@ -79,7 +87,7 @@ export async function getDateRangeSpendingSummary(
   );
 
   // Get category breakdowns
-  const categorySummaries = await getCategorySpendingSummary(db, startDate, endDate);
+  const categorySummaries = await getCategorySpendingSummary(db, startDate, endDate, locale);
 
   return {
     startDate,
@@ -165,17 +173,20 @@ export async function getTopSpendingItems(
   db: SQLite.SQLiteDatabase,
   limit: number = 10,
   startDate?: Date,
-  endDate?: Date
+  endDate?: Date,
+  locale: string = 'en'
 ): Promise<{
   name: string;
   totalSpent: number;
   purchaseCount: number;
   averagePrice: number;
 }[]> {
+  const nameColumn = locale === 'tr' ? 'name_tr' : 'name_en';
+
   let sql = `
     SELECT
       li.name,
-      c.name as category_name,
+      c.${nameColumn} as category_name,
       SUM(li.total_price) as total_spent,
       COUNT(li.id) as purchase_count,
       AVG(li.total_price) as average_price
@@ -197,7 +208,7 @@ export async function getTopSpendingItems(
     params.push(endDate.toISOString());
   }
 
-  sql += ' GROUP BY li.name, c.name ORDER BY total_spent DESC LIMIT ?';
+  sql += ` GROUP BY li.name, c.${nameColumn} ORDER BY total_spent DESC LIMIT ?`;
   params.push(limit);
 
   const rows = await db.getAllAsync<any>(sql, ...params);

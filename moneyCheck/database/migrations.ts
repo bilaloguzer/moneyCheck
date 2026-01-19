@@ -151,6 +151,131 @@ export const migrations: Migration[] = [
       DROP TABLE IF EXISTS subcategories;
       DROP TABLE IF EXISTS categories;
       DROP TABLE IF EXISTS departments;
+      DROP TRIGGER IF EXISTS update_departments_timestamp;
+      DROP TRIGGER IF EXISTS update_categories_timestamp;
+      DROP TRIGGER IF EXISTS update_subcategories_timestamp;
+      DROP TRIGGER IF EXISTS update_receipts_timestamp;
+      DROP TRIGGER IF EXISTS update_line_items_timestamp;
+    `,
+  },
+  {
+    version: 2,
+    name: '4_level_category_system',
+    up: `
+      -- Migration 002: 4-Level Turkish Market Category System
+      -- IMPORTANT: This will drop existing category tables
+      
+      -- Drop old tables
+      DROP TABLE IF EXISTS category_items;
+      DROP TABLE IF EXISTS subcategories;
+      DROP TABLE IF EXISTS categories;
+      DROP TABLE IF EXISTS departments;
+      
+      -- Create new 4-level schema
+      CREATE TABLE departments (
+        id INTEGER PRIMARY KEY,
+        name_tr TEXT NOT NULL,
+        name_en TEXT NOT NULL,
+        color_code TEXT NOT NULL,
+        icon TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      );
+      
+      CREATE TABLE categories (
+        id INTEGER PRIMARY KEY,
+        department_id INTEGER NOT NULL,
+        name_tr TEXT NOT NULL,
+        name_en TEXT NOT NULL,
+        color_code TEXT NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (department_id) REFERENCES departments(id) ON DELETE CASCADE
+      );
+      
+      CREATE TABLE subcategories (
+        id INTEGER PRIMARY KEY,
+        category_id INTEGER NOT NULL,
+        name_tr TEXT NOT NULL,
+        name_en TEXT NOT NULL,
+        color_code TEXT NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE
+      );
+      
+      CREATE TABLE item_groups (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        subcategory_id INTEGER NOT NULL,
+        name_tr TEXT NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (subcategory_id) REFERENCES subcategories(id) ON DELETE CASCADE
+      );
+      
+      -- Indexes
+      CREATE INDEX idx_categories_department ON categories(department_id);
+      CREATE INDEX idx_subcategories_category ON subcategories(category_id);
+      CREATE INDEX idx_item_groups_subcategory ON item_groups(subcategory_id);
+      CREATE INDEX idx_item_groups_name ON item_groups(name_tr);
+      
+      -- Add new columns to line_items table for 4-level category system
+      -- Use separate ALTER TABLE statements for compatibility
+      ALTER TABLE line_items ADD COLUMN department_id INTEGER;
+      ALTER TABLE line_items ADD COLUMN subcategory_id INTEGER;
+      ALTER TABLE line_items ADD COLUMN item_group_id INTEGER;
+      ALTER TABLE line_items ADD COLUMN category_confidence REAL;
+      
+      -- Add indexes for the new columns
+      CREATE INDEX IF NOT EXISTS idx_line_items_department_id ON line_items(department_id);
+      CREATE INDEX IF NOT EXISTS idx_line_items_subcategory_id ON line_items(subcategory_id);
+      CREATE INDEX IF NOT EXISTS idx_line_items_item_group_id ON line_items(item_group_id);
+      
+      -- NOTE: Data insertion is handled separately in database initialization
+      -- to avoid making the migration too large
+    `,
+    down: `
+      -- Rollback to old schema
+      DROP TABLE IF EXISTS item_groups;
+      DROP TABLE IF EXISTS subcategories;
+      DROP TABLE IF EXISTS categories;
+      DROP TABLE IF EXISTS departments;
+      
+      -- Recreate old schema
+      CREATE TABLE IF NOT EXISTS departments (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL UNIQUE,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      );
+
+      CREATE TABLE IF NOT EXISTS categories (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        department_id INTEGER,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (department_id) REFERENCES departments(id) ON DELETE SET NULL,
+        UNIQUE(name, department_id)
+      );
+
+      CREATE TABLE IF NOT EXISTS subcategories (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        category_id INTEGER NOT NULL,
+        type TEXT NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE,
+        UNIQUE(category_id, type)
+      );
+
+      CREATE TABLE IF NOT EXISTS category_items (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        category_id INTEGER,
+        subcategory_id INTEGER,
+        name TEXT NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE,
+        FOREIGN KEY (subcategory_id) REFERENCES subcategories(id) ON DELETE CASCADE,
+        UNIQUE(category_id, subcategory_id, name)
+      );
     `,
   },
 ];

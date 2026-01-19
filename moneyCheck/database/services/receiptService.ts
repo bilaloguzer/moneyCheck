@@ -63,15 +63,25 @@ export async function getReceiptById(
  */
 export async function getReceiptWithItems(
   db: SQLite.SQLiteDatabase,
-  id: number
+  id: number,
+  locale: string = 'en'
 ): Promise<ReceiptWithItems | null> {
   const receipt = await getReceiptById(db, id);
   if (!receipt) return null;
 
+  const nameColumn = locale === 'tr' ? 'name_tr' : 'name_en';
+
   const items = await db.getAllAsync<any>(
-    `SELECT li.*, c.name as category_name, c.department_id
+    `SELECT li.*,
+            d.${nameColumn} as department_name_full, d.color_code as department_color,
+            c.${nameColumn} as category_name_full, c.color_code as category_color,
+            sub.${nameColumn} as subcategory_name, sub.color_code as subcategory_color,
+            ig.name_tr as item_group_name
      FROM line_items li
+     LEFT JOIN departments d ON li.department_id = d.id
      LEFT JOIN categories c ON li.category_id = c.id
+     LEFT JOIN subcategories sub ON li.subcategory_id = sub.id
+     LEFT JOIN item_groups ig ON li.item_group_id = ig.id
      WHERE li.receipt_id = ?
      ORDER BY li.id`,
     id
@@ -320,14 +330,26 @@ function mapRowToLineItem(row: any): any {
     unitPrice: row.unit_price,
     totalPrice: row.total_price,
     categoryId: row.category_id,
+    // NEW: Category hierarchy from 4-level system
+    departmentId: row.department_id,
+    subcategoryId: row.subcategory_id,
+    itemGroupId: row.item_group_id,
     // Include category object with name if available
-    category: row.category_name ? { 
+    category: row.category_name_full ? {
       id: row.category_id,
-      name: row.category_name,
+      name: row.category_name_full,
       departmentId: row.department_id
     } : undefined,
     departmentName: row.department_name,
     subcategoryType: row.subcategory_type,
+    // NEW: Include color codes from 4-level system
+    departmentColor: row.department_color,
+    categoryColor: row.category_color,
+    subcategoryColor: row.subcategory_color,
+    subcategoryName: row.subcategory_name,
+    categoryNameFull: row.category_name_full,
+    departmentNameFull: row.department_name_full,
+    itemGroupName: row.item_group_name,
     discount: row.discount,
     taxAmount: row.tax_amount,
     notes: row.notes,

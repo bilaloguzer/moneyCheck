@@ -162,7 +162,12 @@
     "enhancingImage": "Enhancing image...",
     "processingFailed": "Failed to process image",
     "scanFailed": "Failed to scan document",
-    "scannerUnavailable": "Document Scanner module is not available. Please rebuild the app."
+    "scannerUnavailable": "Document Scanner module is not available. Please rebuild the app.",
+    "uploadPDF": "Upload PDF",
+    "processingPDF": "Processing PDF...",
+    "pdfProcessingFailed": "Failed to process PDF",
+    "pdfNoInvoiceData": "No invoice data found in PDF. Please ensure this is a valid e-arşiv invoice.",
+    "pdfSelectionCancelled": "PDF selection cancelled"
   },
   "processing": {
     "editConfirm": "Edit & Confirm",

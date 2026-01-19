@@ -3,41 +3,74 @@
  * Models for Receipt, LineItem, and Category
  */
 
-// ============================================================================
-// Category Types
-// ============================================================================
+/**
+ * Item Group - Level 4 (Turkish product names)
+ */
+export interface ItemGroup {
+  id?: number;
+  subcategoryId: number;
+  name_tr: string; // Turkish name for OCR matching
+  createdAt?: Date;
+}
 
 /**
- * Subcategory with specific type and items
+ * Subcategory - Level 3
  */
 export interface Subcategory {
+  id?: number;
+  categoryId: number;
+  name_tr: string;
+  name_en: string;
+  color_code: string;
+  itemGroups?: ItemGroup[];
+  createdAt?: Date;
+}
+
+/**
+ * Category - Level 2
+ */
+export interface Category {
+  id?: number;
+  departmentId: number;
+  name_tr: string;
+  name_en: string;
+  color_code: string;
+  subcategories?: Subcategory[];
+  createdAt?: Date;
+}
+
+/**
+ * Department - Level 1 (Top level)
+ */
+export interface Department {
+  id?: number; // Fixed IDs 1-14
+  name_tr: string;
+  name_en: string;
+  color_code: string;
+  icon: string;
+  categories?: Category[];
+  createdAt?: Date;
+}
+
+/**
+ * Legacy interfaces for backward compatibility
+ * @deprecated Use new 4-level types above
+ */
+export interface LegacySubcategory {
   type: string;
   items: string[];
 }
 
-/**
- * Category structure that can have either direct items or subcategories
- */
-export interface Category {
+export interface LegacyCategory {
   id?: number;
   name: string;
-  department?: number; // department ID
+  department?: number;
   items?: string[];
-  subcategories?: Subcategory[];
+  subcategories?: LegacySubcategory[];
   createdAt?: Date;
   updatedAt?: Date;
 }
 
-/**
- * Department containing multiple categories
- */
-export interface Department {
-  id?: number;
-  name: string;
-  categories: Category[];
-  createdAt?: Date;
-  updatedAt?: Date;
-}
 
 // ============================================================================
 // Receipt & LineItem Types
@@ -53,16 +86,30 @@ export interface LineItem {
   quantity: number;
   unitPrice: number;
   totalPrice: number;
+  
+  // Category hierarchy (new 4-level system)
+  departmentId?: number;
   categoryId?: number;
+  subcategoryId?: number;
+  itemGroupId?: number;
+  categoryConfidence?: number; // OCR match confidence (0.0-1.0)
+  
+  // Full category object (populated via JOIN)
   category?: Category;
+  
+  // Legacy fields (deprecated, maintained for backward compatibility)
+  /** @deprecated Use departmentId instead */
   departmentName?: string;
+  /** @deprecated Use subcategoryId instead */
   subcategoryType?: string;
+  
   discount?: number;
   taxAmount?: number;
   notes?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
+
 
 /**
  * Payment method types

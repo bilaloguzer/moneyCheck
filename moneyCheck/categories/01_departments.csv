@@ -1,0 +1,15 @@
+Department ID,Name (TR),Name (EN),Color,Icon
+1,Gıda ve İçecek (Food & Beverage),Food & Beverage,#2E7D32,🍎
+2,Ev ve Temizlik,Household & Cleaning,#0288D1,🧹
+3,Kişisel Bakım ve Kozmetik,Personal Care & Beauty,#AB47BC,💄
+4,Sağlık ve Eczane,Health & Pharmacy,#E91E63,💊
+5,Elektronik ve Teknoloji,Electronics & Technology,#2196F3,📱
+6,Giyim ve Moda,Clothing & Fashion,#FF6F61,👕
+7,Ev ve Yaşam,Home & Living,#795548,🏠
+8,Ulaşım ve Yakıt,Transportation & Fuel,#FF5722,🚗
+9,Eğlence ve Medya,Entertainment & Media,#9C27B0,🎮
+10,Spor ve Outdoor,Sports & Outdoors,#009688,⚽
+11,Eğitim ve Kırtasiye,Education & Stationery,#3F51B5,📚
+12,Hizmetler,Services,#607D8B,🛠️
+13,Evcil Hayvanlar,Pets,#8BC34A,🐾
+14,Diğer,Miscellaneous,#FFC107,📦

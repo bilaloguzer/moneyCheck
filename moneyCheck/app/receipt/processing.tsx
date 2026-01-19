@@ -4,18 +4,22 @@ import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import { OCRService } from '@/lib/services/ocr/OCRService';
 import type { OCRResult, Receipt } from '@/lib/types';
 import { Button } from '@/components/common/Button';
+import { CategoryDropdown } from '@/components/common/CategoryDropdown';
 import { useDatabaseContext } from '@/contexts/DatabaseContext';
 import { ReceiptRepository } from '@/lib/database/repositories/ReceiptRepository';
 import { Ionicons } from '@expo/vector-icons';
 import * as FileSystem from 'expo-file-system/legacy';
 import { useLocalization } from '@/contexts/LocalizationContext';
+import { getCategoryMatcher } from '@/lib/services/ocr/CategoryMatcher';
 
 export default function ProcessingScreen() {
   const params = useLocalSearchParams();
   const imageUri = params.imageUri as string;
+  const receiptDataParam = params.receiptData as string | undefined;
+  const source = params.source as string | undefined;
   const router = useRouter();
   const { db } = useDatabaseContext();
-  const { t } = useLocalization();
+  const { t, locale } = useLocalization();
   
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -30,47 +34,59 @@ export default function ProcessingScreen() {
 
   useEffect(() => {
     async function processImage() {
-      if (!imageUri) return;
-      
       try {
-        const service = new OCRService();
         let data: OCRResult;
         
-        console.log('Starting automatic QR detection...');
-        
-        // Step 1: Automatically detect QR code in image
-        const qrDetection = await service.detectAndExtractQR(imageUri);
-        
-        // Step 2: Process based on QR detection result
-        if (qrDetection.hasQR && qrDetection.qrData) {
-          console.log('✓ QR Code detected! Using hybrid mode.');
+        // Check if we have pre-extracted receipt data (from PDF or QR)
+        if (receiptDataParam) {
+          console.log('Using pre-extracted receipt data from:', source || 'unknown');
+          data = JSON.parse(receiptDataParam);
+          console.log('Parsed receipt data:', data);
+        } else if (!imageUri) {
+          // No image and no pre-extracted data
+          setError('No image or data provided');
+          setLoading(false);
+          return;
+        } else {
+          // Standard image OCR flow
+          const service = new OCRService();
           
-          // Try to parse QR data with error handling
-          try {
-            const QRCodeService = (await import('@/lib/services/qr')).QRCodeService;
-            const qrResult = await QRCodeService.processQRCode(qrDetection.qrData);
+          console.log('Starting automatic QR detection...');
+          
+          // Step 1: Automatically detect QR code in image
+          const qrDetection = await service.detectAndExtractQR(imageUri);
+          
+          // Step 2: Process based on QR detection result
+          if (qrDetection.hasQR && qrDetection.qrData) {
+            console.log('✓ QR Code detected! Using hybrid mode.');
             
-            if (qrResult.success && qrResult.data) {
-              console.log('QR parsed successfully → Using QR-enhanced OCR');
-              // Use hybrid OCR with QR validation
-              data = await service.extractTextWithQRContext(imageUri, qrResult.data);
-            } else {
-              console.log('QR parse failed → Falling back to standard OCR');
-              // QR detection successful but parsing failed, use standard OCR
+            // Try to parse QR data with error handling
+            try {
+              const QRCodeService = (await import('@/lib/services/qr')).QRCodeService;
+              const qrResult = await QRCodeService.processQRCode(qrDetection.qrData);
+              
+              if (qrResult.success && qrResult.data) {
+                console.log('QR parsed successfully → Using QR-enhanced OCR');
+                // Use hybrid OCR with QR validation
+                data = await service.extractTextWithQRContext(imageUri, qrResult.data);
+              } else {
+                console.log('QR parse failed → Falling back to standard OCR');
+                // QR detection successful but parsing failed, use standard OCR
+                data = await service.extractText(imageUri);
+              }
+            } catch (qrError) {
+              console.log('QR parsing error, falling back to standard OCR:', qrError);
+              // If QR parsing fails, just use standard OCR
               data = await service.extractText(imageUri);
             }
-          } catch (qrError) {
-            console.log('QR parsing error, falling back to standard OCR:', qrError);
-            // If QR parsing fails, just use standard OCR
+          } else {
+            console.log('No QR code detected → Using standard OCR');
+            // No QR detected, use standard photo OCR
             data = await service.extractText(imageUri);
           }
-        } else {
-          console.log('No QR code detected → Using standard OCR');
-          // No QR detected, use standard photo OCR
-          data = await service.extractText(imageUri);
         }
         
-        console.log('OCR processing complete');
+        console.log('Processing complete, initializing form...');
         
         // Initialize form state
         setMerchant(data.merchant?.name || '');
@@ -87,12 +103,63 @@ export default function ProcessingScreen() {
         const normalizedItems = (data.items || []).map(item => ({
             name: item.cleanName || item.name || '',
             category: item.category || 'other',
+            // Category hierarchy (will be set by matcher below)
+            departmentId: undefined as number | undefined,
+            categoryId: undefined as number | undefined,
+            subcategoryId: undefined as number | undefined,
+            itemGroupId: undefined as number | undefined,
+            departmentName: '',
+            categoryName: '',
+            subcategoryName: '',
+            itemGroupName: '',
             quantity: item.quantity?.toString() || '1',
-            unitPrice: item.unitPrice?.toString() || item.price?.toString() || '0',
+            unitPrice: item.price?.toString() || '0',  // Use 'price' from OCR, not 'unitPrice'
             discount: '0',
             unit: 'pcs', // Default unit
             rawName: item.name
         }));
+        
+        // Auto-match items to categories using CategoryMatcher
+        if (db) {
+          try {
+            console.log('Initializing CategoryMatcher for auto-categorization...');
+            const matcher = await getCategoryMatcher(db);
+            
+            // Match each item to a category
+            for (let i = 0; i < normalizedItems.length; i++) {
+              const item = normalizedItems[i];
+              const productName = item.name || item.rawName;
+              
+              if (productName) {
+                const match = matcher.findBestMatch(productName);
+                
+                if (match && match.confidence >= 0.5) {
+                  // Update item with matched category hierarchy
+                  normalizedItems[i] = {
+                    ...item,
+                    departmentId: match.itemGroup.department_id,
+                    categoryId: match.itemGroup.category_id,
+                    subcategoryId: match.itemGroup.subcategory_id,
+                    itemGroupId: match.itemGroup.id,
+                    departmentName: match.itemGroup.department_name,
+                    categoryName: match.itemGroup.category_name,
+                    subcategoryName: match.itemGroup.subcategory_name,
+                    itemGroupName: match.itemGroup.name_tr,
+                    category: match.itemGroup.subcategory_name, // Update legacy field
+                  };
+                  
+                  console.log(`✓ Matched "${productName}" -> ${match.itemGroup.department_name} / ${match.itemGroup.category_name} / ${match.itemGroup.subcategory_name} (confidence: ${(match.confidence * 100).toFixed(0)}%)`);
+                } else {
+                  console.log(`✗ No match for "${productName}" (${match ? 'low confidence: ' + (match.confidence * 100).toFixed(0) + '%' : 'no results'})`);
+                }
+              }
+            }
+          } catch (matchError) {
+            console.error('CategoryMatcher error (non-blocking):', matchError);
+            // Continue without auto-categorization if matcher fails
+          }
+        }
+        
         setItems(normalizedItems);
 
         // Store extracted total for validation
@@ -101,7 +168,7 @@ export default function ProcessingScreen() {
         }
 
       } catch (err) {
-        console.error('OCR Error:', err);
+        console.error('Processing Error:', err);
         setError(err instanceof Error ? err.message : 'Unknown error');
       } finally {
         setLoading(false);
@@ -109,7 +176,7 @@ export default function ProcessingScreen() {
     }
     
     processImage();
-  }, [imageUri]);
+  }, [imageUri, receiptDataParam, source]);
 
   const handleSave = async () => {
     if (!db) {
@@ -119,7 +186,7 @@ export default function ProcessingScreen() {
     
     setSaving(true);
     try {
-        const repository = new ReceiptRepository(db);
+        const repository = new ReceiptRepository(db, locale);
         
         // Copy image to permanent directory
         let permanentImagePath = imageUri;
@@ -150,6 +217,16 @@ export default function ProcessingScreen() {
         
         // Calculate totals
         let calculatedTotal = 0;
+        
+        // DEBUG: Log items before saving
+        console.log('💾 SAVING ITEMS:', items.map(item => ({
+            name: item.name,
+            departmentId: item.departmentId,
+            categoryId: item.categoryId,
+            subcategoryId: item.subcategoryId,
+            itemGroupId: item.itemGroupId
+        })));
+        
         const finalItems = items.map(item => {
             const qty = parseFloat(item.quantity) || 1;
             const price = parseFloat(item.unitPrice) || 0;
@@ -164,7 +241,12 @@ export default function ProcessingScreen() {
                 unitPrice: price,
                 price: price,
                 discount: discount,
-                category: item.category
+                category: item.category,
+                // Include category hierarchy
+                departmentId: item.departmentId,
+                categoryId: item.categoryId,
+                subcategoryId: item.subcategoryId,
+                itemGroupId: item.itemGroupId,
             };
         });
         
@@ -233,7 +315,22 @@ export default function ProcessingScreen() {
   };
   
   const addItem = () => {
-      setItems([...items, { name: '', category: 'other', quantity: '1', unitPrice: '0', discount: '0', unit: 'pcs' }]);
+      setItems([...items, { 
+          name: '', 
+          category: 'other', 
+          departmentId: undefined as number | undefined,
+          categoryId: undefined as number | undefined,
+          subcategoryId: undefined as number | undefined,
+          itemGroupId: undefined as number | undefined,
+          departmentName: '',
+          categoryName: '',
+          subcategoryName: '',
+          itemGroupName: '',
+          quantity: '1', 
+          unitPrice: '0', 
+          discount: '0', 
+          unit: 'pcs' 
+      }]);
   };
 
   const calculateTotal = () => {
@@ -378,13 +475,29 @@ export default function ProcessingScreen() {
                     </View>
 
                     <View style={styles.row}>
-                        <View style={styles.col}>
+                        <View style={{ flex: 1 }}>
                             <Text style={styles.labelSmall}>{t('processing.category')}</Text>
-                            <TextInput
-                                style={styles.input}
-                                value={item.category}
-                                onChangeText={(text) => updateItem(index, 'category', text)}
-                                placeholder={t('processing.categoryPlaceholder')}
+                            <CategoryDropdown
+                                value={{
+                                    departmentId: item.departmentId,
+                                    categoryId: item.categoryId,
+                                    subcategoryId: item.subcategoryId,
+                                }}
+                                onChange={(selection) => {
+                                    const newItems = [...items];
+                                    newItems[index] = {
+                                        ...newItems[index],
+                                        departmentId: selection.departmentId,
+                                        categoryId: selection.categoryId,
+                                        subcategoryId: selection.subcategoryId,
+                                        departmentName: selection.departmentName,
+                                        categoryName: selection.categoryName,
+                                        subcategoryName: selection.subcategoryName,
+                                        // Update legacy category field with subcategory name
+                                        category: selection.subcategoryName,
+                                    };
+                                    setItems(newItems);
+                                }}
                             />
                         </View>
                         <View style={styles.col}>

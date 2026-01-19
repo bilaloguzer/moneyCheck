@@ -17,7 +17,7 @@ export default function ReceiptDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const { db } = useDatabaseContext();
-  const { t } = useLocalization();
+  const { t, locale } = useLocalization();
   const [receipt, setReceipt] = useState<Receipt | null>(null);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
@@ -34,7 +34,7 @@ export default function ReceiptDetailScreen() {
     
     const loadReceipt = async () => {
       try {
-        const repository = new ReceiptRepository(db);
+        const repository = new ReceiptRepository(db, locale);
         const data = await repository.findById(parseInt(id));
         console.log('Loaded receipt:', data);
         console.log('Image path:', data?.imagePath);
@@ -42,29 +42,33 @@ export default function ReceiptDetailScreen() {
         
         // Calculate category statistics
         if (data?.items) {
-          const categoryMap = new Map<string, { total: number; count: number }>();
+          const categoryMap = new Map<string, { total: number; count: number; color: string }>();
           let totalAmount = 0;
-          
+
           data.items.forEach(item => {
             const category = item.category || 'other';
             const itemTotal = (item.quantity || 1) * (item.unitPrice || 0) - (item.discount || 0);
             totalAmount += itemTotal;
-            
-            const current = categoryMap.get(category) || { total: 0, count: 0 };
+
+            // Use color from database, fallback to getCategoryColor for legacy items
+            const color = (item as any).categoryColor || getCategoryColor(category);
+
+            const current = categoryMap.get(category) || { total: 0, count: 0, color };
             categoryMap.set(category, {
               total: current.total + itemTotal,
-              count: current.count + 1
+              count: current.count + 1,
+              color // Keep the first item's color for this category
             });
           });
-          
+
           const stats = Array.from(categoryMap.entries()).map(([category, data]) => ({
             name: getCategoryDisplayName(category),
             value: data.total,
-            color: getCategoryColor(category),
+            color: data.color,
             percentage: totalAmount > 0 ? (data.total / totalAmount) * 100 : 0,
             count: data.count
           })).sort((a, b) => b.value - a.value);
-          
+
           setCategoryStats(stats);
         }
       } catch (error) {
@@ -77,7 +81,7 @@ export default function ReceiptDetailScreen() {
     };
 
     loadReceipt();
-  }, [db, id]);
+  }, [db, id, locale]);
 
   const handleDelete = async () => {
     if (!db || !id) return;
@@ -94,7 +98,7 @@ export default function ReceiptDetailScreen() {
           onPress: async () => {
             setDeleting(true);
             try {
-              const repository = new ReceiptRepository(db);
+              const repository = new ReceiptRepository(db, locale);
               await repository.delete(parseInt(id));
               hapticSuccess();
               showSuccessToast(t('receipt.receiptDeleted'));
@@ -264,7 +268,8 @@ export default function ReceiptDetailScreen() {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>{t('receipt.items')} ({receipt.items.length})</Text>
             {receipt.items.map((item, index) => {
-              const categoryColor = getCategoryColor(item.category || 'other');
+              // Use color from database, fallback to getCategoryColor for legacy items
+              const categoryColor = (item as any).categoryColor || getCategoryColor(item.category || 'other');
               return (
                 <View
                   key={index}

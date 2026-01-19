@@ -22,8 +22,9 @@ export async function createLineItem(
     `INSERT INTO line_items (
       receipt_id, name, quantity, unit_price, total_price,
       category_id, department_name, subcategory_type,
+      department_id, subcategory_id, item_group_id, category_confidence,
       discount, tax_amount, notes
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     lineItem.receiptId, // Required field
     lineItem.name,
     lineItem.quantity,
@@ -32,10 +33,22 @@ export async function createLineItem(
     lineItem.categoryId ?? null,
     lineItem.departmentName ?? null,
     lineItem.subcategoryType ?? null,
+    lineItem.departmentId ?? null,  // <-- NEW: Should be populated
+    lineItem.subcategoryId ?? null,  // <-- NEW: Should be populated  
+    lineItem.itemGroupId ?? null,    // <-- NEW: Should be populated
+    lineItem.categoryConfidence ?? null,
     lineItem.discount ?? 0,
     lineItem.taxAmount ?? 0,
     lineItem.notes ?? null
   );
+  
+  console.log('🗂️ INSERT RESULT:', {
+    lastInsertRowId: result.lastInsertRowId,
+    departmentId: lineItem.departmentId,
+    subcategoryId: lineItem.subcategoryId,
+    itemGroupId: lineItem.itemGroupId
+  });
+
 
   return result.lastInsertRowId;
 }
@@ -67,9 +80,18 @@ export async function getLineItemById(
   id: number
 ): Promise<LineItem | null> {
   const row = await db.getFirstAsync<any>(
-    `SELECT li.*, c.name as category_name
+    `SELECT li.*, 
+            c.name_tr as category_name,
+            d.name_tr as department_name_full, d.color_code as department_color,
+            cat.name_tr as category_name_full, cat.color_code as category_color,
+            sub.name_tr as subcategory_name, sub.color_code as subcategory_color,
+            ig.name_tr as item_group_name
      FROM line_items li
      LEFT JOIN categories c ON li.category_id = c.id
+     LEFT JOIN departments d ON li.department_id = d.id
+     LEFT JOIN categories cat ON li.category_id = cat.id
+     LEFT JOIN subcategories sub ON li.subcategory_id = sub.id
+     LEFT JOIN item_groups ig ON li.item_group_id = ig.id
      WHERE li.id = ?`,
     id
   );
@@ -85,13 +107,31 @@ export async function getLineItemsByReceiptId(
   receiptId: number
 ): Promise<LineItem[]> {
   const rows = await db.getAllAsync<any>(
-    `SELECT li.*, c.name as category_name
+    `SELECT li.*,
+            d.name_tr as department_name_full, d.color_code as department_color,
+            c.name_tr as category_name_full, c.color_code as category_color,
+            sub.name_tr as subcategory_name, sub.color_code as subcategory_color,
+            ig.name_tr as item_group_name
      FROM line_items li
+     LEFT JOIN departments d ON li.department_id = d.id
      LEFT JOIN categories c ON li.category_id = c.id
+     LEFT JOIN subcategories sub ON li.subcategory_id = sub.id
+     LEFT JOIN item_groups ig ON li.item_group_id = ig.id
      WHERE li.receipt_id = ?
      ORDER BY li.id`,
     receiptId
   );
+
+  console.log('📖 RAW DATABASE ROWS:', rows.map((r: any) => ({
+    name: r.name,
+    department_id: r.department_id,
+    category_id: r.category_id,
+    subcategory_id: r.subcategory_id,
+    item_group_id: r.item_group_id,
+    department_color: r.department_color,
+    category_color: r.category_color,
+    subcategory_color: r.subcategory_color,
+  })));
 
   return rows.map(mapRowToLineItem);
 }
@@ -104,7 +144,7 @@ export async function getLineItems(
   filters?: LineItemQueryFilters
 ): Promise<LineItem[]> {
   let sql = `
-    SELECT li.*, c.name as category_name
+    SELECT li.*, c.name_tr as category_name
     FROM line_items li
     LEFT JOIN categories c ON li.category_id = c.id
     WHERE 1=1
@@ -282,13 +322,26 @@ function mapRowToLineItem(row: any): LineItem {
     unitPrice: row.unit_price,
     totalPrice: row.total_price,
     categoryId: row.category_id,
+    // NEW: Category hierarchy from 4-level system
+    departmentId: row.department_id,
+    subcategoryId: row.subcategory_id,
+    itemGroupId: row.item_group_id,
+    categoryConfidence: row.category_confidence,
     // Include category object with name if available
-    category: row.category_name ? { 
+    category: row.category_name_full ? {
       id: row.category_id,
-      name: row.category_name 
+      name: row.category_name_full
     } : undefined,
     departmentName: row.department_name,
     subcategoryType: row.subcategory_type,
+    // NEW: Include color codes from 4-level system
+    departmentColor: row.department_color,
+    categoryColor: row.category_color,
+    subcategoryColor: row.subcategory_color,
+    subcategoryName: row.subcategory_name,
+    categoryNameFull: row.category_name_full,
+    departmentNameFull: row.department_name_full,
+    itemGroupName: row.item_group_name,
     discount: row.discount,
     taxAmount: row.tax_amount,
     notes: row.notes,

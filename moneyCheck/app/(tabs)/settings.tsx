@@ -6,6 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useLocalization } from '@/contexts/LocalizationContext';
 import { useState, useEffect } from 'react';
 import { SupabasePriceService } from '@/lib/services/price';
+import { DatabaseDebug } from '@/components/admin/DatabaseDebug';
 
 export default function SettingsScreen() {
   const router = useRouter();
@@ -182,6 +183,11 @@ export default function SettingsScreen() {
           <Text style={styles.settingValue}>1.0.0</Text>
         </View>
       </View>
+
+      {/* Development - Database Debug */}
+      <View style={styles.debugSection}>
+        <DatabaseDebug />
+      </View>
     </ScrollView>
   );
 }
@@ -289,5 +295,10 @@ const styles = StyleSheet.create({
   dangerText: {
     color: '#E03E3E',
     fontWeight: '500',
+  },
+  debugSection: {
+    marginTop: 24,
+    paddingHorizontal: 16,
+    paddingBottom: 40,
   },
 });

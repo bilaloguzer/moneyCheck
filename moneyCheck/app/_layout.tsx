@@ -9,6 +9,8 @@ function RootLayoutNav() {
   const { session, loading } = useAuth();
   const segments = useSegments();
   const router = useRouter();
+  
+
 
   useEffect(() => {
     if (loading) return;

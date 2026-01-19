@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartSpend Color Palette Visual Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+            padding: 40px 20px;
+            background: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        h1 {
+            font-size: 32px;
+            margin-bottom: 12px;
+            color: #1a1a1a;
+        }
+        .subtitle {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 40px;
+        }
+        .department {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .dept-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .dept-icon {
+            font-size: 36px;
+        }
+        .dept-title {
+            flex: 1;
+        }
+        .dept-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        .dept-name-en {
+            font-size: 14px;
+            color: #666;
+            margin-top: 2px;
+        }
+        .dept-color-main {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            font-weight: 600;
+        }
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+        }
+        .category-card {
+            border-left: 4px solid;
+            padding: 12px;
+            background: #f9f9f9;
+            border-radius: 6px;
+        }
+        .category-name {
+            font-weight: 600;
+            font-size: 13px;
+            margin-bottom: 4px;
+            color: #1a1a1a;
+        }
+        .category-name-en {
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        .color-samples {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+        .color-dot {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            border: 1px solid rgba(0,0,0,0.1);
+            position: relative;
+            cursor: pointer;
+        }
+        .color-dot:hover::after {
+            content: attr(data-color);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            white-space: nowrap;
+            margin-bottom: 4px;
+            z-index: 10;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #2196F3;
+        }
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 SmartSpend Color Palette</h1>
+        <p class="subtitle">Visual reference for all department and category colors</p>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number">14</div>
+                <div class="stat-label">Departments</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">66</div>
+                <div class="stat-label">Categories</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">161</div>
+                <div class="stat-label">Subcategories</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">745</div>
+                <div class="stat-label">Item Groups</div>
+            </div>
+        </div>
+
+        <div id="departments"></div>
+    </div>
+
+    <script>
+        const data = {"departments": [{"id": 1, "name": "Gıda ve İçecek (Food & Beverage)", "name_en": "Food & Beverage", "color": "#2E7D32", "icon": "🍎", "categories": [{"id": 101, "name": "Meyve ve Sebze", "name_en": "Fruits & Vegetables", "color": "#4CAF50", "subcategories": [{"id": 10101, "name": "Taze Meyveler", "name_en": "Fresh Fruits", "color": "#66BB6A", "item_groups": ["Elma", "Portakal", "Muz", "Çilek", "Üzüm", "Kavun", "Karpuz", "Şeftali", "Kiraz", "Nar"]}, {"id": 10102, "name": "Taze Sebzeler", "name_en": "Fresh Vegetables", "color": "#81C784", "item_groups": ["Domates", "Salatalık", "Biber", "Patlıcan", "Kabak", "Havuç", "Soğan", "Sarımsak", "Patates", "Yeşillik"]}, {"id": 10103, "name": "Salata ve Yaprak", "name_en": "Salad & Greens", "color": "#A5D6A7", "item_groups": ["Marul", "Roka", "Maydanoz", "Dereotu", "Nane", "Fesleğen", "Ispanak", "Taze Soğan"]}]}, {"id": 102, "name": "Süt Ürünleri", "name_en": "Dairy Products", "color": "#8BC34A", "subcategories": [{"id": 10201, "name": "Süt", "name_en": "Milk", "color": "#9CCC65", "item_groups": ["Tam Yağlı Süt", "Az Yağlı Süt", "Yağsız Süt", "Laktozsuz Süt", "UHT Süt", "Günlük Süt"]}, {"id": 10202, "name": "Peynir", "name_en": "Cheese", "color": "#AED581", "item_groups": ["Beyaz Peynir", "Kaşar", "Tulum", "Lor", "Krem Peynir", "Çökelek", "Gravyer", "Ezine"]}, {"id": 10203, "name": "Yoğurt", "name_en": "Yogurt", "color": "#C5E1A5", "item_groups": ["Süzme Yoğurt", "Tam Yağlı Yoğurt", "Light Yoğurt", "Ayran", "Kefir", "Meyveli Yoğurt"]}, {"id": 10204, "name": "Tereyağı ve Krema", "name_en": "Butter & Cream", "color": "#DCEDC8", "item_groups": ["Tereyağı", "Margarin", "Krema", "Kaymak", "Labne"]}, {"id": 10205, "name": "Yumurta", "name_en": "Eggs", "color": "#E8F5E9", "item_groups": ["Tavuk Yumurtası", "Köy Yumurtası", "Organik Yumurta"]}]}, {"id": 103, "name": "Et ve Balık", "name_en": "Meat & Seafood", "color": "#1B5E20", "subcategories": [{"id": 10301, "name": "Tavuk ve Kanatlı", "name_en": "Poultry", "color": "#2E7D32", "item_groups": ["Tavuk Göğsü", "Tavuk Butu", "Tavuk Kanat", "Bütün Tavuk", "Hindi", "Tavuk Pirzola"]}, {"id": 10302, "name": "Kırmızı Et", "name_en": "Red Meat", "color": "#388E3C", "item_groups": ["Dana Eti", "Kuzu Eti", "Kıyma", "Biftek", "Kuşbaşı", "Kemikli Et", "Kavurmalık"]}, {"id": 10303, "name": "Balık ve Deniz Ürünleri", "name_en": "Fish & Seafood", "color": "#43A047", "item_groups": ["Hamsi", "Çupra", "Levrek", "Palamut", "Mezgit", "İstavrit", "Karides", "Midye", "Ahtapot"]}, {"id": 10304, "name": "Şarküteri", "name_en": "Deli Meats", "color": "#4CAF50", "item_groups": ["Salam", "Sucuk", "Sosis", "Jambon", "Pastırma", "Dilimlenmiş Et", "Kavurma", "Kangal Sucuk"]}]}, {"id": 104, "name": "Fırın ve Ekmek", "name_en": "Bakery & Bread", "color": "#CDC092", "subcategories": [{"id": 10401, "name": "Ekmek", "name_en": "Bread", "color": "#D4C9A1", "item_groups": ["Beyaz Ekmek", "Tam Buğday", "Çavdar Ekmeği", "Kepekli", "Bazlama", "Somun", "Sandviç Ekmeği"]}, {"id": 10402, "name": "Simit ve Poğaça", "name_en": "Simit & Pastries", "color": "#DDD2B0", "item_groups": ["Simit", "Açma", "Poğaça", "Çörek", "Ay Çöreği", "Tuzlu Kurabiye"]}, {"id": 10403, "name": "Pasta ve Tatlı", "name_en": "Cakes & Desserts", "color": "#E6DBBF", "item_groups": ["Kek", "Pasta", "Kurabiye", "Waffle", "Kruvasan", "Donut", "Muffin"]}]}, {"id": 105, "name": "Temel Gıda", "name_en": "Pantry Staples", "color": "#7CB342", "subcategories": [{"id": 10501, "name": "Un ve Tahıl", "name_en": "Flour & Grains", "color": "#8BC34A", "item_groups": ["Beyaz Un", "Tam Buğday Unu", "Mısır Unu", "Pirinç", "Bulgur", "Yulaf", "Kinoa", "Kuskus"]}, {"id": 10502, "name": "Makarna", "name_en": "Pasta", "color": "#9CCC65", "item_groups": ["Spagetti", "Fiyonk", "Burgu", "Penne", "Erişte", "Şehriye", "Arpa Şehriye"]}, {"id": 10503, "name": "Baklagiller", "name_en": "Legumes", "color": "#AED581", "item_groups": ["Nohut", "Kuru Fasulye", "Kırmızı Mercimek", "Yeşil Mercimek", "Barbunya", "Börülce"]}, {"id": 10504, "name": "Konserve", "name_en": "Canned Goods", "color": "#C5E1A5", "item_groups": ["Konserve Domates", "Konserve Fasulye", "Mısır", "Bezelye", "Ton Balığı", "Biber Salçası", "Domates Salçası"]}, {"id": 10505, "name": "Yağlar", "name_en": "Oils & Fats", "color": "#DCEDC8", "item_groups": ["Zeytinyağı", "Ayçiçek Yağı", "Mısırözü Yağı", "Tereyağı", "Margarin"]}, {"id": 10506, "name": "Baharatlar", "name_en": "Spices", "color": "#E8F5E9", "item_groups": ["Karabiber", "Pul Biber", "Kimyon", "Kekik", "Nane", "Tarçın", "Zencefil", "Karanfil"]}]}, {"id": 106, "name": "Atıştırmalık", "name_en": "Snacks", "color": "#00C853", "subcategories": [{"id": 10601, "name": "Cips ve Krakerler", "name_en": "Chips & Crackers", "color": "#00E676", "item_groups": ["Patates Cipsi", "Mısır Cipsi", "Kraker", "Grissini", "Galeta", "Gevrek"]}, {"id": 10602, "name": "Kuruyemiş", "name_en": "Nuts & Dried Fruits", "color": "#1DE9B6", "item_groups": ["Fındık", "Fıstık", "Badem", "Ceviz", "Ay Çekirdeği", "Kabak Çekirdeği", "Kuru Üzüm", "Kuru Kayısı"]}, {"id": 10603, "name": "Çikolata ve Şeker", "name_en": "Chocolate & Candy", "color": "#64FFDA", "item_groups": ["Çikolata", "Gofret", "Bar", "Şekerleme", "Sakız", "Lokum", "Helva"]}]}, {"id": 107, "name": "İçecekler", "name_en": "Beverages", "color": "#66BB6A", "subcategories": [{"id": 10701, "name": "Su", "name_en": "Water", "color": "#81C784", "item_groups": ["Doğal Su", "Maden Suyu", "Soda"]}, {"id": 10702, "name": "Meşrubat", "name_en": "Soft Drinks", "color": "#A5D6A7", "item_groups": ["Kola", "Gazoz", "Limonata", "Enerji İçeceği", "Soğuk Çay", "Ayran"]}, {"id": 10703, "name": "Meyve Suyu", "name_en": "Juice", "color": "#C8E6C9", "item_groups": ["Portakal Suyu", "Elma Suyu", "Vişne Suyu", "Şeftali Suyu", "Multivitamin", "Konsantre"]}, {"id": 10704, "name": "Kahve ve Çay", "name_en": "Coffee & Tea", "color": "#E8F5E9", "item_groups": ["Türk Kahvesi", "Filtre Kahve", "Neskafe", "Çay", "Bitki Çayı", "Yeşil Çay", "Meyve Çayı"]}]}, {"id": 108, "name": "Dondurulmuş Gıda", "name_en": "Frozen Foods", "color": "#69F0AE", "subcategories": [{"id": 10801, "name": "Dondurulmuş Sebze", "name_en": "Frozen Vegetables", "color": "#B9F6CA", "item_groups": ["Karışık Sebze", "Fasulye", "Bezelye", "Mısır", "Ispanak", "Patates"]}, {"id": 10802, "name": "Dondurulmuş Et", "name_en": "Frozen Meat", "color": "#CCFCD6", "item_groups": ["Köfte", "Nugget", "Balık", "Karides", "Et Ürünleri"]}, {"id": 10803, "name": "Hazır Yemek", "name_en": "Ready Meals", "color": "#E0FFE8", "item_groups": ["Pizza", "Börek", "Lahmacun", "Mantı", "Hamur İşleri"]}, {"id": 10804, "name": "Dondurma", "name_en": "Ice Cream", "color": "#F1FFF5", "item_groups": ["Kapaklı Dondurma", "Külah", "Çubuklu", "Aile Boy"]}]}, {"id": 109, "name": "Kahvaltılık", "name_en": "Breakfast Items", "color": "#558B2F", "subcategories": [{"id": 10901, "name": "Reçel ve Bal", "name_en": "Jams & Honey", "color": "#689F38", "item_groups": ["Çilek Reçeli", "Kayısı Reçeli", "Vişne Reçeli", "Portakal Marmelatı", "Süzme Bal", "Pekmez"]}, {"id": 10902, "name": "Çikolata ve Sürme", "name_en": "Spreads", "color": "#7CB342", "item_groups": ["Çikolatalı Fındık Kreması", "Fıstık Ezmesi", "Tahin", "Tahin Pekmez"]}, {"id": 10903, "name": "Tahıl ve Mısır Gevreği", "name_en": "Cereals", "color": "#8BC34A", "item_groups": ["Mısır Gevreği", "Müsli", "Granola", "Yulaf Ezmesi"]}, {"id": 10904, "name": "Zeytin ve Turşu", "name_en": "Olives & Pickles", "color": "#9CCC65", "item_groups": ["Siyah Zeytin", "Yeşil Zeytin", "Kırma Zeytin", "Karışık Turşu", "Salatalık Turşu", "Biber Turşu"]}]}]}, {"id": 2, "name": "Ev ve Temizlik", "name_en": "Household & Cleaning", "color": "#0288D1", "icon": "🧹", "categories": [{"id": 201, "name": "Çamaşır", "name_en": "Laundry", "color": "#03A9F4", "subcategories": [{"id": 20101, "name": "Deterjan", "name_en": "Detergent", "color": "#29B6F6", "item_groups": ["Toz Deterjan", "Sıvı Deterjan", "Kapsül Deterjan", "Çamaşır Suyu", "Leke Çıkarıcı"]}, {"id": 20102, "name": "Yumuşatıcı", "name_en": "Fabric Softener", "color": "#4FC3F7", "item_groups": ["Yumuşatıcı", "Kokulandırıcı", "Çamaşır Parfümü"]}]}, {"id": 202, "name": "Mutfak Temizliği", "name_en": "Kitchen Cleaning", "color": "#0277BD", "subcategories": [{"id": 20201, "name": "Bulaşık", "name_en": "Dishwashing", "color": "#0288D1", "item_groups": ["Bulaşık Deterjanı", "Bulaşık Makinesi Tableti", "Bulaşık Makinesi Tuzu", "Parlatıcı"]}, {"id": 20202, "name": "Sünger ve Bez", "name_en": "Sponges & Cloths", "color": "#039BE5", "item_groups": ["Bulaşık Süngeri", "Mikrofiber Bez", "Temizlik Bezi", "Ovma Teli"]}, {"id": 20203, "name": "Çöp Poşeti", "name_en": "Trash Bags", "color": "#03A9F4", "item_groups": ["Mutfak Çöp Poşeti", "Büyük Çöp Poşeti", "Kokulu Poşet", "Battal Boy"]}]}, {"id": 203, "name": "Banyo Temizliği", "name_en": "Bathroom Cleaning", "color": "#01579B", "subcategories": [{"id": 20301, "name": "Klozet ve Banyo", "name_en": "Toilet & Bathroom", "color": "#0277BD", "item_groups": ["Klozet Temizleyici", "Kireç Çözücü", "Banyo Spreyi", "Duş Kabini Temizleyici"]}, {"id": 20302, "name": "Dezenfektan", "name_en": "Disinfectant", "color": "#0288D1", "item_groups": ["Çamaşır Suyu", "Dezenfektan Sprey", "Yüzey Temizleyici"]}]}, {"id": 204, "name": "Genel Temizlik", "name_en": "General Cleaning", "color": "#0097A7", "subcategories": [{"id": 20401, "name": "Zemin Temizliği", "name_en": "Floor Cleaning", "color": "#00ACC1", "item_groups": ["Yüzey Temizleyici", "Parke Temizleyici", "Paspas", "Süpürge", "Elektrik Süpürgesi Torbası"]}, {"id": 20402, "name": "Cam Temizliği", "name_en": "Glass Cleaning", "color": "#00BCD4", "item_groups": ["Cam Temizleyici", "Cam Bezi", "Silecek"]}]}, {"id": 205, "name": "Kağıt Ürünler", "name_en": "Paper Products", "color": "#006064", "subcategories": [{"id": 20501, "name": "Tuvalet Kağıdı", "name_en": "Toilet Paper", "color": "#00838F", "item_groups": ["3 Katlı", "Jumbo", "Islak Tuvalet Kağıdı"]}, {"id": 20502, "name": "Havlu ve Peçete", "name_en": "Towels & Napkins", "color": "#0097A7", "item_groups": ["Kağıt Havlu", "Peçete", "Cep Mendili", "Kutu Mendil"]}]}]}, {"id": 3, "name": "Kişisel Bakım ve Kozmetik", "name_en": "Personal Care & Beauty", "color": "#AB47BC", "icon": "💄", "categories": [{"id": 301, "name": "Hijyen", "name_en": "Hygiene", "color": "#BA68C8", "subcategories": [{"id": 30101, "name": "Sabun", "name_en": "Soap", "color": "#CE93D8", "item_groups": ["Sıvı Sabun", "Katı Sabun", "Antibakteriyel Sabun", "El Dezenfektanı"]}, {"id": 30102, "name": "Duş", "name_en": "Shower", "color": "#E1BEE7", "item_groups": ["Duş Jeli", "Şampuan", "Saç Kremi", "Banyo Köpüğü"]}, {"id": 30103, "name": "Ağız Bakımı", "name_en": "Oral Care", "color": "#F3E5F5", "item_groups": ["Diş Macunu", "Diş Fırçası", "Ağız Gargarası", "Diş İpi"]}, {"id": 30104, "name": "Deodorant", "name_en": "Deodorant", "color": "#EDE7F6", "item_groups": ["Sprey Deodorant", "Roll-on", "Stick Deodorant", "Parfüm"]}]}, {"id": 302, "name": "Saç Bakımı", "name_en": "Hair Care", "color": "#9C27B0", "subcategories": [{"id": 30201, "name": "Şampuan ve Saç Kremi", "name_en": "Shampoo & Conditioner", "color": "#AB47BC", "item_groups": ["Şampuan", "Saç Kremi", "Saç Maskesi", "Kepek Şampuanı"]}, {"id": 30202, "name": "Saç Şekillendirme", "name_en": "Hair Styling", "color": "#BA68C8", "item_groups": ["Jöle", "Sprey", "Köpük", "Saç Kremi (Leave-in)", "Saç Boyası"]}]}, {"id": 303, "name": "Cilt Bakımı", "name_en": "Skin Care", "color": "#8E24AA", "subcategories": [{"id": 30301, "name": "Yüz Bakımı", "name_en": "Face Care", "color": "#9C27B0", "item_groups": ["Yüz Temizleyici", "Tonik", "Nemlendirici", "Maske", "Serum", "Göz Kremi"]}, {"id": 30302, "name": "Vücut Bakımı", "name_en": "Body Care", "color": "#AB47BC", "item_groups": ["Vücut Losyonu", "El Kremi", "Güneş Kremi", "Peeling"]}]}, {"id": 304, "name": "Makyaj", "name_en": "Makeup", "color": "#6A1B9A", "subcategories": [{"id": 30401, "name": "Yüz Makyajı", "name_en": "Face Makeup", "color": "#7B1FA2", "item_groups": ["Fondöten", "Pudra", "Allık", "Highlighter", "Kapatıcı"]}, {"id": 30402, "name": "Göz Makyajı", "name_en": "Eye Makeup", "color": "#8E24AA", "item_groups": ["Maskara", "Eyeliner", "Kaş Kalemi", "Far"]}, {"id": 30403, "name": "Dudak Makyajı", "name_en": "Lip Makeup", "color": "#9C27B0", "item_groups": ["Ruj", "Dudak Parlatıcı", "Dudak Kalemi", "Dudak Balsamı"]}]}, {"id": 305, "name": "Tıraş", "name_en": "Shaving", "color": "#4A148C", "subcategories": [{"id": 30501, "name": "Erkek Tıraş", "name_en": "Men's Shaving", "color": "#6A1B9A", "item_groups": ["Tıraş Makinesi", "Tıraş Bıçağı", "Tıraş Köpüğü", "Tıraş Kremi", "Traş Sonrası Losyon"]}, {"id": 30502, "name": "Kadın Epilasyon", "name_en": "Women's Hair Removal", "color": "#7B1FA2", "item_groups": ["Jilet", "Epilasyon Kremi", "Ağda", "Epilatör Yedek"]}]}, {"id": 306, "name": "Kadın Hijyen", "name_en": "Feminine Hygiene", "color": "#D500F9", "subcategories": [{"id": 30601, "name": "Ped ve Tampon", "name_en": "Pads & Tampons", "color": "#E040FB", "item_groups": ["Gündüz Pedi", "Gece Pedi", "Günlük Ped", "Tampon"]}]}]}, {"id": 4, "name": "Sağlık ve Eczane", "name_en": "Health & Pharmacy", "color": "#E91E63", "icon": "💊", "categories": [{"id": 401, "name": "İlaç ve Vitamin", "name_en": "Medicine & Vitamins", "color": "#EC407A", "subcategories": [{"id": 40101, "name": "Ağrı Kesici", "name_en": "Pain Relief", "color": "#F06292", "item_groups": ["Parasetamol", "İbuprofen", "Aspirin", "Ağrı Kesici Krem"]}, {"id": 40102, "name": "Vitamin ve Takviye", "name_en": "Vitamins & Supplements", "color": "#F48FB1", "item_groups": ["Multivitamin", "Vitamin C", "Vitamin D", "Omega 3", "Probiyotik", "Kalsiyum"]}, {"id": 40103, "name": "Soğuk Algınlığı", "name_en": "Cold & Flu", "color": "#F8BBD0", "item_groups": ["Nezle İlacı", "Öksürük Şurubu", "Boğaz Spreyi", "Pastil"]}]}, {"id": 402, "name": "İlk Yardım", "name_en": "First Aid", "color": "#C2185B", "subcategories": [{"id": 40201, "name": "Pansuman", "name_en": "Wound Care", "color": "#D81B60", "item_groups": ["Yara Bandı", "Gazlı Bez", "Pamuk", "Antiseptik", "Sargı Bezi"]}, {"id": 40202, "name": "Termometre ve Ölçüm", "name_en": "Thermometer & Measurement", "color": "#E91E63", "item_groups": ["Termometre", "Tansiyon Aleti", "Kan Şekeri Ölçer"]}]}, {"id": 403, "name": "Bebek ve Anne Sağlığı", "name_en": "Mother & Baby Health", "color": "#880E4F", "subcategories": [{"id": 40301, "name": "Bebek Bakımı", "name_en": "Baby Care", "color": "#AD1457", "item_groups": ["Bebek Bezi", "Islak Mendil", "Bebek Şampuanı", "Bebek Losyonu", "Pişik Kremi"]}, {"id": 40302, "name": "Bebek Maması", "name_en": "Baby Formula", "color": "#C2185B", "item_groups": ["Devam Sütü", "Kaşık Maması", "Ek Gıda"]}]}, {"id": 404, "name": "Medikal Cihaz", "name_en": "Medical Devices", "color": "#AD1457", "subcategories": [{"id": 40401, "name": "Tansiyon ve Ateş", "name_en": "BP & Temperature", "color": "#C2185B", "item_groups": ["Tansiyon Aleti", "Ateş Ölçer", "Nabız Ölçer"]}]}]}, {"id": 5, "name": "Elektronik ve Teknoloji", "name_en": "Electronics & Technology", "color": "#2196F3", "icon": "📱", "categories": [{"id": 501, "name": "Telefon ve Tablet", "name_en": "Phones & Tablets", "color": "#42A5F5", "subcategories": [{"id": 50101, "name": "Akıllı Telefon", "name_en": "Smartphones", "color": "#64B5F6", "item_groups": ["iPhone", "Samsung", "Xiaomi", "Huawei", "Oppo", "Realme"]}, {"id": 50102, "name": "Tablet", "name_en": "Tablets", "color": "#90CAF9", "item_groups": ["iPad", "Samsung Tablet", "Android Tablet"]}, {"id": 50103, "name": "Aksesuarlar", "name_en": "Accessories", "color": "#BBDEFB", "item_groups": ["Kılıf", "Ekran Koruyucu", "Şarj Aleti", "Kablosuz Şarj", "Kulaklık"]}]}, {"id": 502, "name": "Bilgisayar", "name_en": "Computers", "color": "#1976D2", "subcategories": [{"id": 50201, "name": "Dizüstü Bilgisayar", "name_en": "Laptops", "color": "#1E88E5", "item_groups": ["MacBook", "Windows Laptop", "Gaming Laptop", "Chromebook"]}, {"id": 50202, "name": "Masaüstü", "name_en": "Desktops", "color": "#2196F3", "item_groups": ["PC Kasası", "All-in-One", "Gaming PC"]}, {"id": 50203, "name": "Çevre Birimleri", "name_en": "Peripherals", "color": "#42A5F5", "item_groups": ["Klavye", "Mouse", "Monitör", "Yazıcı", "Tarayıcı", "Webcam", "Hoparlör"]}]}, {"id": 503, "name": "Ses ve Görüntü", "name_en": "Audio & Video", "color": "#0D47A1", "subcategories": [{"id": 50301, "name": "Kulaklık", "name_en": "Headphones", "color": "#1565C0", "item_groups": ["Kablosuz Kulaklık", "Kulak İçi", "Kulak Üstü", "Gaming Kulaklık"]}, {"id": 50302, "name": "Hoparlör", "name_en": "Speakers", "color": "#1976D2", "item_groups": ["Bluetooth Hoparlör", "Soundbar", "Ev Sinema Sistemi"]}, {"id": 50303, "name": "TV", "name_en": "Television", "color": "#1E88E5", "item_groups": ["Smart TV", "LED TV", "OLED TV", "TV Kutusu"]}]}, {"id": 504, "name": "Fotoğraf ve Kamera", "name_en": "Photography & Camera", "color": "#01579B", "subcategories": [{"id": 50401, "name": "Kamera", "name_en": "Cameras", "color": "#0277BD", "item_groups": ["DSLR", "Mirrorless", "Kompakt Kamera", "Action Kamera"]}, {"id": 50402, "name": "Objektif ve Aksesuar", "name_en": "Lens & Accessories", "color": "#0288D1", "item_groups": ["Objektif", "Tripod", "Flaş", "Hafıza Kartı", "Çanta"]}]}, {"id": 505, "name": "Oyun Konsolu", "name_en": "Gaming Consoles", "color": "#0091EA", "subcategories": [{"id": 50501, "name": "Konsollar", "name_en": "Consoles", "color": "#00B0FF", "item_groups": ["PlayStation", "Xbox", "Nintendo Switch"]}, {"id": 50502, "name": "Oyun ve Aksesuar", "name_en": "Games & Accessories", "color": "#40C4FF", "item_groups": ["Oyun", "Kol", "VR Gözlük", "Aksesuar"]}]}]}, {"id": 6, "name": "Giyim ve Moda", "name_en": "Clothing & Fashion", "color": "#FF6F61", "icon": "👕", "categories": [{"id": 601, "name": "Kadın Giyim", "name_en": "Women's Clothing", "color": "#FF8A80", "subcategories": [{"id": 60101, "name": "Üst Giyim", "name_en": "Tops", "color": "#FF9E80", "item_groups": ["Bluz", "Tişört", "Gömlek", "Kazak", "Hırka", "Sweatshirt"]}, {"id": 60102, "name": "Alt Giyim", "name_en": "Bottoms", "color": "#FFB199", "item_groups": ["Pantolon", "Jean", "Etek", "Şort", "Tayt"]}, {"id": 60103, "name": "Elbise", "name_en": "Dresses", "color": "#FFC5B3", "item_groups": ["Günlük Elbise", "Gece Elbisesi", "Yazlık Elbise"]}, {"id": 60104, "name": "Dış Giyim", "name_en": "Outerwear", "color": "#FFD8CC", "item_groups": ["Mont", "Kaban", "Ceket", "Trençkot", "Yelek"]}]}, {"id": 602, "name": "Erkek Giyim", "name_en": "Men's Clothing", "color": "#FF5252", "subcategories": [{"id": 60201, "name": "Üst Giyim", "name_en": "Tops", "color": "#FF6E6E", "item_groups": ["Tişört", "Gömlek", "Polo", "Kazak", "Sweatshirt"]}, {"id": 60202, "name": "Alt Giyim", "name_en": "Bottoms", "color": "#FF8A8A", "item_groups": ["Pantolon", "Jean", "Şort", "Eşofman Altı"]}, {"id": 60203, "name": "Dış Giyim", "name_en": "Outerwear", "color": "#FFA6A6", "item_groups": ["Mont", "Ceket", "Kaban", "Yelek"]}]}, {"id": 603, "name": "Çocuk Giyim", "name_en": "Kids' Clothing", "color": "#F44336", "subcategories": [{"id": 60301, "name": "Bebek Giyim", "name_en": "Baby Clothing", "color": "#E57373", "item_groups": ["Body", "Tulum", "Pijama", "Elbise", "Takım"]}, {"id": 60302, "name": "Çocuk Üst", "name_en": "Kids' Tops", "color": "#EF5350", "item_groups": ["Tişört", "Gömlek", "Kazak", "Sweatshirt"]}, {"id": 60303, "name": "Çocuk Alt", "name_en": "Kids' Bottoms", "color": "#F44336", "item_groups": ["Pantolon", "Etek", "Şort", "Tayt"]}]}, {"id": 604, "name": "Ayakkabı", "name_en": "Shoes", "color": "#D32F2F", "subcategories": [{"id": 60401, "name": "Spor Ayakkabı", "name_en": "Sneakers", "color": "#E53935", "item_groups": ["Koşu Ayakkabısı", "Günlük Spor", "Basketbol Ayakkabısı"]}, {"id": 60402, "name": "Klasik Ayakkabı", "name_en": "Dress Shoes", "color": "#F44336", "item_groups": ["Erkek Klasik", "Kadın Topuklu", "Babet", "Loafer"]}, {"id": 60403, "name": "Sandalet ve Terlik", "name_en": "Sandals & Slippers", "color": "#EF5350", "item_groups": ["Sandalet", "Terlik", "Ev Terliği", "Plaj Terliği"]}]}, {"id": 605, "name": "Aksesuar", "name_en": "Accessories", "color": "#C62828", "subcategories": [{"id": 60501, "name": "Çanta", "name_en": "Bags", "color": "#D32F2F", "item_groups": ["El Çantası", "Sırt Çantası", "Omuz Çantası", "Valiz", "Cüzdan"]}, {"id": 60502, "name": "Takı", "name_en": "Jewelry", "color": "#E53935", "item_groups": ["Kolye", "Küpe", "Bilezik", "Yüzük", "Saat"]}, {"id": 60503, "name": "Diğer Aksesuarlar", "name_en": "Other Accessories", "color": "#F44336", "item_groups": ["Atkı", "Bere", "Eldiven", "Şapka", "Kemer", "Güneş Gözlüğü"]}]}, {"id": 606, "name": "İç Giyim", "name_en": "Underwear", "color": "#B71C1C", "subcategories": [{"id": 60601, "name": "Kadın İç Giyim", "name_en": "Women's Underwear", "color": "#C62828", "item_groups": ["Sütyen", "Külot", "Pijama", "Gecelik", "Sabahlık"]}, {"id": 60602, "name": "Erkek İç Giyim", "name_en": "Men's Underwear", "color": "#D32F2F", "item_groups": ["Boxer", "Atlet", "Çorap", "Pijama"]}]}]}, {"id": 7, "name": "Ev ve Yaşam", "name_en": "Home & Living", "color": "#795548", "icon": "🏠", "categories": [{"id": 701, "name": "Mobilya", "name_en": "Furniture", "color": "#8D6E63", "subcategories": [{"id": 70101, "name": "Oturma Odası", "name_en": "Living Room", "color": "#A1887F", "item_groups": ["Koltuk", "Sehpa", "TV Ünitesi", "Raf", "Kitaplık"]}, {"id": 70102, "name": "Yatak Odası", "name_en": "Bedroom", "color": "#BCAAA4", "item_groups": ["Yatak", "Şifonyer", "Komodin", "Gardrop", "Makyaj Masası"]}, {"id": 70103, "name": "Mutfak", "name_en": "Kitchen", "color": "#D7CCC8", "item_groups": ["Masa", "Sandalye", "Dolap", "Raf Sistemi"]}]}, {"id": 702, "name": "Ev Tekstili", "name_en": "Home Textiles", "color": "#6D4C41", "subcategories": [{"id": 70201, "name": "Yatak Tekstili", "name_en": "Bedding", "color": "#795548", "item_groups": ["Nevresim", "Çarşaf", "Yastık", "Yatak Örtüsü", "Pike", "Battaniye"]}, {"id": 70202, "name": "Havlu", "name_en": "Towels", "color": "#8D6E63", "item_groups": ["Banyo Havlusu", "Plaj Havlusu", "El Havlusu", "Bornoz"]}, {"id": 70203, "name": "Perde", "name_en": "Curtains", "color": "#A1887F", "item_groups": ["Fon Perde", "Güneşlik", "Stor Perde", "Tül"]}]}, {"id": 703, "name": "Mutfak Eşyası", "name_en": "Kitchenware", "color": "#5D4037", "subcategories": [{"id": 70301, "name": "Tencere ve Tava", "name_en": "Pots & Pans", "color": "#6D4C41", "item_groups": ["Tencere Seti", "Tava", "Düdüklü Tencere", "Wok"]}, {"id": 70302, "name": "Sofra", "name_en": "Tableware", "color": "#795548", "item_groups": ["Yemek Takımı", "Çatal Bıçak Seti", "Bardak", "Fincan", "Kase"]}, {"id": 70303, "name": "Mutfak Gereçleri", "name_en": "Kitchen Tools", "color": "#8D6E63", "item_groups": ["Bıçak Seti", "Kesme Tahtası", "Kevgir", "Kaşık Seti", "Açacak"]}, {"id": 70304, "name": "Saklama Kabı", "name_en": "Storage Containers", "color": "#A1887F", "item_groups": ["Buzdolabı Kabı", "Cam Saklama", "Plastik Saklama", "Vakum Saklama"]}]}, {"id": 704, "name": "Ev Aletleri", "name_en": "Home Appliances", "color": "#4E342E", "subcategories": [{"id": 70401, "name": "Beyaz Eşya", "name_en": "Major Appliances", "color": "#5D4037", "item_groups": ["Buzdolabı", "Çamaşır Makinesi", "Bulaşık Makinesi", "Fırın", "Ocak"]}, {"id": 70402, "name": "Küçük Ev Aletleri", "name_en": "Small Appliances", "color": "#6D4C41", "item_groups": ["Blender", "Mikser", "Kahve Makinesi", "Tost Makinesi", "Ütü", "Süpürge"]}]}, {"id": 705, "name": "Dekorasyon", "name_en": "Decoration", "color": "#3E2723", "subcategories": [{"id": 70501, "name": "Aydınlatma", "name_en": "Lighting", "color": "#4E342E", "item_groups": ["Avize", "Masa Lambası", "Abajur", "LED Lamba", "Spot"]}, {"id": 70502, "name": "Dekor Ürünler", "name_en": "Decor Items", "color": "#5D4037", "item_groups": ["Vazo", "Çerçeve", "Duvar Saati", "Mum", "Heykel", "Halı"]}]}]}, {"id": 8, "name": "Ulaşım ve Yakıt", "name_en": "Transportation & Fuel", "color": "#FF5722", "icon": "🚗", "categories": [{"id": 801, "name": "Yakıt", "name_en": "Fuel", "color": "#FF6F43", "subcategories": [{"id": 80101, "name": "Motorlu Yakıt", "name_en": "Vehicle Fuel", "color": "#FF8A65", "item_groups": ["Benzin", "Motorin", "LPG"]}]}, {"id": 802, "name": "Toplu Taşıma", "name_en": "Public Transport", "color": "#F4511E", "subcategories": [{"id": 80201, "name": "Kartlar ve Biletler", "name_en": "Cards & Tickets", "color": "#FF5722", "item_groups": ["İstanbulkart", "Ankarakart", "Otobüs Bileti", "Metro", "Vapur"]}]}, {"id": 803, "name": "Otopark ve Geçiş", "name_en": "Parking & Tolls", "color": "#E64A19", "subcategories": [{"id": 80301, "name": "Otopark", "name_en": "Parking", "color": "#FF5722", "item_groups": ["Otopark Ücreti", "Vale"]}, {"id": 80302, "name": "Köprü ve Otoyol", "name_en": "Bridge & Highway", "color": "#FF6F43", "item_groups": ["HGS", "OGS", "Köprü Geçişi"]}]}, {"id": 804, "name": "Araç Bakım", "name_en": "Vehicle Maintenance", "color": "#D84315", "subcategories": [{"id": 80401, "name": "Servis ve Tamir", "name_en": "Service & Repair", "color": "#E64A19", "item_groups": ["Periyodik Bakım", "Yağ Değişimi", "Lastik Değişimi", "Fren Tamiri"]}, {"id": 80402, "name": "Yıkama", "name_en": "Car Wash", "color": "#F4511E", "item_groups": ["Oto Yıkama", "Detaylı Temizlik", "İç Temizlik"]}]}]}, {"id": 9, "name": "Eğlence ve Medya", "name_en": "Entertainment & Media", "color": "#9C27B0", "icon": "🎮", "categories": [{"id": 901, "name": "Dijital İçerik", "name_en": "Digital Content", "color": "#AB47BC", "subcategories": [{"id": 90101, "name": "Streaming", "name_en": "Streaming Services", "color": "#BA68C8", "item_groups": ["Netflix", "Disney+", "Amazon Prime", "Spotify", "Apple Music", "YouTube Premium"]}, {"id": 90102, "name": "Oyun", "name_en": "Gaming", "color": "#CE93D8", "item_groups": ["Steam", "PlayStation Store", "Xbox Store", "Mobile Oyun"]}]}, {"id": 902, "name": "Kitap ve Dergi", "name_en": "Books & Magazines", "color": "#8E24AA", "subcategories": [{"id": 90201, "name": "Kitap", "name_en": "Books", "color": "#9C27B0", "item_groups": ["Roman", "Kurgu Dışı", "Çocuk Kitabı", "E-Kitap"]}, {"id": 90202, "name": "Dergi ve Gazete", "name_en": "Magazines & Newspapers", "color": "#AB47BC", "item_groups": ["Dergi", "Gazete", "Dijital Abonelik"]}]}, {"id": 903, "name": "Sinema ve Tiyatro", "name_en": "Cinema & Theater", "color": "#7B1FA2", "subcategories": [{"id": 90301, "name": "Biletler", "name_en": "Tickets", "color": "#8E24AA", "item_groups": ["Sinema Bileti", "Tiyatro Bileti", "Konser Bileti", "Stand-up"]}]}, {"id": 904, "name": "Hobi", "name_en": "Hobbies", "color": "#6A1B9A", "subcategories": [{"id": 90401, "name": "Sanat Malzemeleri", "name_en": "Art Supplies", "color": "#7B1FA2", "item_groups": ["Boya", "Fırça", "Tuval", "Kalem Seti", "Eskiz Defteri"]}, {"id": 90402, "name": "Müzik Aletleri", "name_en": "Musical Instruments", "color": "#8E24AA", "item_groups": ["Gitar", "Piyano", "Bağlama", "Ud", "Aksesuarlar"]}]}]}, {"id": 10, "name": "Spor ve Outdoor", "name_en": "Sports & Outdoors", "color": "#009688", "icon": "⚽", "categories": [{"id": 1001, "name": "Spor Giyim", "name_en": "Sportswear", "color": "#26A69A", "subcategories": [{"id": 100101, "name": "Kıyafetler", "name_en": "Clothing", "color": "#4DB6AC", "item_groups": ["Tişört", "Şort", "Tayt", "Eşofman", "Koşu Forması"]}, {"id": 100102, "name": "Ayakkabı", "name_en": "Footwear", "color": "#80CBC4", "item_groups": ["Koşu Ayakkabısı", "Basketbol Ayakkabısı", "Futbol Krampon", "Tenis Ayakkabısı"]}]}, {"id": 1002, "name": "Spor Ekipmanı", "name_en": "Sports Equipment", "color": "#00897B", "subcategories": [{"id": 100201, "name": "Fitness", "name_en": "Fitness", "color": "#009688", "item_groups": ["Dambıl", "Yoga Matı", "Pilates Topu", "Direnç Bandı", "Atlama İpi"]}, {"id": 100202, "name": "Takım Sporları", "name_en": "Team Sports", "color": "#26A69A", "item_groups": ["Futbol Topu", "Basketbol Topu", "Voleybol Topu"]}, {"id": 100203, "name": "Outdoor", "name_en": "Outdoor", "color": "#4DB6AC", "item_groups": ["Çadır", "Uyku Tulumu", "Kamp Malzemeleri", "Bisiklet", "Kaykay"]}]}, {"id": 1003, "name": "Spor Salonları", "name_en": "Gyms", "color": "#00796B", "subcategories": [{"id": 100301, "name": "Üyelik", "name_en": "Membership", "color": "#00897B", "item_groups": ["Fitness Üyeliği", "Yüzme Üyeliği", "Grup Dersleri"]}]}]}, {"id": 11, "name": "Eğitim ve Kırtasiye", "name_en": "Education & Stationery", "color": "#3F51B5", "icon": "📚", "categories": [{"id": 1101, "name": "Kırtasiye", "name_en": "Stationery", "color": "#5C6BC0", "subcategories": [{"id": 110101, "name": "Yazı Gereçleri", "name_en": "Writing Supplies", "color": "#7986CB", "item_groups": ["Kalem", "Tükenmez", "Kurşun Kalem", "Silgi", "Kalemtıraş", "Fosforlu Kalem"]}, {"id": 110102, "name": "Defter ve Ajanda", "name_en": "Notebooks & Planners", "color": "#9FA8DA", "item_groups": ["Defter", "Ajanda", "Not Defteri", "Blok Not"]}, {"id": 110103, "name": "Dosyalama", "name_en": "Filing", "color": "#C5CAE9", "item_groups": ["Klasör", "Dosya", "Poşet Dosya", "Zımba", "Delgeç"]}]}, {"id": 1102, "name": "Okul Malzemeleri", "name_en": "School Supplies", "color": "#303F9F", "subcategories": [{"id": 110201, "name": "Çanta", "name_en": "Bags", "color": "#3949AB", "item_groups": ["Okul Çantası", "Sırt Çantası", "Beslenme Çantası"]}, {"id": 110202, "name": "Sanat Malzemeleri", "name_en": "Art Supplies", "color": "#3F51B5", "item_groups": ["Boya Kalemi", "Pastel", "Suluboya", "Makas", "Yapıştırıcı"]}]}, {"id": 1103, "name": "Eğitim Hizmetleri", "name_en": "Educational Services", "color": "#283593", "subcategories": [{"id": 110301, "name": "Kurslar", "name_en": "Courses", "color": "#303F9F", "item_groups": ["Dil Kursu", "Dersane", "Online Eğitim", "Sertifika Programı"]}]}]}, {"id": 12, "name": "Hizmetler", "name_en": "Services", "color": "#607D8B", "icon": "🛠️", "categories": [{"id": 1201, "name": "Faturalar", "name_en": "Utilities", "color": "#78909C", "subcategories": [{"id": 120101, "name": "Elektrik ve Doğalgaz", "name_en": "Electricity & Gas", "color": "#90A4AE", "item_groups": ["Elektrik Faturası", "Doğalgaz Faturası"]}, {"id": 120102, "name": "Su", "name_en": "Water", "color": "#B0BEC5", "item_groups": ["Su Faturası"]}, {"id": 120103, "name": "İletişim", "name_en": "Communication", "color": "#CFD8DC", "item_groups": ["Telefon Faturası", "İnternet Faturası", "Mobil Hat"]}]}, {"id": 1202, "name": "Profesyonel Hizmetler", "name_en": "Professional Services", "color": "#546E7A", "subcategories": [{"id": 120201, "name": "Hukuki", "name_en": "Legal", "color": "#607D8B", "item_groups": ["Avukat", "Noter", "Danışmanlık"]}, {"id": 120202, "name": "Mali", "name_en": "Financial", "color": "#78909C", "item_groups": ["Muhasebe", "Vergi Danışmanlığı"]}]}, {"id": 1203, "name": "Ev Hizmetleri", "name_en": "Home Services", "color": "#455A64", "subcategories": [{"id": 120301, "name": "Tamir ve Tadilat", "name_en": "Repair & Renovation", "color": "#546E7A", "item_groups": ["Elektrikçi", "Tesisatçı", "Boyacı", "Marangoz"]}, {"id": 120302, "name": "Temizlik", "name_en": "Cleaning", "color": "#607D8B", "item_groups": ["Ev Temizliği", "Halı Yıkama", "Koltuk Yıkama"]}]}, {"id": 1204, "name": "Güzellik ve Bakım", "name_en": "Beauty & Care", "color": "#37474F", "subcategories": [{"id": 120401, "name": "Kuaför", "name_en": "Hairdresser", "color": "#455A64", "item_groups": ["Kadın Kuaförü", "Erkek Berberi", "Saç Boyama", "Saç Bakımı"]}, {"id": 120402, "name": "Estetik", "name_en": "Aesthetics", "color": "#546E7A", "item_groups": ["Manikür", "Pedikür", "Kaş Dizaynı", "Cilt Bakımı", "Masaj"]}]}]}, {"id": 13, "name": "Evcil Hayvanlar", "name_en": "Pets", "color": "#8BC34A", "icon": "🐾", "categories": [{"id": 1301, "name": "Kedi", "name_en": "Cats", "color": "#9CCC65", "subcategories": [{"id": 130101, "name": "Mama", "name_en": "Food", "color": "#AED581", "item_groups": ["Kuru Mama", "Yaş Mama", "Ödül Maması"]}, {"id": 130102, "name": "Kum ve Hijyen", "name_en": "Litter & Hygiene", "color": "#C5E1A5", "item_groups": ["Kedi Kumu", "Kedi Tuvaleti", "Koku Giderici"]}, {"id": 130103, "name": "Aksesuarlar", "name_en": "Accessories", "color": "#DCEDC8", "item_groups": ["Kedi Evi", "Tırmalama", "Oyuncak", "Mama Kabı"]}]}, {"id": 1302, "name": "Köpek", "name_en": "Dogs", "color": "#7CB342", "subcategories": [{"id": 130201, "name": "Mama", "name_en": "Food", "color": "#8BC34A", "item_groups": ["Kuru Mama", "Yaş Mama", "Ödül Maması", "Kemik"]}, {"id": 130202, "name": "Aksesuar", "name_en": "Accessories", "color": "#9CCC65", "item_groups": ["Tasma", "Gezdirme Kayışı", "Köpek Evi", "Oyuncak", "Mama Kabı"]}, {"id": 130203, "name": "Hijyen", "name_en": "Hygiene", "color": "#AED581", "item_groups": ["Şampuan", "Tırnak Makası", "Tüy Tarağı", "Diş Fırçası"]}]}, {"id": 1303, "name": "Kuş ve Diğer", "name_en": "Birds & Others", "color": "#689F38", "subcategories": [{"id": 130301, "name": "Kuş", "name_en": "Birds", "color": "#7CB342", "item_groups": ["Kuş Yemi", "Kafes", "Su Kabı", "Tünek"]}, {"id": 130302, "name": "Akvaryum", "name_en": "Aquarium", "color": "#8BC34A", "item_groups": ["Balık Yemi", "Akvaryum", "Filtre", "Dekorasyon"]}]}, {"id": 1304, "name": "Veteriner", "name_en": "Veterinary", "color": "#558B2F", "subcategories": [{"id": 130401, "name": "Sağlık", "name_en": "Health", "color": "#689F38", "item_groups": ["Aşı", "İlaç", "Vitamin", "Pire Tasması"]}]}]}, {"id": 14, "name": "Diğer", "name_en": "Miscellaneous", "color": "#FFC107", "icon": "📦", "categories": [{"id": 1401, "name": "Bağış ve Yardım", "name_en": "Donations & Charity", "color": "#FFD54F", "subcategories": [{"id": 140101, "name": "Bağışlar", "name_en": "Donations", "color": "#FFE082", "item_groups": ["Hayır Kurumu", "Eğitim Bağışı", "Sağlık Bağışı"]}]}, {"id": 1402, "name": "Hediye", "name_en": "Gifts", "color": "#FFB300", "subcategories": [{"id": 140201, "name": "Hediye Ürünler", "name_en": "Gift Items", "color": "#FFC107", "item_groups": ["Hediye Çeki", "Hediye Paketi", "Çiçek"]}]}, {"id": 1403, "name": "Sigara ve Tütün", "name_en": "Tobacco", "color": "#FFA000", "subcategories": [{"id": 140301, "name": "Sigara", "name_en": "Cigarettes", "color": "#FFB300", "item_groups": ["Sigara", "Çakmak", "Puro"]}]}, {"id": 1404, "name": "Sınıflandırılamayan", "name_en": "Uncategorized", "color": "#FF8F00", "subcategories": [{"id": 140401, "name": "Diğer Alışverişler", "name_en": "Other Purchases", "color": "#FFA000", "item_groups": ["Çeşitli"]}]}]}]};
+        
+        const container = document.getElementById('departments');
+        
+        data.departments.forEach(dept => {
+            const deptDiv = document.createElement('div');
+            deptDiv.className = 'department';
+            
+            const header = document.createElement('div');
+            header.className = 'dept-header';
+            
+            const icon = document.createElement('div');
+            icon.className = 'dept-icon';
+            icon.textContent = dept.icon;
+            
+            const title = document.createElement('div');
+            title.className = 'dept-title';
+            
+            const name = document.createElement('div');
+            name.className = 'dept-name';
+            name.textContent = dept.name;
+            
+            const nameEn = document.createElement('div');
+            nameEn.className = 'dept-name-en';
+            nameEn.textContent = dept.name_en;
+            
+            const colorMain = document.createElement('div');
+            colorMain.className = 'dept-color-main';
+            colorMain.style.backgroundColor = dept.color;
+            colorMain.textContent = dept.color;
+            
+            title.appendChild(name);
+            title.appendChild(nameEn);
+            header.appendChild(icon);
+            header.appendChild(title);
+            header.appendChild(colorMain);
+            
+            const grid = document.createElement('div');
+            grid.className = 'categories-grid';
+            
+            dept.categories.forEach(cat => {
+                const card = document.createElement('div');
+                card.className = 'category-card';
+                card.style.borderLeftColor = cat.color;
+                
+                const catName = document.createElement('div');
+                catName.className = 'category-name';
+                catName.textContent = cat.name;
+                
+                const catNameEn = document.createElement('div');
+                catNameEn.className = 'category-name-en';
+                catNameEn.textContent = cat.name_en;
+                
+                const colors = document.createElement('div');
+                colors.className = 'color-samples';
+                
+                // Add category color
+                const catColor = document.createElement('div');
+                catColor.className = 'color-dot';
+                catColor.style.backgroundColor = cat.color;
+                catColor.setAttribute('data-color', cat.color);
+                colors.appendChild(catColor);
+                
+                // Add first 5 subcategory colors
+                cat.subcategories.slice(0, 5).forEach(subcat => {
+                    const dot = document.createElement('div');
+                    dot.className = 'color-dot';
+                    dot.style.backgroundColor = subcat.color;
+                    dot.setAttribute('data-color', subcat.color);
+                    colors.appendChild(dot);
+                });
+                
+                card.appendChild(catName);
+                card.appendChild(catNameEn);
+                card.appendChild(colors);
+                
+                grid.appendChild(card);
+            });
+            
+            deptDiv.appendChild(header);
+            deptDiv.appendChild(grid);
+            container.appendChild(deptDiv);
+        });
+    </script>
+</body>
+</html>

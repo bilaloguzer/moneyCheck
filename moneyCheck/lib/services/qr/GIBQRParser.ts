@@ -121,39 +121,51 @@ export class GIBQRParser {
    * Position 1: Document Number
    * Position 2: Date
    * Position 3: Total Amount
-   * Position 4: Tax Amount (optional)
+   * Position 4: Tax Amount or ETTN (UUID format)
+   * Position 5: ETTN (if position 4 was tax amount)
    */
   private static parsePipeDelimited(str: string): GIBQRData {
     const parts = str.split('|');
-    
+
     const data: GIBQRData = {
       format: 'gib_earchive',
       rawData: str,
     };
-    
+
     // Try to intelligently map fields
     // This is a best-effort approach - actual format may vary
-    
+
     if (parts.length >= 1 && this.looksLikeTaxId(parts[0])) {
       data.merchantTaxId = parts[0];
     }
-    
+
     if (parts.length >= 2) {
       data.documentNumber = parts[1];
     }
-    
+
     if (parts.length >= 3) {
       data.documentDate = this.normalizeDate(parts[2]);
     }
-    
+
     if (parts.length >= 4) {
       data.totalAmount = this.parseAmount(parts[3]);
     }
-    
+
+    // Position 4 could be either tax amount or ETTN
     if (parts.length >= 5) {
-      data.taxAmount = this.parseAmount(parts[4]);
+      // Check if it's a UUID (ETTN) or a number (tax amount)
+      if (this.looksLikeUUID(parts[4])) {
+        data.ettn = parts[4];
+      } else {
+        data.taxAmount = this.parseAmount(parts[4]);
+      }
     }
-    
+
+    // Position 5 might be ETTN if position 4 was tax amount
+    if (parts.length >= 6 && this.looksLikeUUID(parts[5])) {
+      data.ettn = parts[5];
+    }
+
     return data;
   }
   
@@ -220,6 +232,15 @@ export class GIBQRParser {
   private static looksLikeTaxId(str: string): boolean {
     const cleaned = str.replace(/\D/g, '');
     return cleaned.length === 10 || cleaned.length === 11;
+  }
+
+  /**
+   * Check if a string looks like a UUID (ETTN format)
+   * Format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+   */
+  private static looksLikeUUID(str: string): boolean {
+    const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    return uuidPattern.test(str.trim());
   }
   
   /**

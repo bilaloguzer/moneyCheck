@@ -1,52 +1,78 @@
 /**
- * Category Seeds
- * Initial category data for the application
+ * Category Seeds - 4-Level System
+ * Seeds the complete Turkish market category hierarchy
  */
 
 import * as SQLite from 'expo-sqlite';
-import * as CategoryService from '../services/categoryService';
 
 /**
- * Default category mappings based on OCR categories
- * These map to the categories used by the OCR service
- */
-export const DEFAULT_CATEGORIES = [
-  { name: 'groceries', displayName: 'Gıda' },
-  { name: 'household', displayName: 'Ev Eşyaları' },
-  { name: 'beverages', displayName: 'İçecekler' },
-  { name: 'snacks', displayName: 'Atıştırmalıklar' },
-  { name: 'personal_care', displayName: 'Kişisel Bakım' },
-  { name: 'cleaning', displayName: 'Temizlik' },
-  { name: 'other', displayName: 'Diğer' },
-];
-
-/**
- * Seed categories into the database
- * This function is idempotent - it can be run multiple times safely
+ * Seed the 4-level category data from JSON
+ * This should be called after running migration 002
  */
 export async function seedCategories(db: SQLite.SQLiteDatabase): Promise<void> {
+  console.log('Seeding categories...');
+  
   try {
-    console.log('Seeding categories...');
+    // Import the JSON file directly
+    const categorySystem = require('../../categories/category_system.json');
     
-    for (const category of DEFAULT_CATEGORIES) {
-      // Check if category already exists
-      const existing = await db.getFirstAsync<{ id: number }>(
-        'SELECT id FROM categories WHERE name = ?',
-        category.name
-      );
-      
-      if (!existing) {
-        await CategoryService.createCategory(db, {
-          name: category.name,
-          items: [] // Empty items array, will be populated as items are categorized
-        });
-        console.log(`✅ Created category: ${category.name} (${category.displayName})`);
-      } else {
-        console.log(`⏭️  Category already exists: ${category.name}`);
+    await db.execAsync('BEGIN TRANSACTION;');
+    
+    try {
+      // Insert departments
+      for (const dept of categorySystem.departments) {
+        await db.runAsync(
+          'INSERT INTO departments (id, name_tr, name_en, color_code, icon) VALUES (?, ?, ?, ?, ?)',
+          [dept.id, dept.name, dept.name_en, dept.color, dept.icon]
+        );
+        
+        // Insert categories for this department
+        for (const cat of dept.categories) {
+          await db.runAsync(
+            'INSERT INTO categories (id, department_id, name_tr, name_en, color_code) VALUES (?, ?, ?, ?, ?)',
+            [cat.id, dept.id, cat.name, cat.name_en, cat.color]
+          );
+          
+          // Insert subcategories
+          for (const subcat of cat.subcategories) {
+            await db.runAsync(
+              'INSERT INTO subcategories (id, category_id, name_tr, name_en, color_code) VALUES (?, ?, ?, ?, ?)',
+              [subcat.id, cat.id, subcat.name, subcat.name_en, subcat.color]
+            );
+            
+            // Insert item groups
+            if (subcat.item_groups && subcat.item_groups.length > 0) {
+              for (const item of subcat.item_groups) {
+                await db.runAsync(
+                  'INSERT INTO item_groups (subcategory_id, name_tr) VALUES (?, ?)',
+                  [subcat.id, item]
+                );
+              }
+            }
+          }
+        }
       }
+      
+      await db.execAsync('COMMIT;');
+      console.log('✅ Category data seeding completed successfully');
+      
+      // Log statistics
+      const deptCount = await db.getAllAsync('SELECT COUNT(*) as count FROM departments');
+      const catCount = await db.getAllAsync('SELECT COUNT(*) as count FROM categories');
+      const subcatCount = await db.getAllAsync('SELECT COUNT(*) as count FROM subcategories');
+      const itemCount = await db.getAllAsync('SELECT COUNT(*) as count FROM item_groups');
+      
+      console.log('📊 Category System Statistics:');
+      console.log(`  - Departments: ${(deptCount[0] as any).count}`);
+      console.log(`  - Categories: ${(catCount[0] as any).count}`);
+      console.log(`  - Subcategories: ${(subcatCount[0] as any).count}`);
+      console.log(`  - Item Groups: ${(itemCount[0] as any).count}`);
+      
+    } catch (error) {
+      await db.execAsync('ROLLBACK;');
+      throw error;
     }
     
-    console.log('Categories seeded successfully');
   } catch (error) {
     console.error('Error seeding categories:', error);
     throw error;
@@ -59,7 +85,7 @@ export async function seedCategories(db: SQLite.SQLiteDatabase): Promise<void> {
 export async function needsSeedCategories(db: SQLite.SQLiteDatabase): Promise<boolean> {
   try {
     const result = await db.getFirstAsync<{ count: number }>(
-      'SELECT COUNT(*) as count FROM categories'
+      'SELECT COUNT(*) as count FROM departments'
     );
     return (result?.count ?? 0) === 0;
   } catch (error) {

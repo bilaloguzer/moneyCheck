@@ -1,0 +1,162 @@
+Subcategory ID,Category ID,Category Name,Subcategory Name (TR),Subcategory Name (EN),Color
+10101,101,Meyve ve Sebze,Taze Meyveler,Fresh Fruits,#66BB6A
+10102,101,Meyve ve Sebze,Taze Sebzeler,Fresh Vegetables,#81C784
+10103,101,Meyve ve Sebze,Salata ve Yaprak,Salad & Greens,#A5D6A7
+10201,102,Süt Ürünleri,Süt,Milk,#9CCC65
+10202,102,Süt Ürünleri,Peynir,Cheese,#AED581
+10203,102,Süt Ürünleri,Yoğurt,Yogurt,#C5E1A5
+10204,102,Süt Ürünleri,Tereyağı ve Krema,Butter & Cream,#DCEDC8
+10205,102,Süt Ürünleri,Yumurta,Eggs,#E8F5E9
+10301,103,Et ve Balık,Tavuk ve Kanatlı,Poultry,#2E7D32
+10302,103,Et ve Balık,Kırmızı Et,Red Meat,#388E3C
+10303,103,Et ve Balık,Balık ve Deniz Ürünleri,Fish & Seafood,#43A047
+10304,103,Et ve Balık,Şarküteri,Deli Meats,#4CAF50
+10401,104,Fırın ve Ekmek,Ekmek,Bread,#D4C9A1
+10402,104,Fırın ve Ekmek,Simit ve Poğaça,Simit & Pastries,#DDD2B0
+10403,104,Fırın ve Ekmek,Pasta ve Tatlı,Cakes & Desserts,#E6DBBF
+10501,105,Temel Gıda,Un ve Tahıl,Flour & Grains,#8BC34A
+10502,105,Temel Gıda,Makarna,Pasta,#9CCC65
+10503,105,Temel Gıda,Baklagiller,Legumes,#AED581
+10504,105,Temel Gıda,Konserve,Canned Goods,#C5E1A5
+10505,105,Temel Gıda,Yağlar,Oils & Fats,#DCEDC8
+10506,105,Temel Gıda,Baharatlar,Spices,#E8F5E9
+10601,106,Atıştırmalık,Cips ve Krakerler,Chips & Crackers,#00E676
+10602,106,Atıştırmalık,Kuruyemiş,Nuts & Dried Fruits,#1DE9B6
+10603,106,Atıştırmalık,Çikolata ve Şeker,Chocolate & Candy,#64FFDA
+10701,107,İçecekler,Su,Water,#81C784
+10702,107,İçecekler,Meşrubat,Soft Drinks,#A5D6A7
+10703,107,İçecekler,Meyve Suyu,Juice,#C8E6C9
+10704,107,İçecekler,Kahve ve Çay,Coffee & Tea,#E8F5E9
+10801,108,Dondurulmuş Gıda,Dondurulmuş Sebze,Frozen Vegetables,#B9F6CA
+10802,108,Dondurulmuş Gıda,Dondurulmuş Et,Frozen Meat,#CCFCD6
+10803,108,Dondurulmuş Gıda,Hazır Yemek,Ready Meals,#E0FFE8
+10804,108,Dondurulmuş Gıda,Dondurma,Ice Cream,#F1FFF5
+10901,109,Kahvaltılık,Reçel ve Bal,Jams & Honey,#689F38
+10902,109,Kahvaltılık,Çikolata ve Sürme,Spreads,#7CB342
+10903,109,Kahvaltılık,Tahıl ve Mısır Gevreği,Cereals,#8BC34A
+10904,109,Kahvaltılık,Zeytin ve Turşu,Olives & Pickles,#9CCC65
+20101,201,Çamaşır,Deterjan,Detergent,#29B6F6
+20102,201,Çamaşır,Yumuşatıcı,Fabric Softener,#4FC3F7
+20201,202,Mutfak Temizliği,Bulaşık,Dishwashing,#0288D1
+20202,202,Mutfak Temizliği,Sünger ve Bez,Sponges & Cloths,#039BE5
+20203,202,Mutfak Temizliği,Çöp Poşeti,Trash Bags,#03A9F4
+20301,203,Banyo Temizliği,Klozet ve Banyo,Toilet & Bathroom,#0277BD
+20302,203,Banyo Temizliği,Dezenfektan,Disinfectant,#0288D1
+20401,204,Genel Temizlik,Zemin Temizliği,Floor Cleaning,#00ACC1
+20402,204,Genel Temizlik,Cam Temizliği,Glass Cleaning,#00BCD4
+20501,205,Kağıt Ürünler,Tuvalet Kağıdı,Toilet Paper,#00838F
+20502,205,Kağıt Ürünler,Havlu ve Peçete,Towels & Napkins,#0097A7
+30101,301,Hijyen,Sabun,Soap,#CE93D8
+30102,301,Hijyen,Duş,Shower,#E1BEE7
+30103,301,Hijyen,Ağız Bakımı,Oral Care,#F3E5F5
+30104,301,Hijyen,Deodorant,Deodorant,#EDE7F6
+30201,302,Saç Bakımı,Şampuan ve Saç Kremi,Shampoo & Conditioner,#AB47BC
+30202,302,Saç Bakımı,Saç Şekillendirme,Hair Styling,#BA68C8
+30301,303,Cilt Bakımı,Yüz Bakımı,Face Care,#9C27B0
+30302,303,Cilt Bakımı,Vücut Bakımı,Body Care,#AB47BC
+30401,304,Makyaj,Yüz Makyajı,Face Makeup,#7B1FA2
+30402,304,Makyaj,Göz Makyajı,Eye Makeup,#8E24AA
+30403,304,Makyaj,Dudak Makyajı,Lip Makeup,#9C27B0
+30501,305,Tıraş,Erkek Tıraş,Men's Shaving,#6A1B9A
+30502,305,Tıraş,Kadın Epilasyon,Women's Hair Removal,#7B1FA2
+30601,306,Kadın Hijyen,Ped ve Tampon,Pads & Tampons,#E040FB
+40101,401,İlaç ve Vitamin,Ağrı Kesici,Pain Relief,#F06292
+40102,401,İlaç ve Vitamin,Vitamin ve Takviye,Vitamins & Supplements,#F48FB1
+40103,401,İlaç ve Vitamin,Soğuk Algınlığı,Cold & Flu,#F8BBD0
+40201,402,İlk Yardım,Pansuman,Wound Care,#D81B60
+40202,402,İlk Yardım,Termometre ve Ölçüm,Thermometer & Measurement,#E91E63
+40301,403,Bebek ve Anne Sağlığı,Bebek Bakımı,Baby Care,#AD1457
+40302,403,Bebek ve Anne Sağlığı,Bebek Maması,Baby Formula,#C2185B
+40401,404,Medikal Cihaz,Tansiyon ve Ateş,BP & Temperature,#C2185B
+50101,501,Telefon ve Tablet,Akıllı Telefon,Smartphones,#64B5F6
+50102,501,Telefon ve Tablet,Tablet,Tablets,#90CAF9
+50103,501,Telefon ve Tablet,Aksesuarlar,Accessories,#BBDEFB
+50201,502,Bilgisayar,Dizüstü Bilgisayar,Laptops,#1E88E5
+50202,502,Bilgisayar,Masaüstü,Desktops,#2196F3
+50203,502,Bilgisayar,Çevre Birimleri,Peripherals,#42A5F5
+50301,503,Ses ve Görüntü,Kulaklık,Headphones,#1565C0
+50302,503,Ses ve Görüntü,Hoparlör,Speakers,#1976D2
+50303,503,Ses ve Görüntü,TV,Television,#1E88E5
+50401,504,Fotoğraf ve Kamera,Kamera,Cameras,#0277BD
+50402,504,Fotoğraf ve Kamera,Objektif ve Aksesuar,Lens & Accessories,#0288D1
+50501,505,Oyun Konsolu,Konsollar,Consoles,#00B0FF
+50502,505,Oyun Konsolu,Oyun ve Aksesuar,Games & Accessories,#40C4FF
+60101,601,Kadın Giyim,Üst Giyim,Tops,#FF9E80
+60102,601,Kadın Giyim,Alt Giyim,Bottoms,#FFB199
+60103,601,Kadın Giyim,Elbise,Dresses,#FFC5B3
+60104,601,Kadın Giyim,Dış Giyim,Outerwear,#FFD8CC
+60201,602,Erkek Giyim,Üst Giyim,Tops,#FF6E6E
+60202,602,Erkek Giyim,Alt Giyim,Bottoms,#FF8A8A
+60203,602,Erkek Giyim,Dış Giyim,Outerwear,#FFA6A6
+60301,603,Çocuk Giyim,Bebek Giyim,Baby Clothing,#E57373
+60302,603,Çocuk Giyim,Çocuk Üst,Kids' Tops,#EF5350
+60303,603,Çocuk Giyim,Çocuk Alt,Kids' Bottoms,#F44336
+60401,604,Ayakkabı,Spor Ayakkabı,Sneakers,#E53935
+60402,604,Ayakkabı,Klasik Ayakkabı,Dress Shoes,#F44336
+60403,604,Ayakkabı,Sandalet ve Terlik,Sandals & Slippers,#EF5350
+60501,605,Aksesuar,Çanta,Bags,#D32F2F
+60502,605,Aksesuar,Takı,Jewelry,#E53935
+60503,605,Aksesuar,Diğer Aksesuarlar,Other Accessories,#F44336
+60601,606,İç Giyim,Kadın İç Giyim,Women's Underwear,#C62828
+60602,606,İç Giyim,Erkek İç Giyim,Men's Underwear,#D32F2F
+70101,701,Mobilya,Oturma Odası,Living Room,#A1887F
+70102,701,Mobilya,Yatak Odası,Bedroom,#BCAAA4
+70103,701,Mobilya,Mutfak,Kitchen,#D7CCC8
+70201,702,Ev Tekstili,Yatak Tekstili,Bedding,#795548
+70202,702,Ev Tekstili,Havlu,Towels,#8D6E63
+70203,702,Ev Tekstili,Perde,Curtains,#A1887F
+70301,703,Mutfak Eşyası,Tencere ve Tava,Pots & Pans,#6D4C41
+70302,703,Mutfak Eşyası,Sofra,Tableware,#795548
+70303,703,Mutfak Eşyası,Mutfak Gereçleri,Kitchen Tools,#8D6E63
+70304,703,Mutfak Eşyası,Saklama Kabı,Storage Containers,#A1887F
+70401,704,Ev Aletleri,Beyaz Eşya,Major Appliances,#5D4037
+70402,704,Ev Aletleri,Küçük Ev Aletleri,Small Appliances,#6D4C41
+70501,705,Dekorasyon,Aydınlatma,Lighting,#4E342E
+70502,705,Dekorasyon,Dekor Ürünler,Decor Items,#5D4037
+80101,801,Yakıt,Motorlu Yakıt,Vehicle Fuel,#FF8A65
+80201,802,Toplu Taşıma,Kartlar ve Biletler,Cards & Tickets,#FF5722
+80301,803,Otopark ve Geçiş,Otopark,Parking,#FF5722
+80302,803,Otopark ve Geçiş,Köprü ve Otoyol,Bridge & Highway,#FF6F43
+80401,804,Araç Bakım,Servis ve Tamir,Service & Repair,#E64A19
+80402,804,Araç Bakım,Yıkama,Car Wash,#F4511E
+90101,901,Dijital İçerik,Streaming,Streaming Services,#BA68C8
+90102,901,Dijital İçerik,Oyun,Gaming,#CE93D8
+90201,902,Kitap ve Dergi,Kitap,Books,#9C27B0
+90202,902,Kitap ve Dergi,Dergi ve Gazete,Magazines & Newspapers,#AB47BC
+90301,903,Sinema ve Tiyatro,Biletler,Tickets,#8E24AA
+90401,904,Hobi,Sanat Malzemeleri,Art Supplies,#7B1FA2
+90402,904,Hobi,Müzik Aletleri,Musical Instruments,#8E24AA
+100101,1001,Spor Giyim,Kıyafetler,Clothing,#4DB6AC
+100102,1001,Spor Giyim,Ayakkabı,Footwear,#80CBC4
+100201,1002,Spor Ekipmanı,Fitness,Fitness,#009688
+100202,1002,Spor Ekipmanı,Takım Sporları,Team Sports,#26A69A
+100203,1002,Spor Ekipmanı,Outdoor,Outdoor,#4DB6AC
+100301,1003,Spor Salonları,Üyelik,Membership,#00897B
+110101,1101,Kırtasiye,Yazı Gereçleri,Writing Supplies,#7986CB
+110102,1101,Kırtasiye,Defter ve Ajanda,Notebooks & Planners,#9FA8DA
+110103,1101,Kırtasiye,Dosyalama,Filing,#C5CAE9
+110201,1102,Okul Malzemeleri,Çanta,Bags,#3949AB
+110202,1102,Okul Malzemeleri,Sanat Malzemeleri,Art Supplies,#3F51B5
+110301,1103,Eğitim Hizmetleri,Kurslar,Courses,#303F9F
+120101,1201,Faturalar,Elektrik ve Doğalgaz,Electricity & Gas,#90A4AE
+120102,1201,Faturalar,Su,Water,#B0BEC5
+120103,1201,Faturalar,İletişim,Communication,#CFD8DC
+120201,1202,Profesyonel Hizmetler,Hukuki,Legal,#607D8B
+120202,1202,Profesyonel Hizmetler,Mali,Financial,#78909C
+120301,1203,Ev Hizmetleri,Tamir ve Tadilat,Repair & Renovation,#546E7A
+120302,1203,Ev Hizmetleri,Temizlik,Cleaning,#607D8B
+120401,1204,Güzellik ve Bakım,Kuaför,Hairdresser,#455A64
+120402,1204,Güzellik ve Bakım,Estetik,Aesthetics,#546E7A
+130101,1301,Kedi,Mama,Food,#AED581
+130102,1301,Kedi,Kum ve Hijyen,Litter & Hygiene,#C5E1A5
+130103,1301,Kedi,Aksesuarlar,Accessories,#DCEDC8
+130201,1302,Köpek,Mama,Food,#8BC34A
+130202,1302,Köpek,Aksesuar,Accessories,#9CCC65
+130203,1302,Köpek,Hijyen,Hygiene,#AED581
+130301,1303,Kuş ve Diğer,Kuş,Birds,#7CB342
+130302,1303,Kuş ve Diğer,Akvaryum,Aquarium,#8BC34A
+130401,1304,Veteriner,Sağlık,Health,#689F38
+140101,1401,Bağış ve Yardım,Bağışlar,Donations,#FFE082
+140201,1402,Hediye,Hediye Ürünler,Gift Items,#FFC107
+140301,1403,Sigara ve Tütün,Sigara,Cigarettes,#FFB300
+140401,1404,Sınıflandırılamayan,Diğer Alışverişler,Other Purchases,#FFA000

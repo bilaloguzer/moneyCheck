@@ -4,6 +4,7 @@
  */
 
 import React, { createContext, useContext, ReactNode } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 import * as SQLite from 'expo-sqlite';
 import { useDatabase } from '../hooks/useDatabase';
 
@@ -56,10 +57,10 @@ export function DatabaseProvider({
       return <>{errorComponent(error)}</>;
     }
     return (
-      <div style={{ padding: 20 }}>
-        <h2>Database Error</h2>
-        <p>{error.message}</p>
-      </div>
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorTitle}>Database Error</Text>
+        <Text style={styles.errorMessage}>{error.message}</Text>
+      </View>
     );
   }
 
@@ -69,6 +70,27 @@ export function DatabaseProvider({
     </DatabaseContext.Provider>
   );
 }
+
+const styles = StyleSheet.create({
+  errorContainer: {
+    flex: 1,
+    padding: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F7F6F3',
+  },
+  errorTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#E03E3E',
+    marginBottom: 10,
+  },
+  errorMessage: {
+    fontSize: 14,
+    color: '#37352F',
+    textAlign: 'center',
+  },
+});
 
 /**
  * Hook to access database from context

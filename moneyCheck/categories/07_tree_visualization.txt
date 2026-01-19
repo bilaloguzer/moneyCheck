@@ -1,0 +1,727 @@
+================================================================================
+SmartSpend Category Tree Structure
+================================================================================
+
+📦 🍎 Gıda ve İçecek (Food & Beverage) | Food & Beverage
+   Color: #2E7D32
+   │
+   ├── 📂 Meyve ve Sebze | Fruits & Vegetables
+   │   Color: #4CAF50
+   │   ├── 📁 Taze Meyveler | Fresh Fruits
+   │   │   Color: #66BB6A
+   │   │   Items: Elma, Portakal, Muz ... (+7 more)
+   │   ├── 📁 Taze Sebzeler | Fresh Vegetables
+   │   │   Color: #81C784
+   │   │   Items: Domates, Salatalık, Biber ... (+7 more)
+   │   └── 📁 Salata ve Yaprak | Salad & Greens
+   │       Color: #A5D6A7
+   │       Items: Marul, Roka, Maydanoz ... (+5 more)
+   │
+   ├── 📂 Süt Ürünleri | Dairy Products
+   │   Color: #8BC34A
+   │   ├── 📁 Süt | Milk
+   │   │   Color: #9CCC65
+   │   │   Items: Tam Yağlı Süt, Az Yağlı Süt, Yağsız Süt ... (+3 more)
+   │   ├── 📁 Peynir | Cheese
+   │   │   Color: #AED581
+   │   │   Items: Beyaz Peynir, Kaşar, Tulum ... (+5 more)
+   │   ├── 📁 Yoğurt | Yogurt
+   │   │   Color: #C5E1A5
+   │   │   Items: Süzme Yoğurt, Tam Yağlı Yoğurt, Light Yoğurt ... (+3 more)
+   │   ├── 📁 Tereyağı ve Krema | Butter & Cream
+   │   │   Color: #DCEDC8
+   │   │   Items: Tereyağı, Margarin, Krema ... (+2 more)
+   │   └── 📁 Yumurta | Eggs
+   │       Color: #E8F5E9
+   │       Items: Tavuk Yumurtası, Köy Yumurtası, Organik Yumurta
+   │
+   ├── 📂 Et ve Balık | Meat & Seafood
+   │   Color: #1B5E20
+   │   ├── 📁 Tavuk ve Kanatlı | Poultry
+   │   │   Color: #2E7D32
+   │   │   Items: Tavuk Göğsü, Tavuk Butu, Tavuk Kanat ... (+3 more)
+   │   ├── 📁 Kırmızı Et | Red Meat
+   │   │   Color: #388E3C
+   │   │   Items: Dana Eti, Kuzu Eti, Kıyma ... (+4 more)
+   │   ├── 📁 Balık ve Deniz Ürünleri | Fish & Seafood
+   │   │   Color: #43A047
+   │   │   Items: Hamsi, Çupra, Levrek ... (+6 more)
+   │   └── 📁 Şarküteri | Deli Meats
+   │       Color: #4CAF50
+   │       Items: Salam, Sucuk, Sosis ... (+5 more)
+   │
+   ├── 📂 Fırın ve Ekmek | Bakery & Bread
+   │   Color: #CDC092
+   │   ├── 📁 Ekmek | Bread
+   │   │   Color: #D4C9A1
+   │   │   Items: Beyaz Ekmek, Tam Buğday, Çavdar Ekmeği ... (+4 more)
+   │   ├── 📁 Simit ve Poğaça | Simit & Pastries
+   │   │   Color: #DDD2B0
+   │   │   Items: Simit, Açma, Poğaça ... (+3 more)
+   │   └── 📁 Pasta ve Tatlı | Cakes & Desserts
+   │       Color: #E6DBBF
+   │       Items: Kek, Pasta, Kurabiye ... (+4 more)
+   │
+   ├── 📂 Temel Gıda | Pantry Staples
+   │   Color: #7CB342
+   │   ├── 📁 Un ve Tahıl | Flour & Grains
+   │   │   Color: #8BC34A
+   │   │   Items: Beyaz Un, Tam Buğday Unu, Mısır Unu ... (+5 more)
+   │   ├── 📁 Makarna | Pasta
+   │   │   Color: #9CCC65
+   │   │   Items: Spagetti, Fiyonk, Burgu ... (+4 more)
+   │   ├── 📁 Baklagiller | Legumes
+   │   │   Color: #AED581
+   │   │   Items: Nohut, Kuru Fasulye, Kırmızı Mercimek ... (+3 more)
+   │   ├── 📁 Konserve | Canned Goods
+   │   │   Color: #C5E1A5
+   │   │   Items: Konserve Domates, Konserve Fasulye, Mısır ... (+4 more)
+   │   ├── 📁 Yağlar | Oils & Fats
+   │   │   Color: #DCEDC8
+   │   │   Items: Zeytinyağı, Ayçiçek Yağı, Mısırözü Yağı ... (+2 more)
+   │   └── 📁 Baharatlar | Spices
+   │       Color: #E8F5E9
+   │       Items: Karabiber, Pul Biber, Kimyon ... (+5 more)
+   │
+   ├── 📂 Atıştırmalık | Snacks
+   │   Color: #00C853
+   │   ├── 📁 Cips ve Krakerler | Chips & Crackers
+   │   │   Color: #00E676
+   │   │   Items: Patates Cipsi, Mısır Cipsi, Kraker ... (+3 more)
+   │   ├── 📁 Kuruyemiş | Nuts & Dried Fruits
+   │   │   Color: #1DE9B6
+   │   │   Items: Fındık, Fıstık, Badem ... (+5 more)
+   │   └── 📁 Çikolata ve Şeker | Chocolate & Candy
+   │       Color: #64FFDA
+   │       Items: Çikolata, Gofret, Bar ... (+4 more)
+   │
+   ├── 📂 İçecekler | Beverages
+   │   Color: #66BB6A
+   │   ├── 📁 Su | Water
+   │   │   Color: #81C784
+   │   │   Items: Doğal Su, Maden Suyu, Soda
+   │   ├── 📁 Meşrubat | Soft Drinks
+   │   │   Color: #A5D6A7
+   │   │   Items: Kola, Gazoz, Limonata ... (+3 more)
+   │   ├── 📁 Meyve Suyu | Juice
+   │   │   Color: #C8E6C9
+   │   │   Items: Portakal Suyu, Elma Suyu, Vişne Suyu ... (+3 more)
+   │   └── 📁 Kahve ve Çay | Coffee & Tea
+   │       Color: #E8F5E9
+   │       Items: Türk Kahvesi, Filtre Kahve, Neskafe ... (+4 more)
+   │
+   ├── 📂 Dondurulmuş Gıda | Frozen Foods
+   │   Color: #69F0AE
+   │   ├── 📁 Dondurulmuş Sebze | Frozen Vegetables
+   │   │   Color: #B9F6CA
+   │   │   Items: Karışık Sebze, Fasulye, Bezelye ... (+3 more)
+   │   ├── 📁 Dondurulmuş Et | Frozen Meat
+   │   │   Color: #CCFCD6
+   │   │   Items: Köfte, Nugget, Balık ... (+2 more)
+   │   ├── 📁 Hazır Yemek | Ready Meals
+   │   │   Color: #E0FFE8
+   │   │   Items: Pizza, Börek, Lahmacun ... (+2 more)
+   │   └── 📁 Dondurma | Ice Cream
+   │       Color: #F1FFF5
+   │       Items: Kapaklı Dondurma, Külah, Çubuklu ... (+1 more)
+   │
+   └── 📂 Kahvaltılık | Breakfast Items
+       Color: #558B2F
+       ├── 📁 Reçel ve Bal | Jams & Honey
+       │   Color: #689F38
+       │   Items: Çilek Reçeli, Kayısı Reçeli, Vişne Reçeli ... (+3 more)
+       ├── 📁 Çikolata ve Sürme | Spreads
+       │   Color: #7CB342
+       │   Items: Çikolatalı Fındık Kreması, Fıstık Ezmesi, Tahin ... (+1 more)
+       ├── 📁 Tahıl ve Mısır Gevreği | Cereals
+       │   Color: #8BC34A
+       │   Items: Mısır Gevreği, Müsli, Granola ... (+1 more)
+       └── 📁 Zeytin ve Turşu | Olives & Pickles
+           Color: #9CCC65
+           Items: Siyah Zeytin, Yeşil Zeytin, Kırma Zeytin ... (+3 more)
+
+📦 🧹 Ev ve Temizlik | Household & Cleaning
+   Color: #0288D1
+   │
+   ├── 📂 Çamaşır | Laundry
+   │   Color: #03A9F4
+   │   ├── 📁 Deterjan | Detergent
+   │   │   Color: #29B6F6
+   │   │   Items: Toz Deterjan, Sıvı Deterjan, Kapsül Deterjan ... (+2 more)
+   │   └── 📁 Yumuşatıcı | Fabric Softener
+   │       Color: #4FC3F7
+   │       Items: Yumuşatıcı, Kokulandırıcı, Çamaşır Parfümü
+   │
+   ├── 📂 Mutfak Temizliği | Kitchen Cleaning
+   │   Color: #0277BD
+   │   ├── 📁 Bulaşık | Dishwashing
+   │   │   Color: #0288D1
+   │   │   Items: Bulaşık Deterjanı, Bulaşık Makinesi Tableti, Bulaşık Makinesi Tuzu ... (+1 more)
+   │   ├── 📁 Sünger ve Bez | Sponges & Cloths
+   │   │   Color: #039BE5
+   │   │   Items: Bulaşık Süngeri, Mikrofiber Bez, Temizlik Bezi ... (+1 more)
+   │   └── 📁 Çöp Poşeti | Trash Bags
+   │       Color: #03A9F4
+   │       Items: Mutfak Çöp Poşeti, Büyük Çöp Poşeti, Kokulu Poşet ... (+1 more)
+   │
+   ├── 📂 Banyo Temizliği | Bathroom Cleaning
+   │   Color: #01579B
+   │   ├── 📁 Klozet ve Banyo | Toilet & Bathroom
+   │   │   Color: #0277BD
+   │   │   Items: Klozet Temizleyici, Kireç Çözücü, Banyo Spreyi ... (+1 more)
+   │   └── 📁 Dezenfektan | Disinfectant
+   │       Color: #0288D1
+   │       Items: Çamaşır Suyu, Dezenfektan Sprey, Yüzey Temizleyici
+   │
+   ├── 📂 Genel Temizlik | General Cleaning
+   │   Color: #0097A7
+   │   ├── 📁 Zemin Temizliği | Floor Cleaning
+   │   │   Color: #00ACC1
+   │   │   Items: Yüzey Temizleyici, Parke Temizleyici, Paspas ... (+2 more)
+   │   └── 📁 Cam Temizliği | Glass Cleaning
+   │       Color: #00BCD4
+   │       Items: Cam Temizleyici, Cam Bezi, Silecek
+   │
+   └── 📂 Kağıt Ürünler | Paper Products
+       Color: #006064
+       ├── 📁 Tuvalet Kağıdı | Toilet Paper
+       │   Color: #00838F
+       │   Items: 3 Katlı, Jumbo, Islak Tuvalet Kağıdı
+       └── 📁 Havlu ve Peçete | Towels & Napkins
+           Color: #0097A7
+           Items: Kağıt Havlu, Peçete, Cep Mendili ... (+1 more)
+
+📦 💄 Kişisel Bakım ve Kozmetik | Personal Care & Beauty
+   Color: #AB47BC
+   │
+   ├── 📂 Hijyen | Hygiene
+   │   Color: #BA68C8
+   │   ├── 📁 Sabun | Soap
+   │   │   Color: #CE93D8
+   │   │   Items: Sıvı Sabun, Katı Sabun, Antibakteriyel Sabun ... (+1 more)
+   │   ├── 📁 Duş | Shower
+   │   │   Color: #E1BEE7
+   │   │   Items: Duş Jeli, Şampuan, Saç Kremi ... (+1 more)
+   │   ├── 📁 Ağız Bakımı | Oral Care
+   │   │   Color: #F3E5F5
+   │   │   Items: Diş Macunu, Diş Fırçası, Ağız Gargarası ... (+1 more)
+   │   └── 📁 Deodorant | Deodorant
+   │       Color: #EDE7F6
+   │       Items: Sprey Deodorant, Roll-on, Stick Deodorant ... (+1 more)
+   │
+   ├── 📂 Saç Bakımı | Hair Care
+   │   Color: #9C27B0
+   │   ├── 📁 Şampuan ve Saç Kremi | Shampoo & Conditioner
+   │   │   Color: #AB47BC
+   │   │   Items: Şampuan, Saç Kremi, Saç Maskesi ... (+1 more)
+   │   └── 📁 Saç Şekillendirme | Hair Styling
+   │       Color: #BA68C8
+   │       Items: Jöle, Sprey, Köpük ... (+2 more)
+   │
+   ├── 📂 Cilt Bakımı | Skin Care
+   │   Color: #8E24AA
+   │   ├── 📁 Yüz Bakımı | Face Care
+   │   │   Color: #9C27B0
+   │   │   Items: Yüz Temizleyici, Tonik, Nemlendirici ... (+3 more)
+   │   └── 📁 Vücut Bakımı | Body Care
+   │       Color: #AB47BC
+   │       Items: Vücut Losyonu, El Kremi, Güneş Kremi ... (+1 more)
+   │
+   ├── 📂 Makyaj | Makeup
+   │   Color: #6A1B9A
+   │   ├── 📁 Yüz Makyajı | Face Makeup
+   │   │   Color: #7B1FA2
+   │   │   Items: Fondöten, Pudra, Allık ... (+2 more)
+   │   ├── 📁 Göz Makyajı | Eye Makeup
+   │   │   Color: #8E24AA
+   │   │   Items: Maskara, Eyeliner, Kaş Kalemi ... (+1 more)
+   │   └── 📁 Dudak Makyajı | Lip Makeup
+   │       Color: #9C27B0
+   │       Items: Ruj, Dudak Parlatıcı, Dudak Kalemi ... (+1 more)
+   │
+   ├── 📂 Tıraş | Shaving
+   │   Color: #4A148C
+   │   ├── 📁 Erkek Tıraş | Men's Shaving
+   │   │   Color: #6A1B9A
+   │   │   Items: Tıraş Makinesi, Tıraş Bıçağı, Tıraş Köpüğü ... (+2 more)
+   │   └── 📁 Kadın Epilasyon | Women's Hair Removal
+   │       Color: #7B1FA2
+   │       Items: Jilet, Epilasyon Kremi, Ağda ... (+1 more)
+   │
+   └── 📂 Kadın Hijyen | Feminine Hygiene
+       Color: #D500F9
+       └── 📁 Ped ve Tampon | Pads & Tampons
+           Color: #E040FB
+           Items: Gündüz Pedi, Gece Pedi, Günlük Ped ... (+1 more)
+
+📦 💊 Sağlık ve Eczane | Health & Pharmacy
+   Color: #E91E63
+   │
+   ├── 📂 İlaç ve Vitamin | Medicine & Vitamins
+   │   Color: #EC407A
+   │   ├── 📁 Ağrı Kesici | Pain Relief
+   │   │   Color: #F06292
+   │   │   Items: Parasetamol, İbuprofen, Aspirin ... (+1 more)
+   │   ├── 📁 Vitamin ve Takviye | Vitamins & Supplements
+   │   │   Color: #F48FB1
+   │   │   Items: Multivitamin, Vitamin C, Vitamin D ... (+3 more)
+   │   └── 📁 Soğuk Algınlığı | Cold & Flu
+   │       Color: #F8BBD0
+   │       Items: Nezle İlacı, Öksürük Şurubu, Boğaz Spreyi ... (+1 more)
+   │
+   ├── 📂 İlk Yardım | First Aid
+   │   Color: #C2185B
+   │   ├── 📁 Pansuman | Wound Care
+   │   │   Color: #D81B60
+   │   │   Items: Yara Bandı, Gazlı Bez, Pamuk ... (+2 more)
+   │   └── 📁 Termometre ve Ölçüm | Thermometer & Measurement
+   │       Color: #E91E63
+   │       Items: Termometre, Tansiyon Aleti, Kan Şekeri Ölçer
+   │
+   ├── 📂 Bebek ve Anne Sağlığı | Mother & Baby Health
+   │   Color: #880E4F
+   │   ├── 📁 Bebek Bakımı | Baby Care
+   │   │   Color: #AD1457
+   │   │   Items: Bebek Bezi, Islak Mendil, Bebek Şampuanı ... (+2 more)
+   │   └── 📁 Bebek Maması | Baby Formula
+   │       Color: #C2185B
+   │       Items: Devam Sütü, Kaşık Maması, Ek Gıda
+   │
+   └── 📂 Medikal Cihaz | Medical Devices
+       Color: #AD1457
+       └── 📁 Tansiyon ve Ateş | BP & Temperature
+           Color: #C2185B
+           Items: Tansiyon Aleti, Ateş Ölçer, Nabız Ölçer
+
+📦 📱 Elektronik ve Teknoloji | Electronics & Technology
+   Color: #2196F3
+   │
+   ├── 📂 Telefon ve Tablet | Phones & Tablets
+   │   Color: #42A5F5
+   │   ├── 📁 Akıllı Telefon | Smartphones
+   │   │   Color: #64B5F6
+   │   │   Items: iPhone, Samsung, Xiaomi ... (+3 more)
+   │   ├── 📁 Tablet | Tablets
+   │   │   Color: #90CAF9
+   │   │   Items: iPad, Samsung Tablet, Android Tablet
+   │   └── 📁 Aksesuarlar | Accessories
+   │       Color: #BBDEFB
+   │       Items: Kılıf, Ekran Koruyucu, Şarj Aleti ... (+2 more)
+   │
+   ├── 📂 Bilgisayar | Computers
+   │   Color: #1976D2
+   │   ├── 📁 Dizüstü Bilgisayar | Laptops
+   │   │   Color: #1E88E5
+   │   │   Items: MacBook, Windows Laptop, Gaming Laptop ... (+1 more)
+   │   ├── 📁 Masaüstü | Desktops
+   │   │   Color: #2196F3
+   │   │   Items: PC Kasası, All-in-One, Gaming PC
+   │   └── 📁 Çevre Birimleri | Peripherals
+   │       Color: #42A5F5
+   │       Items: Klavye, Mouse, Monitör ... (+4 more)
+   │
+   ├── 📂 Ses ve Görüntü | Audio & Video
+   │   Color: #0D47A1
+   │   ├── 📁 Kulaklık | Headphones
+   │   │   Color: #1565C0
+   │   │   Items: Kablosuz Kulaklık, Kulak İçi, Kulak Üstü ... (+1 more)
+   │   ├── 📁 Hoparlör | Speakers
+   │   │   Color: #1976D2
+   │   │   Items: Bluetooth Hoparlör, Soundbar, Ev Sinema Sistemi
+   │   └── 📁 TV | Television
+   │       Color: #1E88E5
+   │       Items: Smart TV, LED TV, OLED TV ... (+1 more)
+   │
+   ├── 📂 Fotoğraf ve Kamera | Photography & Camera
+   │   Color: #01579B
+   │   ├── 📁 Kamera | Cameras
+   │   │   Color: #0277BD
+   │   │   Items: DSLR, Mirrorless, Kompakt Kamera ... (+1 more)
+   │   └── 📁 Objektif ve Aksesuar | Lens & Accessories
+   │       Color: #0288D1
+   │       Items: Objektif, Tripod, Flaş ... (+2 more)
+   │
+   └── 📂 Oyun Konsolu | Gaming Consoles
+       Color: #0091EA
+       ├── 📁 Konsollar | Consoles
+       │   Color: #00B0FF
+       │   Items: PlayStation, Xbox, Nintendo Switch
+       └── 📁 Oyun ve Aksesuar | Games & Accessories
+           Color: #40C4FF
+           Items: Oyun, Kol, VR Gözlük ... (+1 more)
+
+📦 👕 Giyim ve Moda | Clothing & Fashion
+   Color: #FF6F61
+   │
+   ├── 📂 Kadın Giyim | Women's Clothing
+   │   Color: #FF8A80
+   │   ├── 📁 Üst Giyim | Tops
+   │   │   Color: #FF9E80
+   │   │   Items: Bluz, Tişört, Gömlek ... (+3 more)
+   │   ├── 📁 Alt Giyim | Bottoms
+   │   │   Color: #FFB199
+   │   │   Items: Pantolon, Jean, Etek ... (+2 more)
+   │   ├── 📁 Elbise | Dresses
+   │   │   Color: #FFC5B3
+   │   │   Items: Günlük Elbise, Gece Elbisesi, Yazlık Elbise
+   │   └── 📁 Dış Giyim | Outerwear
+   │       Color: #FFD8CC
+   │       Items: Mont, Kaban, Ceket ... (+2 more)
+   │
+   ├── 📂 Erkek Giyim | Men's Clothing
+   │   Color: #FF5252
+   │   ├── 📁 Üst Giyim | Tops
+   │   │   Color: #FF6E6E
+   │   │   Items: Tişört, Gömlek, Polo ... (+2 more)
+   │   ├── 📁 Alt Giyim | Bottoms
+   │   │   Color: #FF8A8A
+   │   │   Items: Pantolon, Jean, Şort ... (+1 more)
+   │   └── 📁 Dış Giyim | Outerwear
+   │       Color: #FFA6A6
+   │       Items: Mont, Ceket, Kaban ... (+1 more)
+   │
+   ├── 📂 Çocuk Giyim | Kids' Clothing
+   │   Color: #F44336
+   │   ├── 📁 Bebek Giyim | Baby Clothing
+   │   │   Color: #E57373
+   │   │   Items: Body, Tulum, Pijama ... (+2 more)
+   │   ├── 📁 Çocuk Üst | Kids' Tops
+   │   │   Color: #EF5350
+   │   │   Items: Tişört, Gömlek, Kazak ... (+1 more)
+   │   └── 📁 Çocuk Alt | Kids' Bottoms
+   │       Color: #F44336
+   │       Items: Pantolon, Etek, Şort ... (+1 more)
+   │
+   ├── 📂 Ayakkabı | Shoes
+   │   Color: #D32F2F
+   │   ├── 📁 Spor Ayakkabı | Sneakers
+   │   │   Color: #E53935
+   │   │   Items: Koşu Ayakkabısı, Günlük Spor, Basketbol Ayakkabısı
+   │   ├── 📁 Klasik Ayakkabı | Dress Shoes
+   │   │   Color: #F44336
+   │   │   Items: Erkek Klasik, Kadın Topuklu, Babet ... (+1 more)
+   │   └── 📁 Sandalet ve Terlik | Sandals & Slippers
+   │       Color: #EF5350
+   │       Items: Sandalet, Terlik, Ev Terliği ... (+1 more)
+   │
+   ├── 📂 Aksesuar | Accessories
+   │   Color: #C62828
+   │   ├── 📁 Çanta | Bags
+   │   │   Color: #D32F2F
+   │   │   Items: El Çantası, Sırt Çantası, Omuz Çantası ... (+2 more)
+   │   ├── 📁 Takı | Jewelry
+   │   │   Color: #E53935
+   │   │   Items: Kolye, Küpe, Bilezik ... (+2 more)
+   │   └── 📁 Diğer Aksesuarlar | Other Accessories
+   │       Color: #F44336
+   │       Items: Atkı, Bere, Eldiven ... (+3 more)
+   │
+   └── 📂 İç Giyim | Underwear
+       Color: #B71C1C
+       ├── 📁 Kadın İç Giyim | Women's Underwear
+       │   Color: #C62828
+       │   Items: Sütyen, Külot, Pijama ... (+2 more)
+       └── 📁 Erkek İç Giyim | Men's Underwear
+           Color: #D32F2F
+           Items: Boxer, Atlet, Çorap ... (+1 more)
+
+📦 🏠 Ev ve Yaşam | Home & Living
+   Color: #795548
+   │
+   ├── 📂 Mobilya | Furniture
+   │   Color: #8D6E63
+   │   ├── 📁 Oturma Odası | Living Room
+   │   │   Color: #A1887F
+   │   │   Items: Koltuk, Sehpa, TV Ünitesi ... (+2 more)
+   │   ├── 📁 Yatak Odası | Bedroom
+   │   │   Color: #BCAAA4
+   │   │   Items: Yatak, Şifonyer, Komodin ... (+2 more)
+   │   └── 📁 Mutfak | Kitchen
+   │       Color: #D7CCC8
+   │       Items: Masa, Sandalye, Dolap ... (+1 more)
+   │
+   ├── 📂 Ev Tekstili | Home Textiles
+   │   Color: #6D4C41
+   │   ├── 📁 Yatak Tekstili | Bedding
+   │   │   Color: #795548
+   │   │   Items: Nevresim, Çarşaf, Yastık ... (+3 more)
+   │   ├── 📁 Havlu | Towels
+   │   │   Color: #8D6E63
+   │   │   Items: Banyo Havlusu, Plaj Havlusu, El Havlusu ... (+1 more)
+   │   └── 📁 Perde | Curtains
+   │       Color: #A1887F
+   │       Items: Fon Perde, Güneşlik, Stor Perde ... (+1 more)
+   │
+   ├── 📂 Mutfak Eşyası | Kitchenware
+   │   Color: #5D4037
+   │   ├── 📁 Tencere ve Tava | Pots & Pans
+   │   │   Color: #6D4C41
+   │   │   Items: Tencere Seti, Tava, Düdüklü Tencere ... (+1 more)
+   │   ├── 📁 Sofra | Tableware
+   │   │   Color: #795548
+   │   │   Items: Yemek Takımı, Çatal Bıçak Seti, Bardak ... (+2 more)
+   │   ├── 📁 Mutfak Gereçleri | Kitchen Tools
+   │   │   Color: #8D6E63
+   │   │   Items: Bıçak Seti, Kesme Tahtası, Kevgir ... (+2 more)
+   │   └── 📁 Saklama Kabı | Storage Containers
+   │       Color: #A1887F
+   │       Items: Buzdolabı Kabı, Cam Saklama, Plastik Saklama ... (+1 more)
+   │
+   ├── 📂 Ev Aletleri | Home Appliances
+   │   Color: #4E342E
+   │   ├── 📁 Beyaz Eşya | Major Appliances
+   │   │   Color: #5D4037
+   │   │   Items: Buzdolabı, Çamaşır Makinesi, Bulaşık Makinesi ... (+2 more)
+   │   └── 📁 Küçük Ev Aletleri | Small Appliances
+   │       Color: #6D4C41
+   │       Items: Blender, Mikser, Kahve Makinesi ... (+3 more)
+   │
+   └── 📂 Dekorasyon | Decoration
+       Color: #3E2723
+       ├── 📁 Aydınlatma | Lighting
+       │   Color: #4E342E
+       │   Items: Avize, Masa Lambası, Abajur ... (+2 more)
+       └── 📁 Dekor Ürünler | Decor Items
+           Color: #5D4037
+           Items: Vazo, Çerçeve, Duvar Saati ... (+3 more)
+
+📦 🚗 Ulaşım ve Yakıt | Transportation & Fuel
+   Color: #FF5722
+   │
+   ├── 📂 Yakıt | Fuel
+   │   Color: #FF6F43
+   │   └── 📁 Motorlu Yakıt | Vehicle Fuel
+   │       Color: #FF8A65
+   │       Items: Benzin, Motorin, LPG
+   │
+   ├── 📂 Toplu Taşıma | Public Transport
+   │   Color: #F4511E
+   │   └── 📁 Kartlar ve Biletler | Cards & Tickets
+   │       Color: #FF5722
+   │       Items: İstanbulkart, Ankarakart, Otobüs Bileti ... (+2 more)
+   │
+   ├── 📂 Otopark ve Geçiş | Parking & Tolls
+   │   Color: #E64A19
+   │   ├── 📁 Otopark | Parking
+   │   │   Color: #FF5722
+   │   │   Items: Otopark Ücreti, Vale
+   │   └── 📁 Köprü ve Otoyol | Bridge & Highway
+   │       Color: #FF6F43
+   │       Items: HGS, OGS, Köprü Geçişi
+   │
+   └── 📂 Araç Bakım | Vehicle Maintenance
+       Color: #D84315
+       ├── 📁 Servis ve Tamir | Service & Repair
+       │   Color: #E64A19
+       │   Items: Periyodik Bakım, Yağ Değişimi, Lastik Değişimi ... (+1 more)
+       └── 📁 Yıkama | Car Wash
+           Color: #F4511E
+           Items: Oto Yıkama, Detaylı Temizlik, İç Temizlik
+
+📦 🎮 Eğlence ve Medya | Entertainment & Media
+   Color: #9C27B0
+   │
+   ├── 📂 Dijital İçerik | Digital Content
+   │   Color: #AB47BC
+   │   ├── 📁 Streaming | Streaming Services
+   │   │   Color: #BA68C8
+   │   │   Items: Netflix, Disney+, Amazon Prime ... (+3 more)
+   │   └── 📁 Oyun | Gaming
+   │       Color: #CE93D8
+   │       Items: Steam, PlayStation Store, Xbox Store ... (+1 more)
+   │
+   ├── 📂 Kitap ve Dergi | Books & Magazines
+   │   Color: #8E24AA
+   │   ├── 📁 Kitap | Books
+   │   │   Color: #9C27B0
+   │   │   Items: Roman, Kurgu Dışı, Çocuk Kitabı ... (+1 more)
+   │   └── 📁 Dergi ve Gazete | Magazines & Newspapers
+   │       Color: #AB47BC
+   │       Items: Dergi, Gazete, Dijital Abonelik
+   │
+   ├── 📂 Sinema ve Tiyatro | Cinema & Theater
+   │   Color: #7B1FA2
+   │   └── 📁 Biletler | Tickets
+   │       Color: #8E24AA
+   │       Items: Sinema Bileti, Tiyatro Bileti, Konser Bileti ... (+1 more)
+   │
+   └── 📂 Hobi | Hobbies
+       Color: #6A1B9A
+       ├── 📁 Sanat Malzemeleri | Art Supplies
+       │   Color: #7B1FA2
+       │   Items: Boya, Fırça, Tuval ... (+2 more)
+       └── 📁 Müzik Aletleri | Musical Instruments
+           Color: #8E24AA
+           Items: Gitar, Piyano, Bağlama ... (+2 more)
+
+📦 ⚽ Spor ve Outdoor | Sports & Outdoors
+   Color: #009688
+   │
+   ├── 📂 Spor Giyim | Sportswear
+   │   Color: #26A69A
+   │   ├── 📁 Kıyafetler | Clothing
+   │   │   Color: #4DB6AC
+   │   │   Items: Tişört, Şort, Tayt ... (+2 more)
+   │   └── 📁 Ayakkabı | Footwear
+   │       Color: #80CBC4
+   │       Items: Koşu Ayakkabısı, Basketbol Ayakkabısı, Futbol Krampon ... (+1 more)
+   │
+   ├── 📂 Spor Ekipmanı | Sports Equipment
+   │   Color: #00897B
+   │   ├── 📁 Fitness | Fitness
+   │   │   Color: #009688
+   │   │   Items: Dambıl, Yoga Matı, Pilates Topu ... (+2 more)
+   │   ├── 📁 Takım Sporları | Team Sports
+   │   │   Color: #26A69A
+   │   │   Items: Futbol Topu, Basketbol Topu, Voleybol Topu
+   │   └── 📁 Outdoor | Outdoor
+   │       Color: #4DB6AC
+   │       Items: Çadır, Uyku Tulumu, Kamp Malzemeleri ... (+2 more)
+   │
+   └── 📂 Spor Salonları | Gyms
+       Color: #00796B
+       └── 📁 Üyelik | Membership
+           Color: #00897B
+           Items: Fitness Üyeliği, Yüzme Üyeliği, Grup Dersleri
+
+📦 📚 Eğitim ve Kırtasiye | Education & Stationery
+   Color: #3F51B5
+   │
+   ├── 📂 Kırtasiye | Stationery
+   │   Color: #5C6BC0
+   │   ├── 📁 Yazı Gereçleri | Writing Supplies
+   │   │   Color: #7986CB
+   │   │   Items: Kalem, Tükenmez, Kurşun Kalem ... (+3 more)
+   │   ├── 📁 Defter ve Ajanda | Notebooks & Planners
+   │   │   Color: #9FA8DA
+   │   │   Items: Defter, Ajanda, Not Defteri ... (+1 more)
+   │   └── 📁 Dosyalama | Filing
+   │       Color: #C5CAE9
+   │       Items: Klasör, Dosya, Poşet Dosya ... (+2 more)
+   │
+   ├── 📂 Okul Malzemeleri | School Supplies
+   │   Color: #303F9F
+   │   ├── 📁 Çanta | Bags
+   │   │   Color: #3949AB
+   │   │   Items: Okul Çantası, Sırt Çantası, Beslenme Çantası
+   │   └── 📁 Sanat Malzemeleri | Art Supplies
+   │       Color: #3F51B5
+   │       Items: Boya Kalemi, Pastel, Suluboya ... (+2 more)
+   │
+   └── 📂 Eğitim Hizmetleri | Educational Services
+       Color: #283593
+       └── 📁 Kurslar | Courses
+           Color: #303F9F
+           Items: Dil Kursu, Dersane, Online Eğitim ... (+1 more)
+
+📦 🛠️ Hizmetler | Services
+   Color: #607D8B
+   │
+   ├── 📂 Faturalar | Utilities
+   │   Color: #78909C
+   │   ├── 📁 Elektrik ve Doğalgaz | Electricity & Gas
+   │   │   Color: #90A4AE
+   │   │   Items: Elektrik Faturası, Doğalgaz Faturası
+   │   ├── 📁 Su | Water
+   │   │   Color: #B0BEC5
+   │   │   Items: Su Faturası
+   │   └── 📁 İletişim | Communication
+   │       Color: #CFD8DC
+   │       Items: Telefon Faturası, İnternet Faturası, Mobil Hat
+   │
+   ├── 📂 Profesyonel Hizmetler | Professional Services
+   │   Color: #546E7A
+   │   ├── 📁 Hukuki | Legal
+   │   │   Color: #607D8B
+   │   │   Items: Avukat, Noter, Danışmanlık
+   │   └── 📁 Mali | Financial
+   │       Color: #78909C
+   │       Items: Muhasebe, Vergi Danışmanlığı
+   │
+   ├── 📂 Ev Hizmetleri | Home Services
+   │   Color: #455A64
+   │   ├── 📁 Tamir ve Tadilat | Repair & Renovation
+   │   │   Color: #546E7A
+   │   │   Items: Elektrikçi, Tesisatçı, Boyacı ... (+1 more)
+   │   └── 📁 Temizlik | Cleaning
+   │       Color: #607D8B
+   │       Items: Ev Temizliği, Halı Yıkama, Koltuk Yıkama
+   │
+   └── 📂 Güzellik ve Bakım | Beauty & Care
+       Color: #37474F
+       ├── 📁 Kuaför | Hairdresser
+       │   Color: #455A64
+       │   Items: Kadın Kuaförü, Erkek Berberi, Saç Boyama ... (+1 more)
+       └── 📁 Estetik | Aesthetics
+           Color: #546E7A
+           Items: Manikür, Pedikür, Kaş Dizaynı ... (+2 more)
+
+📦 🐾 Evcil Hayvanlar | Pets
+   Color: #8BC34A
+   │
+   ├── 📂 Kedi | Cats
+   │   Color: #9CCC65
+   │   ├── 📁 Mama | Food
+   │   │   Color: #AED581
+   │   │   Items: Kuru Mama, Yaş Mama, Ödül Maması
+   │   ├── 📁 Kum ve Hijyen | Litter & Hygiene
+   │   │   Color: #C5E1A5
+   │   │   Items: Kedi Kumu, Kedi Tuvaleti, Koku Giderici
+   │   └── 📁 Aksesuarlar | Accessories
+   │       Color: #DCEDC8
+   │       Items: Kedi Evi, Tırmalama, Oyuncak ... (+1 more)
+   │
+   ├── 📂 Köpek | Dogs
+   │   Color: #7CB342
+   │   ├── 📁 Mama | Food
+   │   │   Color: #8BC34A
+   │   │   Items: Kuru Mama, Yaş Mama, Ödül Maması ... (+1 more)
+   │   ├── 📁 Aksesuar | Accessories
+   │   │   Color: #9CCC65
+   │   │   Items: Tasma, Gezdirme Kayışı, Köpek Evi ... (+2 more)
+   │   └── 📁 Hijyen | Hygiene
+   │       Color: #AED581
+   │       Items: Şampuan, Tırnak Makası, Tüy Tarağı ... (+1 more)
+   │
+   ├── 📂 Kuş ve Diğer | Birds & Others
+   │   Color: #689F38
+   │   ├── 📁 Kuş | Birds
+   │   │   Color: #7CB342
+   │   │   Items: Kuş Yemi, Kafes, Su Kabı ... (+1 more)
+   │   └── 📁 Akvaryum | Aquarium
+   │       Color: #8BC34A
+   │       Items: Balık Yemi, Akvaryum, Filtre ... (+1 more)
+   │
+   └── 📂 Veteriner | Veterinary
+       Color: #558B2F
+       └── 📁 Sağlık | Health
+           Color: #689F38
+           Items: Aşı, İlaç, Vitamin ... (+1 more)
+
+📦 📦 Diğer | Miscellaneous
+   Color: #FFC107
+   │
+   ├── 📂 Bağış ve Yardım | Donations & Charity
+   │   Color: #FFD54F
+   │   └── 📁 Bağışlar | Donations
+   │       Color: #FFE082
+   │       Items: Hayır Kurumu, Eğitim Bağışı, Sağlık Bağışı
+   │
+   ├── 📂 Hediye | Gifts
+   │   Color: #FFB300
+   │   └── 📁 Hediye Ürünler | Gift Items
+   │       Color: #FFC107
+   │       Items: Hediye Çeki, Hediye Paketi, Çiçek
+   │
+   ├── 📂 Sigara ve Tütün | Tobacco
+   │   Color: #FFA000
+   │   └── 📁 Sigara | Cigarettes
+   │       Color: #FFB300
+   │       Items: Sigara, Çakmak, Puro
+   │
+   └── 📂 Sınıflandırılamayan | Uncategorized
+       Color: #FF8F00
+       └── 📁 Diğer Alışverişler | Other Purchases
+           Color: #FFA000
+           Items: Çeşitli
+

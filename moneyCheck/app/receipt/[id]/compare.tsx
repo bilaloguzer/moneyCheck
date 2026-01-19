@@ -14,7 +14,7 @@ export default function PriceComparisonScreen() {
   const {id} = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const { db } = useDatabaseContext();
-  const { t } = useLocalization();
+  const { t, locale } = useLocalization();
   
   const [loading, setLoading] = useState(true);
   const [selectedItemIndex, setSelectedItemIndex] = useState(0);
@@ -32,7 +32,7 @@ export default function PriceComparisonScreen() {
     
     const loadData = async () => {
       try {
-        const repository = new ReceiptRepository(db);
+        const repository = new ReceiptRepository(db, locale);
         const receipt = await repository.findById(parseInt(id));
         
         if (!receipt || !receipt.items || receipt.items.length === 0) {

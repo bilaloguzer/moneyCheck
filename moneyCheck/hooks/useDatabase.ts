@@ -45,27 +45,51 @@ export function useDatabase(): UseDatabaseResult {
         setIsLoading(true);
         setError(null);
 
+        console.log('=== Starting Database Initialization ===');
+
         // Open database
         const database = await SQLite.openDatabaseAsync('moneycheck.db');
 
         if (!isMounted) return;
 
-        console.log('Database opened successfully');
+        console.log('✅ Database opened successfully');
 
         // Run migrations
+        console.log('🔄 Running database migrations...');
         await runMigrations(database);
 
         if (!isMounted) return;
 
+        console.log('✅ Migrations completed');
+
         // Seed categories if needed
-        if (await needsSeedCategories(database)) {
-          console.log('Database needs initial categories, seeding...');
-          await seedCategories(database);
+        const needsSeeding = await needsSeedCategories(database);
+        console.log(`📊 Category seeding check: ${needsSeeding ? 'NEEDED' : 'SKIPPED (already seeded)'}`);
+        
+        if (needsSeeding) {
+          console.log('🌱 Seeding categories from JSON...');
+          try {
+            await seedCategories(database);
+            console.log('✅ Category seeding completed');
+            
+            // Log category counts for verification
+            const deptCount = await database.getFirstAsync<{ count: number }>('SELECT COUNT(*) as count FROM departments');
+            const catCount = await database.getFirstAsync<{ count: number }>('SELECT COUNT(*) as count FROM categories');
+            const subcatCount = await database.getFirstAsync<{ count: number }>('SELECT COUNT(*) as count FROM subcategories');
+            
+            console.log('📊 Category Statistics:');
+            console.log(`   - Departments: ${deptCount?.count ?? 0}`);
+            console.log(`   - Categories: ${catCount?.count ?? 0}`);
+            console.log(`   - Subcategories: ${subcatCount?.count ?? 0}`);
+          } catch (seedError) {
+            console.error('❌ Error seeding categories:', seedError);
+            throw new Error(`Failed to seed categories: ${seedError instanceof Error ? seedError.message : 'Unknown error'}`);
+          }
         }
 
         if (!isMounted) return;
 
-        console.log('Database initialized and ready');
+        console.log('✅ Database initialized and ready');
 
         setDb(database);
         setIsReady(true);
@@ -73,7 +97,11 @@ export function useDatabase(): UseDatabaseResult {
         if (!isMounted) return;
 
         const error = err instanceof Error ? err : new Error('Database initialization failed');
-        console.error('Database initialization error:', error);
+        console.error('❌ Database initialization error:', error);
+        console.error('Error details:', {
+          message: error.message,
+          stack: error.stack,
+        });
         setError(error);
       } finally {
         if (isMounted) {

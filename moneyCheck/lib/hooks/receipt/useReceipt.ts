@@ -2,18 +2,20 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import type { Receipt } from '@/lib/types';
 import { useDatabaseContext } from '@/contexts/DatabaseContext';
+import { useLocalization } from '@/contexts/LocalizationContext';
 import { ReceiptRepository } from '@/lib/database/repositories/ReceiptRepository';
 
 export function useReceipt(id: string) {
   const { db } = useDatabaseContext();
+  const { locale } = useLocalization();
   const [receipt, setReceipt] = useState<Receipt | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
   const repository = useMemo(() => {
     if (!db) return null;
-    return new ReceiptRepository(db);
-  }, [db]);
+    return new ReceiptRepository(db, locale);
+  }, [db, locale]);
 
   const fetchReceipt = useCallback(async () => {
     if (!repository || !id) return;

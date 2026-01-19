@@ -1,6 +1,7 @@
 // Hook for fetching spending analytics and statistics
 import { useState, useEffect, useCallback } from 'react';
 import { useDatabaseContext } from '@/contexts/DatabaseContext';
+import { useLocalization } from '@/contexts/LocalizationContext';
 import * as AnalyticsService from '@/database/services/analyticsService';
 import { getCategoryDisplayName, getCategoryColor } from '@/lib/constants/categories';
 
@@ -32,6 +33,7 @@ export type TimeRange = 'week' | 'month' | 'year' | 'all';
 
 export function useAnalytics(range: TimeRange) {
   const { db } = useDatabaseContext();
+  const { locale } = useLocalization();
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -81,8 +83,8 @@ export function useAnalytics(range: TimeRange) {
         categoryData,
         topItemsData
       ] = await Promise.all([
-        AnalyticsService.getCategorySpendingSummary(db, startDate, endDate),
-        AnalyticsService.getTopSpendingItems(db, 5, startDate, endDate)
+        AnalyticsService.getCategorySpendingSummary(db, startDate, endDate, locale),
+        AnalyticsService.getTopSpendingItems(db, 5, startDate, endDate, locale)
       ]);
 
       // Calculate totals from daily data (or we could use getTotalSpending with date range if added)
@@ -102,7 +104,8 @@ export function useAnalytics(range: TimeRange) {
         name: getCategoryDisplayName(cat.categoryName),
         value: cat.totalSpent,
         itemCount: cat.itemCount,
-        color: getCategoryColor(cat.categoryName),
+        // Use color from database, fallback to getCategoryColor for items without color
+        color: (cat as any).colorCode || getCategoryColor(cat.categoryName),
         percentage: categoryTotal > 0 ? (cat.totalSpent / categoryTotal) * 100 : 0
       }));
 
@@ -164,7 +167,7 @@ export function useAnalytics(range: TimeRange) {
     } finally {
       setLoading(false);
     }
-  }, [db, range]);
+  }, [db, range, locale]);
 
   useEffect(() => {
     fetchData();

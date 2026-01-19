@@ -1,0 +1,746 @@
+Subcategory ID,Subcategory Name,Item Group
+10101,Taze Meyveler,Elma
+10101,Taze Meyveler,Portakal
+10101,Taze Meyveler,Muz
+10101,Taze Meyveler,Çilek
+10101,Taze Meyveler,Üzüm
+10101,Taze Meyveler,Kavun
+10101,Taze Meyveler,Karpuz
+10101,Taze Meyveler,Şeftali
+10101,Taze Meyveler,Kiraz
+10101,Taze Meyveler,Nar
+10102,Taze Sebzeler,Domates
+10102,Taze Sebzeler,Salatalık
+10102,Taze Sebzeler,Biber
+10102,Taze Sebzeler,Patlıcan
+10102,Taze Sebzeler,Kabak
+10102,Taze Sebzeler,Havuç
+10102,Taze Sebzeler,Soğan
+10102,Taze Sebzeler,Sarımsak
+10102,Taze Sebzeler,Patates
+10102,Taze Sebzeler,Yeşillik
+10103,Salata ve Yaprak,Marul
+10103,Salata ve Yaprak,Roka
+10103,Salata ve Yaprak,Maydanoz
+10103,Salata ve Yaprak,Dereotu
+10103,Salata ve Yaprak,Nane
+10103,Salata ve Yaprak,Fesleğen
+10103,Salata ve Yaprak,Ispanak
+10103,Salata ve Yaprak,Taze Soğan
+10201,Süt,Tam Yağlı Süt
+10201,Süt,Az Yağlı Süt
+10201,Süt,Yağsız Süt
+10201,Süt,Laktozsuz Süt
+10201,Süt,UHT Süt
+10201,Süt,Günlük Süt
+10202,Peynir,Beyaz Peynir
+10202,Peynir,Kaşar
+10202,Peynir,Tulum
+10202,Peynir,Lor
+10202,Peynir,Krem Peynir
+10202,Peynir,Çökelek
+10202,Peynir,Gravyer
+10202,Peynir,Ezine
+10203,Yoğurt,Süzme Yoğurt
+10203,Yoğurt,Tam Yağlı Yoğurt
+10203,Yoğurt,Light Yoğurt
+10203,Yoğurt,Ayran
+10203,Yoğurt,Kefir
+10203,Yoğurt,Meyveli Yoğurt
+10204,Tereyağı ve Krema,Tereyağı
+10204,Tereyağı ve Krema,Margarin
+10204,Tereyağı ve Krema,Krema
+10204,Tereyağı ve Krema,Kaymak
+10204,Tereyağı ve Krema,Labne
+10205,Yumurta,Tavuk Yumurtası
+10205,Yumurta,Köy Yumurtası
+10205,Yumurta,Organik Yumurta
+10301,Tavuk ve Kanatlı,Tavuk Göğsü
+10301,Tavuk ve Kanatlı,Tavuk Butu
+10301,Tavuk ve Kanatlı,Tavuk Kanat
+10301,Tavuk ve Kanatlı,Bütün Tavuk
+10301,Tavuk ve Kanatlı,Hindi
+10301,Tavuk ve Kanatlı,Tavuk Pirzola
+10302,Kırmızı Et,Dana Eti
+10302,Kırmızı Et,Kuzu Eti
+10302,Kırmızı Et,Kıyma
+10302,Kırmızı Et,Biftek
+10302,Kırmızı Et,Kuşbaşı
+10302,Kırmızı Et,Kemikli Et
+10302,Kırmızı Et,Kavurmalık
+10303,Balık ve Deniz Ürünleri,Hamsi
+10303,Balık ve Deniz Ürünleri,Çupra
+10303,Balık ve Deniz Ürünleri,Levrek
+10303,Balık ve Deniz Ürünleri,Palamut
+10303,Balık ve Deniz Ürünleri,Mezgit
+10303,Balık ve Deniz Ürünleri,İstavrit
+10303,Balık ve Deniz Ürünleri,Karides
+10303,Balık ve Deniz Ürünleri,Midye
+10303,Balık ve Deniz Ürünleri,Ahtapot
+10304,Şarküteri,Salam
+10304,Şarküteri,Sucuk
+10304,Şarküteri,Sosis
+10304,Şarküteri,Jambon
+10304,Şarküteri,Pastırma
+10304,Şarküteri,Dilimlenmiş Et
+10304,Şarküteri,Kavurma
+10304,Şarküteri,Kangal Sucuk
+10401,Ekmek,Beyaz Ekmek
+10401,Ekmek,Tam Buğday
+10401,Ekmek,Çavdar Ekmeği
+10401,Ekmek,Kepekli
+10401,Ekmek,Bazlama
+10401,Ekmek,Somun
+10401,Ekmek,Sandviç Ekmeği
+10402,Simit ve Poğaça,Simit
+10402,Simit ve Poğaça,Açma
+10402,Simit ve Poğaça,Poğaça
+10402,Simit ve Poğaça,Çörek
+10402,Simit ve Poğaça,Ay Çöreği
+10402,Simit ve Poğaça,Tuzlu Kurabiye
+10403,Pasta ve Tatlı,Kek
+10403,Pasta ve Tatlı,Pasta
+10403,Pasta ve Tatlı,Kurabiye
+10403,Pasta ve Tatlı,Waffle
+10403,Pasta ve Tatlı,Kruvasan
+10403,Pasta ve Tatlı,Donut
+10403,Pasta ve Tatlı,Muffin
+10501,Un ve Tahıl,Beyaz Un
+10501,Un ve Tahıl,Tam Buğday Unu
+10501,Un ve Tahıl,Mısır Unu
+10501,Un ve Tahıl,Pirinç
+10501,Un ve Tahıl,Bulgur
+10501,Un ve Tahıl,Yulaf
+10501,Un ve Tahıl,Kinoa
+10501,Un ve Tahıl,Kuskus
+10502,Makarna,Spagetti
+10502,Makarna,Fiyonk
+10502,Makarna,Burgu
+10502,Makarna,Penne
+10502,Makarna,Erişte
+10502,Makarna,Şehriye
+10502,Makarna,Arpa Şehriye
+10503,Baklagiller,Nohut
+10503,Baklagiller,Kuru Fasulye
+10503,Baklagiller,Kırmızı Mercimek
+10503,Baklagiller,Yeşil Mercimek
+10503,Baklagiller,Barbunya
+10503,Baklagiller,Börülce
+10504,Konserve,Konserve Domates
+10504,Konserve,Konserve Fasulye
+10504,Konserve,Mısır
+10504,Konserve,Bezelye
+10504,Konserve,Ton Balığı
+10504,Konserve,Biber Salçası
+10504,Konserve,Domates Salçası
+10505,Yağlar,Zeytinyağı
+10505,Yağlar,Ayçiçek Yağı
+10505,Yağlar,Mısırözü Yağı
+10505,Yağlar,Tereyağı
+10505,Yağlar,Margarin
+10506,Baharatlar,Karabiber
+10506,Baharatlar,Pul Biber
+10506,Baharatlar,Kimyon
+10506,Baharatlar,Kekik
+10506,Baharatlar,Nane
+10506,Baharatlar,Tarçın
+10506,Baharatlar,Zencefil
+10506,Baharatlar,Karanfil
+10601,Cips ve Krakerler,Patates Cipsi
+10601,Cips ve Krakerler,Mısır Cipsi
+10601,Cips ve Krakerler,Kraker
+10601,Cips ve Krakerler,Grissini
+10601,Cips ve Krakerler,Galeta
+10601,Cips ve Krakerler,Gevrek
+10602,Kuruyemiş,Fındık
+10602,Kuruyemiş,Fıstık
+10602,Kuruyemiş,Badem
+10602,Kuruyemiş,Ceviz
+10602,Kuruyemiş,Ay Çekirdeği
+10602,Kuruyemiş,Kabak Çekirdeği
+10602,Kuruyemiş,Kuru Üzüm
+10602,Kuruyemiş,Kuru Kayısı
+10603,Çikolata ve Şeker,Çikolata
+10603,Çikolata ve Şeker,Gofret
+10603,Çikolata ve Şeker,Bar
+10603,Çikolata ve Şeker,Şekerleme
+10603,Çikolata ve Şeker,Sakız
+10603,Çikolata ve Şeker,Lokum
+10603,Çikolata ve Şeker,Helva
+10701,Su,Doğal Su
+10701,Su,Maden Suyu
+10701,Su,Soda
+10702,Meşrubat,Kola
+10702,Meşrubat,Gazoz
+10702,Meşrubat,Limonata
+10702,Meşrubat,Enerji İçeceği
+10702,Meşrubat,Soğuk Çay
+10702,Meşrubat,Ayran
+10703,Meyve Suyu,Portakal Suyu
+10703,Meyve Suyu,Elma Suyu
+10703,Meyve Suyu,Vişne Suyu
+10703,Meyve Suyu,Şeftali Suyu
+10703,Meyve Suyu,Multivitamin
+10703,Meyve Suyu,Konsantre
+10704,Kahve ve Çay,Türk Kahvesi
+10704,Kahve ve Çay,Filtre Kahve
+10704,Kahve ve Çay,Neskafe
+10704,Kahve ve Çay,Çay
+10704,Kahve ve Çay,Bitki Çayı
+10704,Kahve ve Çay,Yeşil Çay
+10704,Kahve ve Çay,Meyve Çayı
+10801,Dondurulmuş Sebze,Karışık Sebze
+10801,Dondurulmuş Sebze,Fasulye
+10801,Dondurulmuş Sebze,Bezelye
+10801,Dondurulmuş Sebze,Mısır
+10801,Dondurulmuş Sebze,Ispanak
+10801,Dondurulmuş Sebze,Patates
+10802,Dondurulmuş Et,Köfte
+10802,Dondurulmuş Et,Nugget
+10802,Dondurulmuş Et,Balık
+10802,Dondurulmuş Et,Karides
+10802,Dondurulmuş Et,Et Ürünleri
+10803,Hazır Yemek,Pizza
+10803,Hazır Yemek,Börek
+10803,Hazır Yemek,Lahmacun
+10803,Hazır Yemek,Mantı
+10803,Hazır Yemek,Hamur İşleri
+10804,Dondurma,Kapaklı Dondurma
+10804,Dondurma,Külah
+10804,Dondurma,Çubuklu
+10804,Dondurma,Aile Boy
+10901,Reçel ve Bal,Çilek Reçeli
+10901,Reçel ve Bal,Kayısı Reçeli
+10901,Reçel ve Bal,Vişne Reçeli
+10901,Reçel ve Bal,Portakal Marmelatı
+10901,Reçel ve Bal,Süzme Bal
+10901,Reçel ve Bal,Pekmez
+10902,Çikolata ve Sürme,Çikolatalı Fındık Kreması
+10902,Çikolata ve Sürme,Fıstık Ezmesi
+10902,Çikolata ve Sürme,Tahin
+10902,Çikolata ve Sürme,Tahin Pekmez
+10903,Tahıl ve Mısır Gevreği,Mısır Gevreği
+10903,Tahıl ve Mısır Gevreği,Müsli
+10903,Tahıl ve Mısır Gevreği,Granola
+10903,Tahıl ve Mısır Gevreği,Yulaf Ezmesi
+10904,Zeytin ve Turşu,Siyah Zeytin
+10904,Zeytin ve Turşu,Yeşil Zeytin
+10904,Zeytin ve Turşu,Kırma Zeytin
+10904,Zeytin ve Turşu,Karışık Turşu
+10904,Zeytin ve Turşu,Salatalık Turşu
+10904,Zeytin ve Turşu,Biber Turşu
+20101,Deterjan,Toz Deterjan
+20101,Deterjan,Sıvı Deterjan
+20101,Deterjan,Kapsül Deterjan
+20101,Deterjan,Çamaşır Suyu
+20101,Deterjan,Leke Çıkarıcı
+20102,Yumuşatıcı,Yumuşatıcı
+20102,Yumuşatıcı,Kokulandırıcı
+20102,Yumuşatıcı,Çamaşır Parfümü
+20201,Bulaşık,Bulaşık Deterjanı
+20201,Bulaşık,Bulaşık Makinesi Tableti
+20201,Bulaşık,Bulaşık Makinesi Tuzu
+20201,Bulaşık,Parlatıcı
+20202,Sünger ve Bez,Bulaşık Süngeri
+20202,Sünger ve Bez,Mikrofiber Bez
+20202,Sünger ve Bez,Temizlik Bezi
+20202,Sünger ve Bez,Ovma Teli
+20203,Çöp Poşeti,Mutfak Çöp Poşeti
+20203,Çöp Poşeti,Büyük Çöp Poşeti
+20203,Çöp Poşeti,Kokulu Poşet
+20203,Çöp Poşeti,Battal Boy
+20301,Klozet ve Banyo,Klozet Temizleyici
+20301,Klozet ve Banyo,Kireç Çözücü
+20301,Klozet ve Banyo,Banyo Spreyi
+20301,Klozet ve Banyo,Duş Kabini Temizleyici
+20302,Dezenfektan,Çamaşır Suyu
+20302,Dezenfektan,Dezenfektan Sprey
+20302,Dezenfektan,Yüzey Temizleyici
+20401,Zemin Temizliği,Yüzey Temizleyici
+20401,Zemin Temizliği,Parke Temizleyici
+20401,Zemin Temizliği,Paspas
+20401,Zemin Temizliği,Süpürge
+20401,Zemin Temizliği,Elektrik Süpürgesi Torbası
+20402,Cam Temizliği,Cam Temizleyici
+20402,Cam Temizliği,Cam Bezi
+20402,Cam Temizliği,Silecek
+20501,Tuvalet Kağıdı,3 Katlı
+20501,Tuvalet Kağıdı,Jumbo
+20501,Tuvalet Kağıdı,Islak Tuvalet Kağıdı
+20502,Havlu ve Peçete,Kağıt Havlu
+20502,Havlu ve Peçete,Peçete
+20502,Havlu ve Peçete,Cep Mendili
+20502,Havlu ve Peçete,Kutu Mendil
+30101,Sabun,Sıvı Sabun
+30101,Sabun,Katı Sabun
+30101,Sabun,Antibakteriyel Sabun
+30101,Sabun,El Dezenfektanı
+30102,Duş,Duş Jeli
+30102,Duş,Şampuan
+30102,Duş,Saç Kremi
+30102,Duş,Banyo Köpüğü
+30103,Ağız Bakımı,Diş Macunu
+30103,Ağız Bakımı,Diş Fırçası
+30103,Ağız Bakımı,Ağız Gargarası
+30103,Ağız Bakımı,Diş İpi
+30104,Deodorant,Sprey Deodorant
+30104,Deodorant,Roll-on
+30104,Deodorant,Stick Deodorant
+30104,Deodorant,Parfüm
+30201,Şampuan ve Saç Kremi,Şampuan
+30201,Şampuan ve Saç Kremi,Saç Kremi
+30201,Şampuan ve Saç Kremi,Saç Maskesi
+30201,Şampuan ve Saç Kremi,Kepek Şampuanı
+30202,Saç Şekillendirme,Jöle
+30202,Saç Şekillendirme,Sprey
+30202,Saç Şekillendirme,Köpük
+30202,Saç Şekillendirme,Saç Kremi (Leave-in)
+30202,Saç Şekillendirme,Saç Boyası
+30301,Yüz Bakımı,Yüz Temizleyici
+30301,Yüz Bakımı,Tonik
+30301,Yüz Bakımı,Nemlendirici
+30301,Yüz Bakımı,Maske
+30301,Yüz Bakımı,Serum
+30301,Yüz Bakımı,Göz Kremi
+30302,Vücut Bakımı,Vücut Losyonu
+30302,Vücut Bakımı,El Kremi
+30302,Vücut Bakımı,Güneş Kremi
+30302,Vücut Bakımı,Peeling
+30401,Yüz Makyajı,Fondöten
+30401,Yüz Makyajı,Pudra
+30401,Yüz Makyajı,Allık
+30401,Yüz Makyajı,Highlighter
+30401,Yüz Makyajı,Kapatıcı
+30402,Göz Makyajı,Maskara
+30402,Göz Makyajı,Eyeliner
+30402,Göz Makyajı,Kaş Kalemi
+30402,Göz Makyajı,Far
+30403,Dudak Makyajı,Ruj
+30403,Dudak Makyajı,Dudak Parlatıcı
+30403,Dudak Makyajı,Dudak Kalemi
+30403,Dudak Makyajı,Dudak Balsamı
+30501,Erkek Tıraş,Tıraş Makinesi
+30501,Erkek Tıraş,Tıraş Bıçağı
+30501,Erkek Tıraş,Tıraş Köpüğü
+30501,Erkek Tıraş,Tıraş Kremi
+30501,Erkek Tıraş,Traş Sonrası Losyon
+30502,Kadın Epilasyon,Jilet
+30502,Kadın Epilasyon,Epilasyon Kremi
+30502,Kadın Epilasyon,Ağda
+30502,Kadın Epilasyon,Epilatör Yedek
+30601,Ped ve Tampon,Gündüz Pedi
+30601,Ped ve Tampon,Gece Pedi
+30601,Ped ve Tampon,Günlük Ped
+30601,Ped ve Tampon,Tampon
+40101,Ağrı Kesici,Parasetamol
+40101,Ağrı Kesici,İbuprofen
+40101,Ağrı Kesici,Aspirin
+40101,Ağrı Kesici,Ağrı Kesici Krem
+40102,Vitamin ve Takviye,Multivitamin
+40102,Vitamin ve Takviye,Vitamin C
+40102,Vitamin ve Takviye,Vitamin D
+40102,Vitamin ve Takviye,Omega 3
+40102,Vitamin ve Takviye,Probiyotik
+40102,Vitamin ve Takviye,Kalsiyum
+40103,Soğuk Algınlığı,Nezle İlacı
+40103,Soğuk Algınlığı,Öksürük Şurubu
+40103,Soğuk Algınlığı,Boğaz Spreyi
+40103,Soğuk Algınlığı,Pastil
+40201,Pansuman,Yara Bandı
+40201,Pansuman,Gazlı Bez
+40201,Pansuman,Pamuk
+40201,Pansuman,Antiseptik
+40201,Pansuman,Sargı Bezi
+40202,Termometre ve Ölçüm,Termometre
+40202,Termometre ve Ölçüm,Tansiyon Aleti
+40202,Termometre ve Ölçüm,Kan Şekeri Ölçer
+40301,Bebek Bakımı,Bebek Bezi
+40301,Bebek Bakımı,Islak Mendil
+40301,Bebek Bakımı,Bebek Şampuanı
+40301,Bebek Bakımı,Bebek Losyonu
+40301,Bebek Bakımı,Pişik Kremi
+40302,Bebek Maması,Devam Sütü
+40302,Bebek Maması,Kaşık Maması
+40302,Bebek Maması,Ek Gıda
+40401,Tansiyon ve Ateş,Tansiyon Aleti
+40401,Tansiyon ve Ateş,Ateş Ölçer
+40401,Tansiyon ve Ateş,Nabız Ölçer
+50101,Akıllı Telefon,iPhone
+50101,Akıllı Telefon,Samsung
+50101,Akıllı Telefon,Xiaomi
+50101,Akıllı Telefon,Huawei
+50101,Akıllı Telefon,Oppo
+50101,Akıllı Telefon,Realme
+50102,Tablet,iPad
+50102,Tablet,Samsung Tablet
+50102,Tablet,Android Tablet
+50103,Aksesuarlar,Kılıf
+50103,Aksesuarlar,Ekran Koruyucu
+50103,Aksesuarlar,Şarj Aleti
+50103,Aksesuarlar,Kablosuz Şarj
+50103,Aksesuarlar,Kulaklık
+50201,Dizüstü Bilgisayar,MacBook
+50201,Dizüstü Bilgisayar,Windows Laptop
+50201,Dizüstü Bilgisayar,Gaming Laptop
+50201,Dizüstü Bilgisayar,Chromebook
+50202,Masaüstü,PC Kasası
+50202,Masaüstü,All-in-One
+50202,Masaüstü,Gaming PC
+50203,Çevre Birimleri,Klavye
+50203,Çevre Birimleri,Mouse
+50203,Çevre Birimleri,Monitör
+50203,Çevre Birimleri,Yazıcı
+50203,Çevre Birimleri,Tarayıcı
+50203,Çevre Birimleri,Webcam
+50203,Çevre Birimleri,Hoparlör
+50301,Kulaklık,Kablosuz Kulaklık
+50301,Kulaklık,Kulak İçi
+50301,Kulaklık,Kulak Üstü
+50301,Kulaklık,Gaming Kulaklık
+50302,Hoparlör,Bluetooth Hoparlör
+50302,Hoparlör,Soundbar
+50302,Hoparlör,Ev Sinema Sistemi
+50303,TV,Smart TV
+50303,TV,LED TV
+50303,TV,OLED TV
+50303,TV,TV Kutusu
+50401,Kamera,DSLR
+50401,Kamera,Mirrorless
+50401,Kamera,Kompakt Kamera
+50401,Kamera,Action Kamera
+50402,Objektif ve Aksesuar,Objektif
+50402,Objektif ve Aksesuar,Tripod
+50402,Objektif ve Aksesuar,Flaş
+50402,Objektif ve Aksesuar,Hafıza Kartı
+50402,Objektif ve Aksesuar,Çanta
+50501,Konsollar,PlayStation
+50501,Konsollar,Xbox
+50501,Konsollar,Nintendo Switch
+50502,Oyun ve Aksesuar,Oyun
+50502,Oyun ve Aksesuar,Kol
+50502,Oyun ve Aksesuar,VR Gözlük
+50502,Oyun ve Aksesuar,Aksesuar
+60101,Üst Giyim,Bluz
+60101,Üst Giyim,Tişört
+60101,Üst Giyim,Gömlek
+60101,Üst Giyim,Kazak
+60101,Üst Giyim,Hırka
+60101,Üst Giyim,Sweatshirt
+60102,Alt Giyim,Pantolon
+60102,Alt Giyim,Jean
+60102,Alt Giyim,Etek
+60102,Alt Giyim,Şort
+60102,Alt Giyim,Tayt
+60103,Elbise,Günlük Elbise
+60103,Elbise,Gece Elbisesi
+60103,Elbise,Yazlık Elbise
+60104,Dış Giyim,Mont
+60104,Dış Giyim,Kaban
+60104,Dış Giyim,Ceket
+60104,Dış Giyim,Trençkot
+60104,Dış Giyim,Yelek
+60201,Üst Giyim,Tişört
+60201,Üst Giyim,Gömlek
+60201,Üst Giyim,Polo
+60201,Üst Giyim,Kazak
+60201,Üst Giyim,Sweatshirt
+60202,Alt Giyim,Pantolon
+60202,Alt Giyim,Jean
+60202,Alt Giyim,Şort
+60202,Alt Giyim,Eşofman Altı
+60203,Dış Giyim,Mont
+60203,Dış Giyim,Ceket
+60203,Dış Giyim,Kaban
+60203,Dış Giyim,Yelek
+60301,Bebek Giyim,Body
+60301,Bebek Giyim,Tulum
+60301,Bebek Giyim,Pijama
+60301,Bebek Giyim,Elbise
+60301,Bebek Giyim,Takım
+60302,Çocuk Üst,Tişört
+60302,Çocuk Üst,Gömlek
+60302,Çocuk Üst,Kazak
+60302,Çocuk Üst,Sweatshirt
+60303,Çocuk Alt,Pantolon
+60303,Çocuk Alt,Etek
+60303,Çocuk Alt,Şort
+60303,Çocuk Alt,Tayt
+60401,Spor Ayakkabı,Koşu Ayakkabısı
+60401,Spor Ayakkabı,Günlük Spor
+60401,Spor Ayakkabı,Basketbol Ayakkabısı
+60402,Klasik Ayakkabı,Erkek Klasik
+60402,Klasik Ayakkabı,Kadın Topuklu
+60402,Klasik Ayakkabı,Babet
+60402,Klasik Ayakkabı,Loafer
+60403,Sandalet ve Terlik,Sandalet
+60403,Sandalet ve Terlik,Terlik
+60403,Sandalet ve Terlik,Ev Terliği
+60403,Sandalet ve Terlik,Plaj Terliği
+60501,Çanta,El Çantası
+60501,Çanta,Sırt Çantası
+60501,Çanta,Omuz Çantası
+60501,Çanta,Valiz
+60501,Çanta,Cüzdan
+60502,Takı,Kolye
+60502,Takı,Küpe
+60502,Takı,Bilezik
+60502,Takı,Yüzük
+60502,Takı,Saat
+60503,Diğer Aksesuarlar,Atkı
+60503,Diğer Aksesuarlar,Bere
+60503,Diğer Aksesuarlar,Eldiven
+60503,Diğer Aksesuarlar,Şapka
+60503,Diğer Aksesuarlar,Kemer
+60503,Diğer Aksesuarlar,Güneş Gözlüğü
+60601,Kadın İç Giyim,Sütyen
+60601,Kadın İç Giyim,Külot
+60601,Kadın İç Giyim,Pijama
+60601,Kadın İç Giyim,Gecelik
+60601,Kadın İç Giyim,Sabahlık
+60602,Erkek İç Giyim,Boxer
+60602,Erkek İç Giyim,Atlet
+60602,Erkek İç Giyim,Çorap
+60602,Erkek İç Giyim,Pijama
+70101,Oturma Odası,Koltuk
+70101,Oturma Odası,Sehpa
+70101,Oturma Odası,TV Ünitesi
+70101,Oturma Odası,Raf
+70101,Oturma Odası,Kitaplık
+70102,Yatak Odası,Yatak
+70102,Yatak Odası,Şifonyer
+70102,Yatak Odası,Komodin
+70102,Yatak Odası,Gardrop
+70102,Yatak Odası,Makyaj Masası
+70103,Mutfak,Masa
+70103,Mutfak,Sandalye
+70103,Mutfak,Dolap
+70103,Mutfak,Raf Sistemi
+70201,Yatak Tekstili,Nevresim
+70201,Yatak Tekstili,Çarşaf
+70201,Yatak Tekstili,Yastık
+70201,Yatak Tekstili,Yatak Örtüsü
+70201,Yatak Tekstili,Pike
+70201,Yatak Tekstili,Battaniye
+70202,Havlu,Banyo Havlusu
+70202,Havlu,Plaj Havlusu
+70202,Havlu,El Havlusu
+70202,Havlu,Bornoz
+70203,Perde,Fon Perde
+70203,Perde,Güneşlik
+70203,Perde,Stor Perde
+70203,Perde,Tül
+70301,Tencere ve Tava,Tencere Seti
+70301,Tencere ve Tava,Tava
+70301,Tencere ve Tava,Düdüklü Tencere
+70301,Tencere ve Tava,Wok
+70302,Sofra,Yemek Takımı
+70302,Sofra,Çatal Bıçak Seti
+70302,Sofra,Bardak
+70302,Sofra,Fincan
+70302,Sofra,Kase
+70303,Mutfak Gereçleri,Bıçak Seti
+70303,Mutfak Gereçleri,Kesme Tahtası
+70303,Mutfak Gereçleri,Kevgir
+70303,Mutfak Gereçleri,Kaşık Seti
+70303,Mutfak Gereçleri,Açacak
+70304,Saklama Kabı,Buzdolabı Kabı
+70304,Saklama Kabı,Cam Saklama
+70304,Saklama Kabı,Plastik Saklama
+70304,Saklama Kabı,Vakum Saklama
+70401,Beyaz Eşya,Buzdolabı
+70401,Beyaz Eşya,Çamaşır Makinesi
+70401,Beyaz Eşya,Bulaşık Makinesi
+70401,Beyaz Eşya,Fırın
+70401,Beyaz Eşya,Ocak
+70402,Küçük Ev Aletleri,Blender
+70402,Küçük Ev Aletleri,Mikser
+70402,Küçük Ev Aletleri,Kahve Makinesi
+70402,Küçük Ev Aletleri,Tost Makinesi
+70402,Küçük Ev Aletleri,Ütü
+70402,Küçük Ev Aletleri,Süpürge
+70501,Aydınlatma,Avize
+70501,Aydınlatma,Masa Lambası
+70501,Aydınlatma,Abajur
+70501,Aydınlatma,LED Lamba
+70501,Aydınlatma,Spot
+70502,Dekor Ürünler,Vazo
+70502,Dekor Ürünler,Çerçeve
+70502,Dekor Ürünler,Duvar Saati
+70502,Dekor Ürünler,Mum
+70502,Dekor Ürünler,Heykel
+70502,Dekor Ürünler,Halı
+80101,Motorlu Yakıt,Benzin
+80101,Motorlu Yakıt,Motorin
+80101,Motorlu Yakıt,LPG
+80201,Kartlar ve Biletler,İstanbulkart
+80201,Kartlar ve Biletler,Ankarakart
+80201,Kartlar ve Biletler,Otobüs Bileti
+80201,Kartlar ve Biletler,Metro
+80201,Kartlar ve Biletler,Vapur
+80301,Otopark,Otopark Ücreti
+80301,Otopark,Vale
+80302,Köprü ve Otoyol,HGS
+80302,Köprü ve Otoyol,OGS
+80302,Köprü ve Otoyol,Köprü Geçişi
+80401,Servis ve Tamir,Periyodik Bakım
+80401,Servis ve Tamir,Yağ Değişimi
+80401,Servis ve Tamir,Lastik Değişimi
+80401,Servis ve Tamir,Fren Tamiri
+80402,Yıkama,Oto Yıkama
+80402,Yıkama,Detaylı Temizlik
+80402,Yıkama,İç Temizlik
+90101,Streaming,Netflix
+90101,Streaming,Disney+
+90101,Streaming,Amazon Prime
+90101,Streaming,Spotify
+90101,Streaming,Apple Music
+90101,Streaming,YouTube Premium
+90102,Oyun,Steam
+90102,Oyun,PlayStation Store
+90102,Oyun,Xbox Store
+90102,Oyun,Mobile Oyun
+90201,Kitap,Roman
+90201,Kitap,Kurgu Dışı
+90201,Kitap,Çocuk Kitabı
+90201,Kitap,E-Kitap
+90202,Dergi ve Gazete,Dergi
+90202,Dergi ve Gazete,Gazete
+90202,Dergi ve Gazete,Dijital Abonelik
+90301,Biletler,Sinema Bileti
+90301,Biletler,Tiyatro Bileti
+90301,Biletler,Konser Bileti
+90301,Biletler,Stand-up
+90401,Sanat Malzemeleri,Boya
+90401,Sanat Malzemeleri,Fırça
+90401,Sanat Malzemeleri,Tuval
+90401,Sanat Malzemeleri,Kalem Seti
+90401,Sanat Malzemeleri,Eskiz Defteri
+90402,Müzik Aletleri,Gitar
+90402,Müzik Aletleri,Piyano
+90402,Müzik Aletleri,Bağlama
+90402,Müzik Aletleri,Ud
+90402,Müzik Aletleri,Aksesuarlar
+100101,Kıyafetler,Tişört
+100101,Kıyafetler,Şort
+100101,Kıyafetler,Tayt
+100101,Kıyafetler,Eşofman
+100101,Kıyafetler,Koşu Forması
+100102,Ayakkabı,Koşu Ayakkabısı
+100102,Ayakkabı,Basketbol Ayakkabısı
+100102,Ayakkabı,Futbol Krampon
+100102,Ayakkabı,Tenis Ayakkabısı
+100201,Fitness,Dambıl
+100201,Fitness,Yoga Matı
+100201,Fitness,Pilates Topu
+100201,Fitness,Direnç Bandı
+100201,Fitness,Atlama İpi
+100202,Takım Sporları,Futbol Topu
+100202,Takım Sporları,Basketbol Topu
+100202,Takım Sporları,Voleybol Topu
+100203,Outdoor,Çadır
+100203,Outdoor,Uyku Tulumu
+100203,Outdoor,Kamp Malzemeleri
+100203,Outdoor,Bisiklet
+100203,Outdoor,Kaykay
+100301,Üyelik,Fitness Üyeliği
+100301,Üyelik,Yüzme Üyeliği
+100301,Üyelik,Grup Dersleri
+110101,Yazı Gereçleri,Kalem
+110101,Yazı Gereçleri,Tükenmez
+110101,Yazı Gereçleri,Kurşun Kalem
+110101,Yazı Gereçleri,Silgi
+110101,Yazı Gereçleri,Kalemtıraş
+110101,Yazı Gereçleri,Fosforlu Kalem
+110102,Defter ve Ajanda,Defter
+110102,Defter ve Ajanda,Ajanda
+110102,Defter ve Ajanda,Not Defteri
+110102,Defter ve Ajanda,Blok Not
+110103,Dosyalama,Klasör
+110103,Dosyalama,Dosya
+110103,Dosyalama,Poşet Dosya
+110103,Dosyalama,Zımba
+110103,Dosyalama,Delgeç
+110201,Çanta,Okul Çantası
+110201,Çanta,Sırt Çantası
+110201,Çanta,Beslenme Çantası
+110202,Sanat Malzemeleri,Boya Kalemi
+110202,Sanat Malzemeleri,Pastel
+110202,Sanat Malzemeleri,Suluboya
+110202,Sanat Malzemeleri,Makas
+110202,Sanat Malzemeleri,Yapıştırıcı
+110301,Kurslar,Dil Kursu
+110301,Kurslar,Dersane
+110301,Kurslar,Online Eğitim
+110301,Kurslar,Sertifika Programı
+120101,Elektrik ve Doğalgaz,Elektrik Faturası
+120101,Elektrik ve Doğalgaz,Doğalgaz Faturası
+120102,Su,Su Faturası
+120103,İletişim,Telefon Faturası
+120103,İletişim,İnternet Faturası
+120103,İletişim,Mobil Hat
+120201,Hukuki,Avukat
+120201,Hukuki,Noter
+120201,Hukuki,Danışmanlık
+120202,Mali,Muhasebe
+120202,Mali,Vergi Danışmanlığı
+120301,Tamir ve Tadilat,Elektrikçi
+120301,Tamir ve Tadilat,Tesisatçı
+120301,Tamir ve Tadilat,Boyacı
+120301,Tamir ve Tadilat,Marangoz
+120302,Temizlik,Ev Temizliği
+120302,Temizlik,Halı Yıkama
+120302,Temizlik,Koltuk Yıkama
+120401,Kuaför,Kadın Kuaförü
+120401,Kuaför,Erkek Berberi
+120401,Kuaför,Saç Boyama
+120401,Kuaför,Saç Bakımı
+120402,Estetik,Manikür
+120402,Estetik,Pedikür
+120402,Estetik,Kaş Dizaynı
+120402,Estetik,Cilt Bakımı
+120402,Estetik,Masaj
+130101,Mama,Kuru Mama
+130101,Mama,Yaş Mama
+130101,Mama,Ödül Maması
+130102,Kum ve Hijyen,Kedi Kumu
+130102,Kum ve Hijyen,Kedi Tuvaleti
+130102,Kum ve Hijyen,Koku Giderici
+130103,Aksesuarlar,Kedi Evi
+130103,Aksesuarlar,Tırmalama
+130103,Aksesuarlar,Oyuncak
+130103,Aksesuarlar,Mama Kabı
+130201,Mama,Kuru Mama
+130201,Mama,Yaş Mama
+130201,Mama,Ödül Maması
+130201,Mama,Kemik
+130202,Aksesuar,Tasma
+130202,Aksesuar,Gezdirme Kayışı
+130202,Aksesuar,Köpek Evi
+130202,Aksesuar,Oyuncak
+130202,Aksesuar,Mama Kabı
+130203,Hijyen,Şampuan
+130203,Hijyen,Tırnak Makası
+130203,Hijyen,Tüy Tarağı
+130203,Hijyen,Diş Fırçası
+130301,Kuş,Kuş Yemi
+130301,Kuş,Kafes
+130301,Kuş,Su Kabı
+130301,Kuş,Tünek
+130302,Akvaryum,Balık Yemi
+130302,Akvaryum,Akvaryum
+130302,Akvaryum,Filtre
+130302,Akvaryum,Dekorasyon
+130401,Sağlık,Aşı
+130401,Sağlık,İlaç
+130401,Sağlık,Vitamin
+130401,Sağlık,Pire Tasması
+140101,Bağışlar,Hayır Kurumu
+140101,Bağışlar,Eğitim Bağışı
+140101,Bağışlar,Sağlık Bağışı
+140201,Hediye Ürünler,Hediye Çeki
+140201,Hediye Ürünler,Hediye Paketi
+140201,Hediye Ürünler,Çiçek
+140301,Sigara,Sigara
+140301,Sigara,Çakmak
+140301,Sigara,Puro
+140401,Diğer Alışverişler,Çeşitli

@@ -1,0 +1,162 @@
+Department,Department Color,Category,Category Color,Subcategory,Subcategory Color
+Food & Beverage,#2E7D32,Fruits & Vegetables,#4CAF50,Fresh Fruits,#66BB6A
+Food & Beverage,#2E7D32,Fruits & Vegetables,#4CAF50,Fresh Vegetables,#81C784
+Food & Beverage,#2E7D32,Fruits & Vegetables,#4CAF50,Salad & Greens,#A5D6A7
+Food & Beverage,#2E7D32,Dairy Products,#8BC34A,Milk,#9CCC65
+Food & Beverage,#2E7D32,Dairy Products,#8BC34A,Cheese,#AED581
+Food & Beverage,#2E7D32,Dairy Products,#8BC34A,Yogurt,#C5E1A5
+Food & Beverage,#2E7D32,Dairy Products,#8BC34A,Butter & Cream,#DCEDC8
+Food & Beverage,#2E7D32,Dairy Products,#8BC34A,Eggs,#E8F5E9
+Food & Beverage,#2E7D32,Meat & Seafood,#1B5E20,Poultry,#2E7D32
+Food & Beverage,#2E7D32,Meat & Seafood,#1B5E20,Red Meat,#388E3C
+Food & Beverage,#2E7D32,Meat & Seafood,#1B5E20,Fish & Seafood,#43A047
+Food & Beverage,#2E7D32,Meat & Seafood,#1B5E20,Deli Meats,#4CAF50
+Food & Beverage,#2E7D32,Bakery & Bread,#CDC092,Bread,#D4C9A1
+Food & Beverage,#2E7D32,Bakery & Bread,#CDC092,Simit & Pastries,#DDD2B0
+Food & Beverage,#2E7D32,Bakery & Bread,#CDC092,Cakes & Desserts,#E6DBBF
+Food & Beverage,#2E7D32,Pantry Staples,#7CB342,Flour & Grains,#8BC34A
+Food & Beverage,#2E7D32,Pantry Staples,#7CB342,Pasta,#9CCC65
+Food & Beverage,#2E7D32,Pantry Staples,#7CB342,Legumes,#AED581
+Food & Beverage,#2E7D32,Pantry Staples,#7CB342,Canned Goods,#C5E1A5
+Food & Beverage,#2E7D32,Pantry Staples,#7CB342,Oils & Fats,#DCEDC8
+Food & Beverage,#2E7D32,Pantry Staples,#7CB342,Spices,#E8F5E9
+Food & Beverage,#2E7D32,Snacks,#00C853,Chips & Crackers,#00E676
+Food & Beverage,#2E7D32,Snacks,#00C853,Nuts & Dried Fruits,#1DE9B6
+Food & Beverage,#2E7D32,Snacks,#00C853,Chocolate & Candy,#64FFDA
+Food & Beverage,#2E7D32,Beverages,#66BB6A,Water,#81C784
+Food & Beverage,#2E7D32,Beverages,#66BB6A,Soft Drinks,#A5D6A7
+Food & Beverage,#2E7D32,Beverages,#66BB6A,Juice,#C8E6C9
+Food & Beverage,#2E7D32,Beverages,#66BB6A,Coffee & Tea,#E8F5E9
+Food & Beverage,#2E7D32,Frozen Foods,#69F0AE,Frozen Vegetables,#B9F6CA
+Food & Beverage,#2E7D32,Frozen Foods,#69F0AE,Frozen Meat,#CCFCD6
+Food & Beverage,#2E7D32,Frozen Foods,#69F0AE,Ready Meals,#E0FFE8
+Food & Beverage,#2E7D32,Frozen Foods,#69F0AE,Ice Cream,#F1FFF5
+Food & Beverage,#2E7D32,Breakfast Items,#558B2F,Jams & Honey,#689F38
+Food & Beverage,#2E7D32,Breakfast Items,#558B2F,Spreads,#7CB342
+Food & Beverage,#2E7D32,Breakfast Items,#558B2F,Cereals,#8BC34A
+Food & Beverage,#2E7D32,Breakfast Items,#558B2F,Olives & Pickles,#9CCC65
+Household & Cleaning,#0288D1,Laundry,#03A9F4,Detergent,#29B6F6
+Household & Cleaning,#0288D1,Laundry,#03A9F4,Fabric Softener,#4FC3F7
+Household & Cleaning,#0288D1,Kitchen Cleaning,#0277BD,Dishwashing,#0288D1
+Household & Cleaning,#0288D1,Kitchen Cleaning,#0277BD,Sponges & Cloths,#039BE5
+Household & Cleaning,#0288D1,Kitchen Cleaning,#0277BD,Trash Bags,#03A9F4
+Household & Cleaning,#0288D1,Bathroom Cleaning,#01579B,Toilet & Bathroom,#0277BD
+Household & Cleaning,#0288D1,Bathroom Cleaning,#01579B,Disinfectant,#0288D1
+Household & Cleaning,#0288D1,General Cleaning,#0097A7,Floor Cleaning,#00ACC1
+Household & Cleaning,#0288D1,General Cleaning,#0097A7,Glass Cleaning,#00BCD4
+Household & Cleaning,#0288D1,Paper Products,#006064,Toilet Paper,#00838F
+Household & Cleaning,#0288D1,Paper Products,#006064,Towels & Napkins,#0097A7
+Personal Care & Beauty,#AB47BC,Hygiene,#BA68C8,Soap,#CE93D8
+Personal Care & Beauty,#AB47BC,Hygiene,#BA68C8,Shower,#E1BEE7
+Personal Care & Beauty,#AB47BC,Hygiene,#BA68C8,Oral Care,#F3E5F5
+Personal Care & Beauty,#AB47BC,Hygiene,#BA68C8,Deodorant,#EDE7F6
+Personal Care & Beauty,#AB47BC,Hair Care,#9C27B0,Shampoo & Conditioner,#AB47BC
+Personal Care & Beauty,#AB47BC,Hair Care,#9C27B0,Hair Styling,#BA68C8
+Personal Care & Beauty,#AB47BC,Skin Care,#8E24AA,Face Care,#9C27B0
+Personal Care & Beauty,#AB47BC,Skin Care,#8E24AA,Body Care,#AB47BC
+Personal Care & Beauty,#AB47BC,Makeup,#6A1B9A,Face Makeup,#7B1FA2
+Personal Care & Beauty,#AB47BC,Makeup,#6A1B9A,Eye Makeup,#8E24AA
+Personal Care & Beauty,#AB47BC,Makeup,#6A1B9A,Lip Makeup,#9C27B0
+Personal Care & Beauty,#AB47BC,Shaving,#4A148C,Men's Shaving,#6A1B9A
+Personal Care & Beauty,#AB47BC,Shaving,#4A148C,Women's Hair Removal,#7B1FA2
+Personal Care & Beauty,#AB47BC,Feminine Hygiene,#D500F9,Pads & Tampons,#E040FB
+Health & Pharmacy,#E91E63,Medicine & Vitamins,#EC407A,Pain Relief,#F06292
+Health & Pharmacy,#E91E63,Medicine & Vitamins,#EC407A,Vitamins & Supplements,#F48FB1
+Health & Pharmacy,#E91E63,Medicine & Vitamins,#EC407A,Cold & Flu,#F8BBD0
+Health & Pharmacy,#E91E63,First Aid,#C2185B,Wound Care,#D81B60
+Health & Pharmacy,#E91E63,First Aid,#C2185B,Thermometer & Measurement,#E91E63
+Health & Pharmacy,#E91E63,Mother & Baby Health,#880E4F,Baby Care,#AD1457
+Health & Pharmacy,#E91E63,Mother & Baby Health,#880E4F,Baby Formula,#C2185B
+Health & Pharmacy,#E91E63,Medical Devices,#AD1457,BP & Temperature,#C2185B
+Electronics & Technology,#2196F3,Phones & Tablets,#42A5F5,Smartphones,#64B5F6
+Electronics & Technology,#2196F3,Phones & Tablets,#42A5F5,Tablets,#90CAF9
+Electronics & Technology,#2196F3,Phones & Tablets,#42A5F5,Accessories,#BBDEFB
+Electronics & Technology,#2196F3,Computers,#1976D2,Laptops,#1E88E5
+Electronics & Technology,#2196F3,Computers,#1976D2,Desktops,#2196F3
+Electronics & Technology,#2196F3,Computers,#1976D2,Peripherals,#42A5F5
+Electronics & Technology,#2196F3,Audio & Video,#0D47A1,Headphones,#1565C0
+Electronics & Technology,#2196F3,Audio & Video,#0D47A1,Speakers,#1976D2
+Electronics & Technology,#2196F3,Audio & Video,#0D47A1,Television,#1E88E5
+Electronics & Technology,#2196F3,Photography & Camera,#01579B,Cameras,#0277BD
+Electronics & Technology,#2196F3,Photography & Camera,#01579B,Lens & Accessories,#0288D1
+Electronics & Technology,#2196F3,Gaming Consoles,#0091EA,Consoles,#00B0FF
+Electronics & Technology,#2196F3,Gaming Consoles,#0091EA,Games & Accessories,#40C4FF
+Clothing & Fashion,#FF6F61,Women's Clothing,#FF8A80,Tops,#FF9E80
+Clothing & Fashion,#FF6F61,Women's Clothing,#FF8A80,Bottoms,#FFB199
+Clothing & Fashion,#FF6F61,Women's Clothing,#FF8A80,Dresses,#FFC5B3
+Clothing & Fashion,#FF6F61,Women's Clothing,#FF8A80,Outerwear,#FFD8CC
+Clothing & Fashion,#FF6F61,Men's Clothing,#FF5252,Tops,#FF6E6E
+Clothing & Fashion,#FF6F61,Men's Clothing,#FF5252,Bottoms,#FF8A8A
+Clothing & Fashion,#FF6F61,Men's Clothing,#FF5252,Outerwear,#FFA6A6
+Clothing & Fashion,#FF6F61,Kids' Clothing,#F44336,Baby Clothing,#E57373
+Clothing & Fashion,#FF6F61,Kids' Clothing,#F44336,Kids' Tops,#EF5350
+Clothing & Fashion,#FF6F61,Kids' Clothing,#F44336,Kids' Bottoms,#F44336
+Clothing & Fashion,#FF6F61,Shoes,#D32F2F,Sneakers,#E53935
+Clothing & Fashion,#FF6F61,Shoes,#D32F2F,Dress Shoes,#F44336
+Clothing & Fashion,#FF6F61,Shoes,#D32F2F,Sandals & Slippers,#EF5350
+Clothing & Fashion,#FF6F61,Accessories,#C62828,Bags,#D32F2F
+Clothing & Fashion,#FF6F61,Accessories,#C62828,Jewelry,#E53935
+Clothing & Fashion,#FF6F61,Accessories,#C62828,Other Accessories,#F44336
+Clothing & Fashion,#FF6F61,Underwear,#B71C1C,Women's Underwear,#C62828
+Clothing & Fashion,#FF6F61,Underwear,#B71C1C,Men's Underwear,#D32F2F
+Home & Living,#795548,Furniture,#8D6E63,Living Room,#A1887F
+Home & Living,#795548,Furniture,#8D6E63,Bedroom,#BCAAA4
+Home & Living,#795548,Furniture,#8D6E63,Kitchen,#D7CCC8
+Home & Living,#795548,Home Textiles,#6D4C41,Bedding,#795548
+Home & Living,#795548,Home Textiles,#6D4C41,Towels,#8D6E63
+Home & Living,#795548,Home Textiles,#6D4C41,Curtains,#A1887F
+Home & Living,#795548,Kitchenware,#5D4037,Pots & Pans,#6D4C41
+Home & Living,#795548,Kitchenware,#5D4037,Tableware,#795548
+Home & Living,#795548,Kitchenware,#5D4037,Kitchen Tools,#8D6E63
+Home & Living,#795548,Kitchenware,#5D4037,Storage Containers,#A1887F
+Home & Living,#795548,Home Appliances,#4E342E,Major Appliances,#5D4037
+Home & Living,#795548,Home Appliances,#4E342E,Small Appliances,#6D4C41
+Home & Living,#795548,Decoration,#3E2723,Lighting,#4E342E
+Home & Living,#795548,Decoration,#3E2723,Decor Items,#5D4037
+Transportation & Fuel,#FF5722,Fuel,#FF6F43,Vehicle Fuel,#FF8A65
+Transportation & Fuel,#FF5722,Public Transport,#F4511E,Cards & Tickets,#FF5722
+Transportation & Fuel,#FF5722,Parking & Tolls,#E64A19,Parking,#FF5722
+Transportation & Fuel,#FF5722,Parking & Tolls,#E64A19,Bridge & Highway,#FF6F43
+Transportation & Fuel,#FF5722,Vehicle Maintenance,#D84315,Service & Repair,#E64A19
+Transportation & Fuel,#FF5722,Vehicle Maintenance,#D84315,Car Wash,#F4511E
+Entertainment & Media,#9C27B0,Digital Content,#AB47BC,Streaming Services,#BA68C8
+Entertainment & Media,#9C27B0,Digital Content,#AB47BC,Gaming,#CE93D8
+Entertainment & Media,#9C27B0,Books & Magazines,#8E24AA,Books,#9C27B0
+Entertainment & Media,#9C27B0,Books & Magazines,#8E24AA,Magazines & Newspapers,#AB47BC
+Entertainment & Media,#9C27B0,Cinema & Theater,#7B1FA2,Tickets,#8E24AA
+Entertainment & Media,#9C27B0,Hobbies,#6A1B9A,Art Supplies,#7B1FA2
+Entertainment & Media,#9C27B0,Hobbies,#6A1B9A,Musical Instruments,#8E24AA
+Sports & Outdoors,#009688,Sportswear,#26A69A,Clothing,#4DB6AC
+Sports & Outdoors,#009688,Sportswear,#26A69A,Footwear,#80CBC4
+Sports & Outdoors,#009688,Sports Equipment,#00897B,Fitness,#009688
+Sports & Outdoors,#009688,Sports Equipment,#00897B,Team Sports,#26A69A
+Sports & Outdoors,#009688,Sports Equipment,#00897B,Outdoor,#4DB6AC
+Sports & Outdoors,#009688,Gyms,#00796B,Membership,#00897B
+Education & Stationery,#3F51B5,Stationery,#5C6BC0,Writing Supplies,#7986CB
+Education & Stationery,#3F51B5,Stationery,#5C6BC0,Notebooks & Planners,#9FA8DA
+Education & Stationery,#3F51B5,Stationery,#5C6BC0,Filing,#C5CAE9
+Education & Stationery,#3F51B5,School Supplies,#303F9F,Bags,#3949AB
+Education & Stationery,#3F51B5,School Supplies,#303F9F,Art Supplies,#3F51B5
+Education & Stationery,#3F51B5,Educational Services,#283593,Courses,#303F9F
+Services,#607D8B,Utilities,#78909C,Electricity & Gas,#90A4AE
+Services,#607D8B,Utilities,#78909C,Water,#B0BEC5
+Services,#607D8B,Utilities,#78909C,Communication,#CFD8DC
+Services,#607D8B,Professional Services,#546E7A,Legal,#607D8B
+Services,#607D8B,Professional Services,#546E7A,Financial,#78909C
+Services,#607D8B,Home Services,#455A64,Repair & Renovation,#546E7A
+Services,#607D8B,Home Services,#455A64,Cleaning,#607D8B
+Services,#607D8B,Beauty & Care,#37474F,Hairdresser,#455A64
+Services,#607D8B,Beauty & Care,#37474F,Aesthetics,#546E7A
+Pets,#8BC34A,Cats,#9CCC65,Food,#AED581
+Pets,#8BC34A,Cats,#9CCC65,Litter & Hygiene,#C5E1A5
+Pets,#8BC34A,Cats,#9CCC65,Accessories,#DCEDC8
+Pets,#8BC34A,Dogs,#7CB342,Food,#8BC34A
+Pets,#8BC34A,Dogs,#7CB342,Accessories,#9CCC65
+Pets,#8BC34A,Dogs,#7CB342,Hygiene,#AED581
+Pets,#8BC34A,Birds & Others,#689F38,Birds,#7CB342
+Pets,#8BC34A,Birds & Others,#689F38,Aquarium,#8BC34A
+Pets,#8BC34A,Veterinary,#558B2F,Health,#689F38
+Miscellaneous,#FFC107,Donations & Charity,#FFD54F,Donations,#FFE082
+Miscellaneous,#FFC107,Gifts,#FFB300,Gift Items,#FFC107
+Miscellaneous,#FFC107,Tobacco,#FFA000,Cigarettes,#FFB300
+Miscellaneous,#FFC107,Uncategorized,#FF8F00,Other Purchases,#FFA000

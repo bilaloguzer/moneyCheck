@@ -13,7 +13,7 @@ import {
 } from '@/types/database.types';
 
 export class ReceiptRepository {
-  constructor(private db: SQLite.SQLiteDatabase) {}
+  constructor(private db: SQLite.SQLiteDatabase, private locale: string = 'en') {}
 
   async create(receipt: Omit<Receipt, 'id' | 'createdAt' | 'updatedAt'>): Promise<Receipt> {
     let receiptId: number;
@@ -48,10 +48,28 @@ export class ReceiptRepository {
             // Create items one by one to avoid nested transaction issues
             // (since LineItemService.createLineItems uses a transaction and we are already in one)
             for (const item of inputItems) {
-                // Try to resolve category string to category_id
+                // Use new 4-level category system IDs if provided
+                // departmentId, categoryId, subcategoryId are passed directly from the form
                 let categoryId: number | null = null;
-                if (item.category && typeof item.category === 'string') {
-                    categoryId = await CategoryService.getCategoryIdByName(this.db, item.category);
+                
+                // NEW: Use subcategoryId as the primary category reference
+                // (This maps to the new 4-level system)
+                if (item.subcategoryId) {
+                    categoryId = item.subcategoryId;
+                } else if (item.categoryId) {
+                    categoryId = item.categoryId;
+                }
+                
+                // OLD LEGACY FALLBACK: Only try string category lookup if no IDs provided
+                // This is for backwards compatibility with old receipts
+                // NOTE: This will fail if migration 002 is applied, so we wrap in try-catch
+                if (!categoryId && item.category && typeof item.category === 'string') {
+                    try {
+                        categoryId = await CategoryService.getCategoryIdByName(this.db, item.category);
+                    } catch (err) {
+                        console.warn('Legacy category lookup failed (expected after migration 002):', err);
+                        // Continue without category - user can categorize later
+                    }
                 }
                 
                 const lineItemInput: CreateLineItemInput = {
@@ -61,7 +79,12 @@ export class ReceiptRepository {
                     unitPrice: item.price || item.unitPrice,
                     totalPrice: (item.price || item.unitPrice) * (item.quantity || 1),
                     discount: item.discount || 0,
-                    categoryId: categoryId ?? undefined
+                    // NEW: Pass category hierarchy from 4-level system
+                    // categoryId maps to category_id (the main category in the 4-level hierarchy)
+                    categoryId: item.categoryId ?? categoryId ?? undefined,
+                    departmentId: item.departmentId ?? undefined,
+                    subcategoryId: item.subcategoryId ?? undefined,
+                    itemGroupId: item.itemGroupId ?? undefined,
                 };
                 await LineItemService.createLineItem(this.db, lineItemInput);
             }
@@ -75,7 +98,7 @@ export class ReceiptRepository {
   }
 
   async findById(id: string): Promise<Receipt | null> {
-    const dbReceipt = await ReceiptService.getReceiptWithItems(this.db, parseInt(id, 10));
+    const dbReceipt = await ReceiptService.getReceiptWithItems(this.db, parseInt(id, 10), this.locale);
     if (!dbReceipt) return null;
     return this.mapToDomain(dbReceipt);
   }
@@ -140,10 +163,16 @@ export class ReceiptRepository {
   async addLineItem(receiptId: string, item: any): Promise<Receipt> {
     const rId = parseInt(receiptId, 10);
     
-    // Try to resolve category string to category_id
-    let categoryId = item.categoryId;
-    if (item.category && typeof item.category === 'string' && !categoryId) {
-        categoryId = await CategoryService.getCategoryIdByName(this.db, item.category);
+    // Use new 4-level category system IDs
+    let categoryId = item.subcategoryId || item.categoryId;
+    
+    // OLD LEGACY FALLBACK: Only if no IDs provided
+    if (!categoryId && item.category && typeof item.category === 'string') {
+        try {
+            categoryId = await CategoryService.getCategoryIdByName(this.db, item.category);
+        } catch (err) {
+            console.warn('Legacy category lookup failed:', err);
+        }
     }
     
     const lineItemInput: CreateLineItemInput = {
@@ -207,7 +236,8 @@ export class ReceiptRepository {
 
   private mapToDomain(dbReceipt: DBReceipt | ReceiptWithItems): Receipt {
     // Check if it has items
-    const items = (dbReceipt as any).lineItems?.map((item: DBLineItem) => ({
+    const items = (dbReceipt as any).lineItems?.map((item: DBLineItem) => {
+      const mappedItem = {
         id: item.id?.toString(),
         receiptId: item.receiptId.toString(),
         name: item.name,
@@ -215,9 +245,33 @@ export class ReceiptRepository {
         quantity: item.quantity,
         unitPrice: item.unitPrice,
         totalPrice: item.totalPrice,
-        category: item.category?.name, // Flatten category name
-        discount: item.discount || 0
-    })) || [];
+        category: (item as any).subcategoryName || item.category?.name || 'other', // Use new subcategory name
+        discount: item.discount || 0,
+        // Include hierarchy IDs
+        departmentId: item.departmentId,
+        categoryId: item.categoryId,
+        subcategoryId: item.subcategoryId,
+        itemGroupId: item.itemGroupId,
+        // Include color codes
+        categoryColor: (item as any).subcategoryColor || (item as any).categoryColor || (item as any).departmentColor,
+        subcategoryColor: (item as any).subcategoryColor,
+        departmentColor: (item as any).departmentColor,
+        // Include full names
+        subcategoryName: (item as any).subcategoryName,
+        categoryNameFull: (item as any).categoryNameFull,
+        departmentNameFull: (item as any).departmentNameFull,
+      };
+
+      console.log('🎨 ReceiptRepository mapped item:', {
+        name: mappedItem.name,
+        categoryColor: mappedItem.categoryColor,
+        subcategoryColor: (item as any).subcategoryColor,
+        categoryColorRaw: (item as any).categoryColor,
+        departmentColor: (item as any).departmentColor,
+      });
+
+      return mappedItem;
+    }) || [];
 
     return {
       id: dbReceipt.id!.toString(),

@@ -8,6 +8,7 @@ import { showErrorToast, showSuccessToast } from '@/lib/utils/toast';
 import { hapticMedium, hapticError, hapticSuccess, hapticLight } from '@/lib/utils/haptics';
 import { ImagePreprocessingService } from '@/lib/services/image';
 import { QRCodeService } from '@/lib/services/qr';
+import { PDFScanningService } from '@/lib/services/pdf';
 import { useState } from 'react';
 import type { QRScanMode } from '@/lib/types';
 import { useLocalization } from '@/contexts/LocalizationContext';
@@ -24,11 +25,13 @@ export default function ReceiptCaptureScreen() {
   const router = useRouter();
   const { t } = useLocalization();
   const [isProcessing, setIsProcessing] = useState(false);
+  const [processingMessage, setProcessingMessage] = useState('');
 
   // Single capture handler for all sources (camera, gallery, document scanner)
   const handleCapture = async (uri: string) => {
     hapticMedium();
     setIsProcessing(true);
+    setProcessingMessage(t('camera.enhancingImage'));
 
     try {
       console.log('Starting image preprocessing...');
@@ -72,6 +75,52 @@ export default function ReceiptCaptureScreen() {
       });
     } finally {
       setIsProcessing(false);
+      setProcessingMessage('');
+    }
+  };
+
+  // PDF upload handler - gets OCR result from PDF service
+  const handlePDFUpload = async () => {
+    hapticMedium();
+    setIsProcessing(true);
+    setProcessingMessage(t('camera.processingPDF'));
+
+    try {
+      console.log('Starting PDF upload...');
+      const result = await PDFScanningService.pickPDF();
+
+      if (!result.success) {
+        // Handle cancellation gracefully
+        if (result.error?.includes('cancel')) {
+          console.log('PDF selection cancelled');
+          return;
+        }
+        
+        // Show error for other failures
+        hapticError();
+        showErrorToast(t('camera.pdfProcessingFailed'));
+        return;
+      }
+
+      // Successfully extracted invoice data from PDF
+      console.log('PDF invoice data extracted');
+      hapticSuccess();
+      
+      // Navigate to processing screen with the extracted OCR data
+      router.push({
+        pathname: '/receipt/processing',
+        params: {
+          receiptData: JSON.stringify(result.ocrResult!),
+          source: 'pdf',
+        },
+      });
+    } catch (error) {
+      console.error('PDF upload error:', error);
+      hapticError();
+      showErrorToast(t('camera.pdfProcessingFailed'));
+    } finally {
+      setIsProcessing(false);
+      setProcessingMessage('');
     }
   };
 
@@ -112,7 +161,7 @@ export default function ReceiptCaptureScreen() {
       {isProcessing && (
         <View style={styles.processingOverlay}>
           <ActivityIndicator size="large" color="#FFFFFF" />
-          <Text style={styles.processingText}>{t('camera.enhancingImage')}</Text>
+          <Text style={styles.processingText}>{processingMessage}</Text>
         </View>
       )}
     </View>

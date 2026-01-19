@@ -1,0 +1,67 @@
+Category ID,Department ID,Department Name,Category Name (TR),Category Name (EN),Color
+101,1,Gıda ve İçecek (Food & Beverage),Meyve ve Sebze,Fruits & Vegetables,#4CAF50
+102,1,Gıda ve İçecek (Food & Beverage),Süt Ürünleri,Dairy Products,#8BC34A
+103,1,Gıda ve İçecek (Food & Beverage),Et ve Balık,Meat & Seafood,#1B5E20
+104,1,Gıda ve İçecek (Food & Beverage),Fırın ve Ekmek,Bakery & Bread,#CDC092
+105,1,Gıda ve İçecek (Food & Beverage),Temel Gıda,Pantry Staples,#7CB342
+106,1,Gıda ve İçecek (Food & Beverage),Atıştırmalık,Snacks,#00C853
+107,1,Gıda ve İçecek (Food & Beverage),İçecekler,Beverages,#66BB6A
+108,1,Gıda ve İçecek (Food & Beverage),Dondurulmuş Gıda,Frozen Foods,#69F0AE
+109,1,Gıda ve İçecek (Food & Beverage),Kahvaltılık,Breakfast Items,#558B2F
+201,2,Ev ve Temizlik,Çamaşır,Laundry,#03A9F4
+202,2,Ev ve Temizlik,Mutfak Temizliği,Kitchen Cleaning,#0277BD
+203,2,Ev ve Temizlik,Banyo Temizliği,Bathroom Cleaning,#01579B
+204,2,Ev ve Temizlik,Genel Temizlik,General Cleaning,#0097A7
+205,2,Ev ve Temizlik,Kağıt Ürünler,Paper Products,#006064
+301,3,Kişisel Bakım ve Kozmetik,Hijyen,Hygiene,#BA68C8
+302,3,Kişisel Bakım ve Kozmetik,Saç Bakımı,Hair Care,#9C27B0
+303,3,Kişisel Bakım ve Kozmetik,Cilt Bakımı,Skin Care,#8E24AA
+304,3,Kişisel Bakım ve Kozmetik,Makyaj,Makeup,#6A1B9A
+305,3,Kişisel Bakım ve Kozmetik,Tıraş,Shaving,#4A148C
+306,3,Kişisel Bakım ve Kozmetik,Kadın Hijyen,Feminine Hygiene,#D500F9
+401,4,Sağlık ve Eczane,İlaç ve Vitamin,Medicine & Vitamins,#EC407A
+402,4,Sağlık ve Eczane,İlk Yardım,First Aid,#C2185B
+403,4,Sağlık ve Eczane,Bebek ve Anne Sağlığı,Mother & Baby Health,#880E4F
+404,4,Sağlık ve Eczane,Medikal Cihaz,Medical Devices,#AD1457
+501,5,Elektronik ve Teknoloji,Telefon ve Tablet,Phones & Tablets,#42A5F5
+502,5,Elektronik ve Teknoloji,Bilgisayar,Computers,#1976D2
+503,5,Elektronik ve Teknoloji,Ses ve Görüntü,Audio & Video,#0D47A1
+504,5,Elektronik ve Teknoloji,Fotoğraf ve Kamera,Photography & Camera,#01579B
+505,5,Elektronik ve Teknoloji,Oyun Konsolu,Gaming Consoles,#0091EA
+601,6,Giyim ve Moda,Kadın Giyim,Women's Clothing,#FF8A80
+602,6,Giyim ve Moda,Erkek Giyim,Men's Clothing,#FF5252
+603,6,Giyim ve Moda,Çocuk Giyim,Kids' Clothing,#F44336
+604,6,Giyim ve Moda,Ayakkabı,Shoes,#D32F2F
+605,6,Giyim ve Moda,Aksesuar,Accessories,#C62828
+606,6,Giyim ve Moda,İç Giyim,Underwear,#B71C1C
+701,7,Ev ve Yaşam,Mobilya,Furniture,#8D6E63
+702,7,Ev ve Yaşam,Ev Tekstili,Home Textiles,#6D4C41
+703,7,Ev ve Yaşam,Mutfak Eşyası,Kitchenware,#5D4037
+704,7,Ev ve Yaşam,Ev Aletleri,Home Appliances,#4E342E
+705,7,Ev ve Yaşam,Dekorasyon,Decoration,#3E2723
+801,8,Ulaşım ve Yakıt,Yakıt,Fuel,#FF6F43
+802,8,Ulaşım ve Yakıt,Toplu Taşıma,Public Transport,#F4511E
+803,8,Ulaşım ve Yakıt,Otopark ve Geçiş,Parking & Tolls,#E64A19
+804,8,Ulaşım ve Yakıt,Araç Bakım,Vehicle Maintenance,#D84315
+901,9,Eğlence ve Medya,Dijital İçerik,Digital Content,#AB47BC
+902,9,Eğlence ve Medya,Kitap ve Dergi,Books & Magazines,#8E24AA
+903,9,Eğlence ve Medya,Sinema ve Tiyatro,Cinema & Theater,#7B1FA2
+904,9,Eğlence ve Medya,Hobi,Hobbies,#6A1B9A
+1001,10,Spor ve Outdoor,Spor Giyim,Sportswear,#26A69A
+1002,10,Spor ve Outdoor,Spor Ekipmanı,Sports Equipment,#00897B
+1003,10,Spor ve Outdoor,Spor Salonları,Gyms,#00796B
+1101,11,Eğitim ve Kırtasiye,Kırtasiye,Stationery,#5C6BC0
+1102,11,Eğitim ve Kırtasiye,Okul Malzemeleri,School Supplies,#303F9F
+1103,11,Eğitim ve Kırtasiye,Eğitim Hizmetleri,Educational Services,#283593
+1201,12,Hizmetler,Faturalar,Utilities,#78909C
+1202,12,Hizmetler,Profesyonel Hizmetler,Professional Services,#546E7A
+1203,12,Hizmetler,Ev Hizmetleri,Home Services,#455A64
+1204,12,Hizmetler,Güzellik ve Bakım,Beauty & Care,#37474F
+1301,13,Evcil Hayvanlar,Kedi,Cats,#9CCC65
+1302,13,Evcil Hayvanlar,Köpek,Dogs,#7CB342
+1303,13,Evcil Hayvanlar,Kuş ve Diğer,Birds & Others,#689F38
+1304,13,Evcil Hayvanlar,Veteriner,Veterinary,#558B2F
+1401,14,Diğer,Bağış ve Yardım,Donations & Charity,#FFD54F
+1402,14,Diğer,Hediye,Gifts,#FFB300
+1403,14,Diğer,Sigara ve Tütün,Tobacco,#FFA000
+1404,14,Diğer,Sınıflandırılamayan,Uncategorized,#FF8F00
