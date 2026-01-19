@@ -4,11 +4,13 @@ import { useRouter, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useReceiptList } from '@/lib/hooks/receipt/useReceiptList';
 import { ReceiptCard } from '@/components/receipt/ReceiptCard';
+import { useLocalization } from '@/contexts/LocalizationContext';
 import { useCallback, useState, useMemo } from 'react';
 import { Receipt } from '@/lib/types';
 
 export default function HomeScreen() {
   const router = useRouter();
+  const { t } = useLocalization();
   const { receipts, loading, refetch } = useReceiptList(undefined, 1, 5); // Fetch top 5 receipts
   const [refreshing, setRefreshing] = useState(false);
 
@@ -47,12 +49,12 @@ export default function HomeScreen() {
   // Or we can just calculate it from the displayed receipts as a placeholder "Recent Spending".
 
   return (
-    <ScrollView 
+    <ScrollView
         style={styles.container}
         refreshControl={<RefreshControl refreshing={refreshing || loading} onRefresh={onRefresh} />}
     >
       <View style={styles.header}>
-        <Text style={styles.title}>Home</Text>
+        <Text style={styles.title}>{t('home.title')}</Text>
       </View>
 
       <TouchableOpacity
@@ -60,45 +62,45 @@ export default function HomeScreen() {
         onPress={() => router.push('/receipt/capture')}
       >
         <Ionicons name="camera" size={32} color="#fff" />
-        <Text style={styles.scanButtonText}>Scan Receipt</Text>
+        <Text style={styles.scanButtonText}>{t('home.scanReceipt')}</Text>
       </TouchableOpacity>
 
       <View style={styles.quickStats}>
-        <Text style={styles.sectionTitle}>Quick Stats</Text>
+        <Text style={styles.sectionTitle}>{t('home.quickStats')}</Text>
         <View style={styles.statsGrid}>
           <View style={styles.statCard}>
             <Text style={styles.statValue}>{totalReceipts}</Text>
-            <Text style={styles.statLabel}>Total Receipts</Text>
+            <Text style={styles.statLabel}>{t('home.totalReceipts')}</Text>
           </View>
           <View style={styles.statCard}>
             <Text style={styles.statValue}>₺{totalSpending.toFixed(2)}</Text>
-            <Text style={styles.statLabel}>Total Spending</Text>
+            <Text style={styles.statLabel}>{t('home.totalSpending')}</Text>
           </View>
         </View>
       </View>
 
       <View style={styles.recentSection}>
         <View style={styles.sectionHeader}>
-             <Text style={styles.sectionTitle}>Recent Receipts</Text>
+             <Text style={styles.sectionTitle}>{t('home.recentReceipts')}</Text>
              {totalReceipts > 0 && (
                  <TouchableOpacity onPress={() => router.push('/(tabs)/history')}>
-                     <Text style={styles.seeAllText}>See All</Text>
+                     <Text style={styles.seeAllText}>{t('common.seeAll')}</Text>
                  </TouchableOpacity>
              )}
         </View>
-        
+
         {receipts?.data && receipts.data.length > 0 ? (
             <View style={styles.list}>
                 {receipts.data.map((receipt: Receipt) => (
-                    <ReceiptCard 
-                        key={receipt.id} 
-                        receipt={receipt} 
+                    <ReceiptCard
+                        key={receipt.id}
+                        receipt={receipt}
                         onPress={() => router.push(`/receipt/${receipt.id}`)}
                     />
                 ))}
             </View>
         ) : (
-            <Text style={styles.emptyText}>No receipts yet. Scan your first receipt!</Text>
+            <Text style={styles.emptyText}>{t('home.noReceipts')}</Text>
         )}
       </View>
     </ScrollView>

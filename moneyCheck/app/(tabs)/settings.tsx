@@ -3,12 +3,14 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Switch, Ac
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLocalization } from '@/contexts/LocalizationContext';
 import { useState, useEffect } from 'react';
 import { SupabasePriceService } from '@/lib/services/price';
 
 export default function SettingsScreen() {
   const router = useRouter();
   const { signOut, user } = useAuth();
+  const { t, locale, setLocale } = useLocalization();
   const [sharePriceData, setSharePriceData] = useState(false);
   const [loadingPreference, setLoadingPreference] = useState(true);
 
@@ -35,36 +37,36 @@ export default function SettingsScreen() {
       
       if (value) {
         Alert.alert(
-          'Price Sharing Enabled',
-          'Your anonymized price data will help others find better deals. Product names are hashed for privacy.',
-          [{ text: 'OK' }]
+          t('settings.priceShareEnabled'),
+          t('settings.priceShareEnabledDesc'),
+          [{ text: t('common.ok') }]
         );
       }
     } catch (error: any) {
       console.error('Error updating preference:', error);
       setSharePriceData(!value); // Revert on error
-      Alert.alert('Error', error.message || 'Failed to update preference');
+      Alert.alert(t('common.error'), error.message || t('errors.updatePreferenceFailed'));
     }
   };
 
   const handleLogout = async () => {
     Alert.alert(
-      'Logout',
-      'Are you sure you want to logout?',
+      t('settings.logout'),
+      t('settings.logoutConfirm'),
       [
         {
-          text: 'Cancel',
+          text: t('common.cancel'),
           style: 'cancel',
         },
         {
-          text: 'Logout',
+          text: t('settings.logout'),
           style: 'destructive',
           onPress: async () => {
             try {
               await signOut();
               // Navigation will be handled automatically by auth state change
             } catch (error: any) {
-              Alert.alert('Error', error.message || 'Failed to logout');
+              Alert.alert(t('common.error'), error.message || t('errors.logoutFailed'));
             }
           },
         },
@@ -75,17 +77,42 @@ export default function SettingsScreen() {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Settings</Text>
+        <Text style={styles.title}>{t('settings.title')}</Text>
+      </View>
+
+      {/* Language Section */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>{t('settings.language')}</Text>
+        <TouchableOpacity
+          style={styles.settingItem}
+          onPress={() => setLocale('en')}
+        >
+          <View style={styles.settingLeft}>
+            <Ionicons name="language" size={24} color="#64748B" />
+            <Text style={styles.settingText}>{t('settings.english')}</Text>
+          </View>
+          {locale === 'en' && <Ionicons name="checkmark" size={24} color="#2C9364" />}
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.settingItem}
+          onPress={() => setLocale('tr')}
+        >
+          <View style={styles.settingLeft}>
+            <Ionicons name="language" size={24} color="#64748B" />
+            <Text style={styles.settingText}>{t('settings.turkish')}</Text>
+          </View>
+          {locale === 'tr' && <Ionicons name="checkmark" size={24} color="#2C9364" />}
+        </TouchableOpacity>
       </View>
 
       {/* Account Section */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Account</Text>
+        <Text style={styles.sectionTitle}>{t('settings.account')}</Text>
         {user && (
           <View style={styles.settingItem}>
             <View style={styles.settingLeft}>
               <Ionicons name="person" size={24} color="#64748B" />
-              <Text style={styles.settingText}>Email</Text>
+              <Text style={styles.settingText}>{t('settings.email')}</Text>
             </View>
             <Text style={styles.settingValue}>{user.email}</Text>
           </View>
@@ -96,7 +123,7 @@ export default function SettingsScreen() {
         >
           <View style={styles.settingLeft}>
             <Ionicons name="log-out-outline" size={24} color="#E03E3E" />
-            <Text style={[styles.settingText, styles.dangerText]}>Logout</Text>
+            <Text style={[styles.settingText, styles.dangerText]}>{t('settings.logout')}</Text>
           </View>
           <Ionicons name="chevron-forward" size={24} color="#E03E3E" />
         </TouchableOpacity>
@@ -104,14 +131,14 @@ export default function SettingsScreen() {
 
       {/* Privacy & Sharing Section */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Privacy & Sharing</Text>
+        <Text style={styles.sectionTitle}>{t('settings.privacySharing')}</Text>
         <View style={styles.toggleContainer}>
           <View style={styles.toggleContent}>
             <Ionicons name="shield-checkmark" size={24} color="#2C9364" />
             <View style={styles.toggleTextContainer}>
-              <Text style={styles.settingText}>Share Price Data</Text>
+              <Text style={styles.settingText}>{t('settings.sharePriceData')}</Text>
               <Text style={styles.settingDescription}>
-                Help others find better deals
+                {t('settings.sharePriceDataDesc')}
               </Text>
             </View>
           </View>
@@ -129,29 +156,29 @@ export default function SettingsScreen() {
         <View style={styles.privacyNote}>
           <Ionicons name="information-circle-outline" size={16} color="#787774" />
           <Text style={styles.privacyNoteText}>
-            Product names are hashed for privacy. No personal data is shared.
+            {t('settings.privacyNote')}
           </Text>
         </View>
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Data</Text>
+        <Text style={styles.sectionTitle}>{t('settings.data')}</Text>
         <TouchableOpacity
           style={styles.settingItem}
           onPress={() => router.push('/settings/data-management')}
         >
           <View style={styles.settingLeft}>
             <Ionicons name="folder" size={24} color="#64748B" />
-            <Text style={styles.settingText}>Data Management</Text>
+            <Text style={styles.settingText}>{t('settings.dataManagement')}</Text>
           </View>
           <Ionicons name="chevron-forward" size={24} color="#64748B" />
         </TouchableOpacity>
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>About</Text>
+        <Text style={styles.sectionTitle}>{t('settings.about')}</Text>
         <View style={styles.settingItem}>
-          <Text style={styles.settingText}>Version</Text>
+          <Text style={styles.settingText}>{t('common.version')}</Text>
           <Text style={styles.settingValue}>1.0.0</Text>
         </View>
       </View>

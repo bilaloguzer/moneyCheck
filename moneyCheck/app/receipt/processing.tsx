@@ -8,12 +8,14 @@ import { useDatabaseContext } from '@/contexts/DatabaseContext';
 import { ReceiptRepository } from '@/lib/database/repositories/ReceiptRepository';
 import { Ionicons } from '@expo/vector-icons';
 import * as FileSystem from 'expo-file-system/legacy';
+import { useLocalization } from '@/contexts/LocalizationContext';
 
 export default function ProcessingScreen() {
   const params = useLocalSearchParams();
   const imageUri = params.imageUri as string;
   const router = useRouter();
   const { db } = useDatabaseContext();
+  const { t } = useLocalization();
   
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -111,7 +113,7 @@ export default function ProcessingScreen() {
 
   const handleSave = async () => {
     if (!db) {
-        Alert.alert('Error', 'Database not initialized');
+        Alert.alert(t('common.error'), 'Database not initialized');
         return;
     }
     
@@ -186,12 +188,12 @@ export default function ProcessingScreen() {
         });
         
         // Navigate away immediately, don't show alert that can be dismissed
-        Alert.alert('Success', 'Receipt saved successfully!');
+        Alert.alert(t('common.ok'), t('receipt.saveSuccess'));
         router.replace('/(tabs)/history');
-        
+
     } catch (err) {
         console.error('Save Error:', err);
-        Alert.alert('Error', 'Failed to save receipt.');
+        Alert.alert(t('common.error'), t('receipt.saveError'));
         setSaving(false);
     }
   }
@@ -245,15 +247,15 @@ export default function ProcessingScreen() {
 
   const getConfidenceStatus = () => {
       const calculated = calculateTotal();
-      if (!extractedTotal) return { status: 'unknown', color: '#787774', message: 'Total not detected' };
-      
+      if (!extractedTotal) return { status: 'unknown', color: '#787774', message: t('processing.totalNotDetected') };
+
       const diff = Math.abs(calculated - extractedTotal);
       const tolerance = 0.5; // 0.50 TL tolerance
 
       if (diff <= tolerance) {
-          return { status: 'match', color: '#2C9364', message: 'Totals match perfectly' };
+          return { status: 'match', color: '#2C9364', message: t('processing.totalsMatch') };
       } else {
-          return { status: 'mismatch', color: '#E03E3E', message: `Mismatch! Receipt says ${extractedTotal.toFixed(2)}` };
+          return { status: 'mismatch', color: '#E03E3E', message: t('processing.totalsMismatch', { amount: extractedTotal.toFixed(2) }) };
       }
   };
 
@@ -273,8 +275,8 @@ export default function ProcessingScreen() {
       <>
         <Stack.Screen options={{ headerShown: false }} />
         <View style={styles.center}>
-          <Text style={styles.error}>Error: {error}</Text>
-          <Button title="Go Back" onPress={() => router.back()} />
+          <Text style={styles.error}>{t('common.error')}: {error}</Text>
+          <Button title={t('receipt.goBack')} onPress={() => router.back()} />
         </View>
       </>
     );
@@ -296,29 +298,29 @@ export default function ProcessingScreen() {
         >
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View>
-              <Text style={styles.title}>Edit & Confirm</Text>
-              
+              <Text style={styles.title}>{t('processing.editConfirm')}</Text>
+
               {/* Receipt Header Info */}
               <View style={styles.section}>
-                <Text style={styles.label}>Merchant</Text>
-                <TextInput 
-                    style={styles.input} 
-                    value={merchant} 
-                    onChangeText={setMerchant} 
-                    placeholder="Store Name" 
+                <Text style={styles.label}>{t('receipt.merchant')}</Text>
+                <TextInput
+                    style={styles.input}
+                    value={merchant}
+                    onChangeText={setMerchant}
+                    placeholder={t('processing.storeName')}
                 />
-                
-                <Text style={styles.label}>Date (YYYY-MM-DD)</Text>
-                <TextInput 
-                    style={styles.input} 
-                    value={date} 
-                    onChangeText={setDate} 
-                    placeholder="2024-01-01" 
+
+                <Text style={styles.label}>{t('processing.dateFormat')}</Text>
+                <TextInput
+                    style={styles.input}
+                    value={date}
+                    onChangeText={setDate}
+                    placeholder={t('processing.datePlaceholder')}
                 />
               </View>
 
               {/* Items List */}
-              <Text style={styles.subtitle}>Items</Text>
+              <Text style={styles.subtitle}>{t('receipt.items')}</Text>
               {items.map((item, index) => (
                 <View key={index} style={styles.itemCard}>
                     <View style={styles.itemHeader}>
@@ -327,46 +329,46 @@ export default function ProcessingScreen() {
                              <Ionicons name="trash-outline" size={20} color="#E03E3E" />
                          </TouchableOpacity>
                     </View>
-                    
-                    <Text style={styles.labelSmall}>Item Name</Text>
-                    <TextInput 
-                        style={styles.input} 
-                        value={item.name} 
-                        onChangeText={(text) => updateItem(index, 'name', text)} 
-                        placeholder="Product Name"
+
+                    <Text style={styles.labelSmall}>{t('processing.itemName')}</Text>
+                    <TextInput
+                        style={styles.input}
+                        value={item.name}
+                        onChangeText={(text) => updateItem(index, 'name', text)}
+                        placeholder={t('processing.productName')}
                     />
-                    
+
                     <View style={styles.row}>
                         <View style={styles.col}>
-                            <Text style={styles.labelSmall}>Qty</Text>
-                            <TextInput 
-                                style={styles.input} 
-                                value={item.quantity} 
-                                onChangeText={(text) => updateItem(index, 'quantity', text)} 
+                            <Text style={styles.labelSmall}>{t('processing.qty')}</Text>
+                            <TextInput
+                                style={styles.input}
+                                value={item.quantity}
+                                onChangeText={(text) => updateItem(index, 'quantity', text)}
                                 keyboardType="numeric"
                             />
                         </View>
                         <View style={styles.col}>
-                            <Text style={styles.labelSmall}>Unit Price</Text>
-                            <TextInput 
-                                style={styles.input} 
-                                value={item.unitPrice} 
-                                onChangeText={(text) => updateItem(index, 'unitPrice', text)} 
+                            <Text style={styles.labelSmall}>{t('processing.unitPrice')}</Text>
+                            <TextInput
+                                style={styles.input}
+                                value={item.unitPrice}
+                                onChangeText={(text) => updateItem(index, 'unitPrice', text)}
                                 keyboardType="numeric"
                             />
                         </View>
                         <View style={styles.col}>
-                            <Text style={styles.labelSmall}>Discount</Text>
-                            <TextInput 
-                                style={styles.input} 
-                                value={item.discount} 
-                                onChangeText={(text) => updateItem(index, 'discount', text)} 
+                            <Text style={styles.labelSmall}>{t('processing.discount')}</Text>
+                            <TextInput
+                                style={styles.input}
+                                value={item.discount}
+                                onChangeText={(text) => updateItem(index, 'discount', text)}
                                 keyboardType="numeric"
                                 placeholder="0"
                             />
                         </View>
                         <View style={styles.col}>
-                            <Text style={styles.labelSmall}>Total</Text>
+                            <Text style={styles.labelSmall}>{t('processing.total')}</Text>
                             <View style={[styles.input, styles.readOnlyInput]}>
                                 <Text>
                                     {((parseFloat(item.quantity) || 0) * (parseFloat(item.unitPrice) || 0) - (parseFloat(item.discount) || 0)).toFixed(2)}
@@ -374,15 +376,15 @@ export default function ProcessingScreen() {
                             </View>
                         </View>
                     </View>
-                    
+
                     <View style={styles.row}>
                         <View style={styles.col}>
-                            <Text style={styles.labelSmall}>Category</Text>
-                            <TextInput 
-                                style={styles.input} 
-                                value={item.category} 
-                                onChangeText={(text) => updateItem(index, 'category', text)} 
-                                placeholder="groceries, snacks, etc."
+                            <Text style={styles.labelSmall}>{t('processing.category')}</Text>
+                            <TextInput
+                                style={styles.input}
+                                value={item.category}
+                                onChangeText={(text) => updateItem(index, 'category', text)}
+                                placeholder={t('processing.categoryPlaceholder')}
                             />
                         </View>
                         <View style={styles.col}>
@@ -408,13 +410,13 @@ export default function ProcessingScreen() {
                     </View>
                 </View>
               ))}
-              
-              <Button title="+ Add Item" onPress={addItem} variant="secondary" style={{ marginBottom: 20 }} />
+
+              <Button title={`+ ${t('processing.addItem')}`} onPress={addItem} variant="secondary" style={{ marginBottom: 20 }} />
 
               {/* Footer Total */}
               <View style={styles.totalContainer}>
                   <View>
-                    <Text style={styles.totalLabel}>Calculated Total:</Text>
+                    <Text style={styles.totalLabel}>{t('processing.calculatedTotal')}</Text>
                     <Text style={[styles.confidenceText, { color: getConfidenceStatus().color }]}>
                         {getConfidenceStatus().message}
                     </Text>
@@ -425,28 +427,28 @@ export default function ProcessingScreen() {
           </TouchableWithoutFeedback>
         </ScrollView>
       </KeyboardAvoidingView>
-    
+
     <View style={styles.footer}>
         <View style={styles.footerButtons}>
-          <TouchableOpacity 
-            onPress={() => router.replace('/(tabs)')} 
+          <TouchableOpacity
+            onPress={() => router.replace('/(tabs)')}
             style={styles.footerActionButton}
             activeOpacity={0.7}
           >
             <Ionicons name="close-circle-outline" size={20} color="#E03E3E" />
-            <Text style={[styles.footerActionButtonText, { color: '#E03E3E' }]}>Cancel</Text>
+            <Text style={[styles.footerActionButtonText, { color: '#E03E3E' }]}>{t('processing.cancel')}</Text>
           </TouchableOpacity>
-          
-          <TouchableOpacity 
-            onPress={() => router.back()} 
+
+          <TouchableOpacity
+            onPress={() => router.back()}
             style={styles.footerActionButton}
             activeOpacity={0.7}
           >
             <Ionicons name="camera-outline" size={20} color="#37352F" />
-            <Text style={styles.footerActionButtonText}>Retake</Text>
+            <Text style={styles.footerActionButtonText}>{t('processing.retake')}</Text>
           </TouchableOpacity>
           
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={handleSave}
             style={[styles.footerActionButton, styles.saveButton]}
             activeOpacity={0.7}
@@ -454,7 +456,7 @@ export default function ProcessingScreen() {
           >
             <Ionicons name="checkmark-circle" size={20} color="#FFFFFF" />
             <Text style={[styles.footerActionButtonText, { color: '#FFFFFF' }]}>
-              {saving ? 'Saving...' : 'Save'}
+              {saving ? `${t('processing.save')}...` : t('processing.save')}
             </Text>
           </TouchableOpacity>
         </View>

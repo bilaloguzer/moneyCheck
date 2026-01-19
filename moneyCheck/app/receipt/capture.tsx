@@ -10,6 +10,7 @@ import { ImagePreprocessingService } from '@/lib/services/image';
 import { QRCodeService } from '@/lib/services/qr';
 import { useState } from 'react';
 import type { QRScanMode } from '@/lib/types';
+import { useLocalization } from '@/contexts/LocalizationContext';
 
 // We need to dynamically import or handle the plugin safely because it might crash if not linked
 let DocumentScanner: any;
@@ -21,6 +22,7 @@ try {
 
 export default function ReceiptCaptureScreen() {
   const router = useRouter();
+  const { t } = useLocalization();
   const [isProcessing, setIsProcessing] = useState(false);
 
   // Single capture handler for all sources (camera, gallery, document scanner)
@@ -59,12 +61,12 @@ export default function ReceiptCaptureScreen() {
     } catch (error) {
       console.error('Preprocessing error:', error);
       hapticError();
-      showErrorToast('Failed to process image');
-      
+      showErrorToast(t('camera.processingFailed'));
+
       // Fallback: navigate with original image
       router.push({
         pathname: '/receipt/preview',
-        params: { 
+        params: {
           imageUri: uri,
         },
       });
@@ -72,11 +74,11 @@ export default function ReceiptCaptureScreen() {
       setIsProcessing(false);
     }
   };
-  
+
   const scanDocument = async () => {
     if (!DocumentScanner) {
         hapticError();
-        showErrorToast('Document Scanner module is not available. Please rebuild the app.');
+        showErrorToast(t('camera.scannerUnavailable'));
         return;
     }
     try {
@@ -89,7 +91,7 @@ export default function ReceiptCaptureScreen() {
     } catch (error) {
         console.error('Document scanner error', error);
         hapticError();
-        showErrorToast('Failed to scan document');
+        showErrorToast(t('camera.scanFailed'));
     }
   };
 
@@ -110,7 +112,7 @@ export default function ReceiptCaptureScreen() {
       {isProcessing && (
         <View style={styles.processingOverlay}>
           <ActivityIndicator size="large" color="#FFFFFF" />
-          <Text style={styles.processingText}>Enhancing image...</Text>
+          <Text style={styles.processingText}>{t('camera.enhancingImage')}</Text>
         </View>
       )}
     </View>

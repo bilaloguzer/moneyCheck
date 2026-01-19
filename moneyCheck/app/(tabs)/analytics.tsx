@@ -3,11 +3,13 @@ import { View, Text, StyleSheet, ScrollView, RefreshControl, ActivityIndicator, 
 import { useCallback, useState } from 'react';
 import { useFocusEffect } from 'expo-router';
 import { useAnalytics, TimeRange } from '@/lib/hooks/analytics/useAnalytics';
+import { useLocalization } from '@/contexts/LocalizationContext';
 import { PieChart, BarChart } from 'react-native-gifted-charts';
 
 const screenWidth = Dimensions.get('window').width;
 
 export default function AnalyticsScreen() {
+  const { t } = useLocalization();
   const [refreshing, setRefreshing] = useState(false);
   const [range, setRange] = useState<TimeRange>('month');
   const { data, loading, refetch } = useAnalytics(range);
@@ -27,13 +29,13 @@ export default function AnalyticsScreen() {
   const renderPeriodSelector = () => (
       <View style={styles.periodContainer}>
           {(['week', 'month', 'year', 'all'] as TimeRange[]).map((p) => (
-              <TouchableOpacity 
-                key={p} 
+              <TouchableOpacity
+                key={p}
                 style={[styles.periodButton, range === p && styles.periodButtonActive]}
                 onPress={() => setRange(p)}
               >
                   <Text style={[styles.periodText, range === p && styles.periodTextActive]}>
-                    {p.charAt(0).toUpperCase() + p.slice(1)}
+                    {t(`analytics.${p}`)}
                   </Text>
               </TouchableOpacity>
           ))}
@@ -41,29 +43,29 @@ export default function AnalyticsScreen() {
   );
 
   return (
-    <ScrollView 
+    <ScrollView
         style={styles.container}
         refreshControl={<RefreshControl refreshing={refreshing || loading} onRefresh={onRefresh} />}
     >
       <View style={styles.header}>
-        <Text style={styles.title}>Analytics</Text>
+        <Text style={styles.title}>{t('analytics.title')}</Text>
         {renderPeriodSelector()}
       </View>
 
       <View style={styles.statsGrid}>
           <View style={styles.statCard}>
             <Text style={styles.statValue}>₺{data?.totalSpent.toFixed(0) || '0'}</Text>
-            <Text style={styles.statLabel}>Total Spent</Text>
+            <Text style={styles.statLabel}>{t('analytics.totalSpent')}</Text>
           </View>
           <View style={styles.statCard}>
             <Text style={styles.statValue}>{data?.receiptCount || '0'}</Text>
-            <Text style={styles.statLabel}>Receipts</Text>
+            <Text style={styles.statLabel}>{t('analytics.receipts')}</Text>
           </View>
       </View>
 
       {/* Category Chart */}
       <View style={styles.chartCard}>
-          <Text style={styles.chartTitle}>Spending by Category</Text>
+          <Text style={styles.chartTitle}>{t('analytics.spendingByCategory')}</Text>
           {data?.categoryBreakdown && data.categoryBreakdown.length > 0 ? (
             <View>
                 <View style={{ alignItems: 'center' }}>
@@ -85,7 +87,7 @@ export default function AnalyticsScreen() {
                                 <Text style={{ fontSize: 20, fontWeight: '700', color: '#37352F' }}>
                                     ₺{data.totalSpent.toFixed(0)}
                                 </Text>
-                                <Text style={{ fontSize: 12, color: '#787774' }}>Total</Text>
+                                <Text style={{ fontSize: 12, color: '#787774' }}>{t('common.total')}</Text>
                             </View>
                         )}
                     />
@@ -106,13 +108,13 @@ export default function AnalyticsScreen() {
                 </View>
             </View>
           ) : (
-            <Text style={styles.emptyText}>No category data for this period</Text>
+            <Text style={styles.emptyText}>{t('analytics.noCategoryData')}</Text>
           )}
       </View>
 
       {/* Daily Trend Chart */}
       <View style={styles.chartCard}>
-          <Text style={styles.chartTitle}>Spending Trend</Text>
+          <Text style={styles.chartTitle}>{t('analytics.spendingTrend')}</Text>
           {data?.dailySpending && data.dailySpending.length > 0 ? (
              <ScrollView horizontal showsHorizontalScrollIndicator={true}>
                <BarChart
@@ -155,13 +157,13 @@ export default function AnalyticsScreen() {
                />
              </ScrollView>
           ) : (
-             <Text style={styles.emptyText}>No spending history for this period</Text>
+             <Text style={styles.emptyText}>{t('analytics.noSpendingHistory')}</Text>
           )}
       </View>
 
       {/* Top Items List */}
       <View style={styles.listSection}>
-          <Text style={styles.sectionTitle}>Top Items</Text>
+          <Text style={styles.sectionTitle}>{t('analytics.topItems')}</Text>
           {data?.topItems && data.topItems.map((item, index) => (
               <View key={index} style={styles.listItem}>
                   <View style={styles.rankBadge}>
@@ -169,12 +171,12 @@ export default function AnalyticsScreen() {
                   </View>
                   <View style={{ flex: 1 }}>
                       <Text style={styles.itemName}>{item.name}</Text>
-                      <Text style={styles.itemMeta}>{item.count} purchases</Text>
+                      <Text style={styles.itemMeta}>{item.count} {t('analytics.purchases')}</Text>
                   </View>
                   <Text style={styles.itemPrice}>₺{item.totalSpent.toFixed(2)}</Text>
               </View>
           ))}
-          {(!data?.topItems || data.topItems.length === 0) && <Text style={styles.emptyText}>No items found</Text>}
+          {(!data?.topItems || data.topItems.length === 0) && <Text style={styles.emptyText}>{t('analytics.noItems')}</Text>}
       </View>
 
     </ScrollView>

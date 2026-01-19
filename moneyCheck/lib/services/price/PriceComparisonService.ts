@@ -209,27 +209,53 @@ export class PriceComparisonService {
 
   /**
    * Get rank label
+   * @param rank - Price rank
+   * @param t - Translation function (optional, returns English by default)
    */
-  static getRankLabel(rank: PriceComparison['rank']): string {
+  static getRankLabel(rank: PriceComparison['rank'], t?: (key: string) => string): string {
+    if (!t) {
+      // Fallback to English if no translation function provided
+      switch (rank) {
+        case 'excellent': return 'Excellent Price';
+        case 'good': return 'Good Price';
+        case 'average': return 'Average Price';
+        case 'high': return 'Above Average';
+        case 'very-high': return 'High Price';
+      }
+    }
+
     switch (rank) {
-      case 'excellent': return 'Excellent Price';
-      case 'good': return 'Good Price';
-      case 'average': return 'Average Price';
-      case 'high': return 'Above Average';
-      case 'very-high': return 'High Price';
+      case 'excellent': return t('receipt.rankExcellent');
+      case 'good': return t('receipt.rankGood');
+      case 'average': return t('receipt.rankAverage');
+      case 'high': return t('receipt.rankHigh');
+      case 'very-high': return t('receipt.rankVeryHigh');
     }
   }
 
   /**
    * Get savings message
+   * @param savingsOpportunity - Amount that could be saved
+   * @param t - Translation function (optional, returns English by default)
    */
-  static getSavingsMessage(savingsOpportunity: number): string {
+  static getSavingsMessage(savingsOpportunity: number, t?: (key: string, options?: any) => string): string {
+    if (!t) {
+      // Fallback to English if no translation function provided
+      if (savingsOpportunity === 0) {
+        return 'You got the best price!';
+      } else if (savingsOpportunity < 2) {
+        return `Save ${savingsOpportunity.toFixed(2)} ₺ at the cheapest store`;
+      } else {
+        return `You could save ${savingsOpportunity.toFixed(2)} ₺`;
+      }
+    }
+
     if (savingsOpportunity === 0) {
-      return 'You got the best price!';
+      return t('receipt.savingsBest');
     } else if (savingsOpportunity < 2) {
-      return `Save ${savingsOpportunity.toFixed(2)} ₺ at the cheapest store`;
+      return t('receipt.savingsSmall', { amount: savingsOpportunity.toFixed(2) });
     } else {
-      return `You could save ${savingsOpportunity.toFixed(2)} ₺`;
+      return t('receipt.savingsLarge', { amount: savingsOpportunity.toFixed(2) });
     }
   }
 }

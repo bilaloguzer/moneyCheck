@@ -2,12 +2,14 @@
 import { View, Text, StyleSheet, ScrollView, RefreshControl, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { useReceiptList } from '@/lib/hooks/receipt/useReceiptList';
 import { ReceiptCard } from '@/components/receipt/ReceiptCard';
+import { useLocalization } from '@/contexts/LocalizationContext';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { Receipt } from '@/lib/types';
 
 export default function HistoryScreen() {
   const router = useRouter();
+  const { t } = useLocalization();
   const { receipts, loading, refetch } = useReceiptList(undefined, 1, 50); // Fetch up to 50 for now
   const [refreshing, setRefreshing] = useState(false);
 
@@ -33,29 +35,29 @@ export default function HistoryScreen() {
   }
 
   return (
-    <ScrollView 
+    <ScrollView
         style={styles.container}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
     >
       <View style={styles.header}>
-        <Text style={styles.title}>History</Text>
+        <Text style={styles.title}>{t('history.title')}</Text>
       </View>
 
       {receipts?.data && receipts.data.length > 0 ? (
           <View style={styles.list}>
               {receipts.data.map((receipt: Receipt) => (
-                  <ReceiptCard 
-                      key={receipt.id} 
-                      receipt={receipt} 
+                  <ReceiptCard
+                      key={receipt.id}
+                      receipt={receipt}
                       onPress={() => router.push(`/receipt/${receipt.id}`)}
                   />
               ))}
           </View>
       ) : (
           <View style={styles.content}>
-            <Text style={styles.emptyText}>No receipts yet</Text>
+            <Text style={styles.emptyText}>{t('history.noReceipts')}</Text>
             <Text style={styles.emptySubtext}>
-              Your scanned receipts will appear here
+              {t('history.noReceiptsSubtext')}
             </Text>
           </View>
       )}

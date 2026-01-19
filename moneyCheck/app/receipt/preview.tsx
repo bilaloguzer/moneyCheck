@@ -6,9 +6,11 @@ import { Button } from '@/components/common/Button';
 import { useState, useCallback } from 'react';
 import { showErrorToast } from '@/lib/utils/toast';
 import { hapticMedium, hapticError, hapticLight } from '@/lib/utils/haptics';
+import { useLocalization } from '@/contexts/LocalizationContext';
 
 export default function ImagePreviewScreen() {
   const router = useRouter();
+  const { t } = useLocalization();
   const params = useLocalSearchParams();
   const imageUri = params.imageUri as string;
   const qrData = params.qrData as string;
@@ -55,8 +57,8 @@ export default function ImagePreviewScreen() {
     return (
       <View style={styles.errorContainer}>
         <Ionicons name="alert-circle" size={64} color="#E03E3E" />
-        <Text style={styles.errorText}>No image found</Text>
-        <Button title="Go Back" onPress={() => router.back()} />
+        <Text style={styles.errorText}>{t('receipt.noImageFound')}</Text>
+        <Button title={t('receipt.goBack')} onPress={() => router.back()} />
       </View>
     );
   }
@@ -67,14 +69,14 @@ export default function ImagePreviewScreen() {
       <View style={styles.container}>
         {/* Custom Header */}
         <View style={styles.header}>
-          <TouchableOpacity 
-            onPress={() => router.back()} 
+          <TouchableOpacity
+            onPress={() => router.back()}
             style={styles.backButton}
             activeOpacity={0.7}
           >
             <Ionicons name="arrow-back" size={24} color="#37352F" />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Preview</Text>
+          <Text style={styles.headerTitle}>{t('receipt.preview')}</Text>
           <View style={styles.headerRight} />
         </View>
 
@@ -88,19 +90,19 @@ export default function ImagePreviewScreen() {
         ) : (
           <View style={styles.qrPlaceholder}>
             <Ionicons name="qr-code" size={80} color="#2C9364" />
-            <Text style={styles.qrPlaceholderText}>QR Code Scanned</Text>
+            <Text style={styles.qrPlaceholderText}>{t('receipt.qrCodeScanned')}</Text>
           </View>
         )}
-        
+
         {/* Source Badge */}
         <View style={[styles.sourceBadge, source === 'qr' && styles.sourceBadgeQR]}>
-          <Ionicons 
-            name={source === 'qr' ? 'qr-code' : 'camera'} 
-            size={14} 
-            color="#FFFFFF" 
+          <Ionicons
+            name={source === 'qr' ? 'qr-code' : 'camera'}
+            size={14}
+            color="#FFFFFF"
           />
           <Text style={styles.sourceBadgeText}>
-            {source === 'qr' ? 'QR Code' : 'Photo'}
+            {source === 'qr' ? t('receipt.qrCode') : t('receipt.photo')}
           </Text>
         </View>
       </View>
@@ -109,25 +111,25 @@ export default function ImagePreviewScreen() {
         {/* QR Data Preview */}
         {parsedQRData && (
           <View style={styles.qrDataCard}>
-            <Text style={styles.qrDataTitle}>Scanned Data:</Text>
+            <Text style={styles.qrDataTitle}>{t('receipt.scannedData')}</Text>
             <Text style={styles.qrDataItem}>
-              Store: {parsedQRData.merchant?.name || 'Unknown'}
+              {t('receipt.store')}: {parsedQRData.merchant?.name || t('receipt.unknown')}
             </Text>
             <Text style={styles.qrDataItem}>
-              Total: ₺{parsedQRData.total?.value?.toFixed(2) || '0.00'}
+              {t('common.total')}: ₺{parsedQRData.total?.value?.toFixed(2) || '0.00'}
             </Text>
             <Text style={styles.qrDataItem}>
-              Date: {new Date(parsedQRData.date?.value).toLocaleDateString('tr-TR')}
+              {t('receipt.date')}: {new Date(parsedQRData.date?.value).toLocaleDateString('tr-TR')}
             </Text>
           </View>
         )}
-        
+
         <View style={styles.infoCard}>
           <Ionicons name="information-circle" size={20} color="#787774" />
           <Text style={styles.infoText}>
-            {source === 'qr' 
-              ? 'QR code data extracted. Confirm to save receipt.'
-              : 'Review the image and confirm to continue'
+            {source === 'qr'
+              ? t('receipt.qrExtracted')
+              : t('receipt.reviewImage')
             }
           </Text>
         </View>
@@ -139,12 +141,12 @@ export default function ImagePreviewScreen() {
             activeOpacity={0.7}
           >
             <Ionicons name="camera-reverse" size={24} color="#37352F" />
-            <Text style={styles.retakeText}>Retake</Text>
+            <Text style={styles.retakeText}>{t('receipt.retake')}</Text>
           </TouchableOpacity>
 
           <View style={styles.confirmButtonContainer}>
             <Button
-              title={isProcessing ? 'Processing...' : 'Confirm & Process'}
+              title={isProcessing ? t('receipt.processingStatus') : t('receipt.confirmProcess')}
               onPress={handleConfirm}
               disabled={isProcessing}
             />

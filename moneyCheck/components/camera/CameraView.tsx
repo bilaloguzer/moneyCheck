@@ -8,6 +8,7 @@ import { useRouter } from 'expo-router';
 import { useCamera } from '@/hooks/useCamera';
 import type { FlashMode } from '@/lib/types/camera.types';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useLocalization } from '@/contexts/LocalizationContext';
 
 interface CameraViewProps {
   onCapture: (uri: string) => void;
@@ -18,6 +19,7 @@ interface CameraViewProps {
 export function CameraView({ onCapture, onCancel, ratio = '16:9' }: CameraViewProps) {
   const cameraRef = useRef<CameraViewType | null>(null);
   const router = useRouter();
+  const { t } = useLocalization();
   const [isReady, setIsReady] = useState(false);
   const insets = useSafeAreaInsets();
 
@@ -79,12 +81,12 @@ export function CameraView({ onCapture, onCancel, ratio = '16:9' }: CameraViewPr
   if (!hasPermission) {
     return (
       <View style={styles.center}>
-        <Text style={styles.permissionText}>Camera permission is required. Please enable it in settings.</Text>
-        <TouchableOpacity 
+        <Text style={styles.permissionText}>{t('camera.permissionRequired')}</Text>
+        <TouchableOpacity
           style={styles.permissionButton}
           onPress={requestPermission}
         >
-          <Text style={styles.permissionButtonText}>Grant Permission</Text>
+          <Text style={styles.permissionButtonText}>{t('camera.grantPermission')}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -136,7 +138,7 @@ export function CameraView({ onCapture, onCancel, ratio = '16:9' }: CameraViewPr
               <View style={[styles.corner, styles.cornerBottomRight]} />
             </View>
             <Text style={styles.instructionText}>
-              Position receipt within frame
+              {t('camera.positionReceipt')}
             </Text>
           </View>
         </View>
@@ -149,7 +151,7 @@ export function CameraView({ onCapture, onCancel, ratio = '16:9' }: CameraViewPr
             activeOpacity={0.7}
           >
             <Ionicons name="images" size={28} color="#FFFFFF" />
-            <Text style={styles.sideButtonText}>Gallery</Text>
+            <Text style={styles.sideButtonText}>{t('camera.gallery')}</Text>
           </TouchableOpacity>
 
           <View style={styles.captureContainer}>
@@ -169,7 +171,7 @@ export function CameraView({ onCapture, onCancel, ratio = '16:9' }: CameraViewPr
               )}
             </TouchableOpacity>
             {isReady && (
-              <Text style={styles.captureHint}>Tap to capture</Text>
+              <Text style={styles.captureHint}>{t('camera.tapToCapture')}</Text>
             )}
           </View>
 

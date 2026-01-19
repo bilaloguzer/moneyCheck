@@ -8,11 +8,13 @@ import {  PriceHistoryService, PriceComparisonService } from '@/lib/services/pri
 import type { PriceHistoryEntry, PriceStats, PriceComparison } from '@/lib/services/price';
 import { Ionicons } from '@expo/vector-icons';
 import { LineChart } from 'react-native-gifted-charts';
+import { useLocalization } from '@/contexts/LocalizationContext';
 
 export default function PriceComparisonScreen() {
   const {id} = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const { db } = useDatabaseContext();
+  const { t } = useLocalization();
   
   const [loading, setLoading] = useState(true);
   const [selectedItemIndex, setSelectedItemIndex] = useState(0);
@@ -89,18 +91,18 @@ export default function PriceComparisonScreen() {
     return (
       <View style={styles.center}>
         <ActivityIndicator size="large" color="#37352F" />
-        <Text style={styles.loadingText}>Loading price comparison...</Text>
+        <Text style={styles.loadingText}>{t('receipt.loadingComparison')}</Text>
       </View>
     );
   }
-  
+
   if (!receiptData || !receiptData.items || receiptData.items.length === 0) {
     return (
       <View style={styles.center}>
         <Ionicons name="pricetag-outline" size={64} color="#E9E9E7" />
-        <Text style={styles.errorText}>No items to compare</Text>
+        <Text style={styles.errorText}>{t('receipt.noItemsToCompare')}</Text>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Text style={styles.backButtonText}>Go Back</Text>
+          <Text style={styles.backButtonText}>{t('receipt.goBack')}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -108,7 +110,7 @@ export default function PriceComparisonScreen() {
   
   const selectedItem = receiptData.items[selectedItemIndex];
   const rankColor = marketComparison ? PriceComparisonService.getRankColor(marketComparison.comparison.rank) : '#787774';
-  const rankLabel = marketComparison ? PriceComparisonService.getRankLabel(marketComparison.comparison.rank) : '';
+  const rankLabel = marketComparison ? PriceComparisonService.getRankLabel(marketComparison.comparison.rank, t) : '';
   
   return (
     <>
@@ -119,14 +121,14 @@ export default function PriceComparisonScreen() {
           <TouchableOpacity onPress={() => router.back()} style={styles.headerButton}>
             <Ionicons name="arrow-back" size={24} color="#37352F" />
           </TouchableOpacity>
-          <Text style={styles.title}>Price Comparison</Text>
+          <Text style={styles.title}>{t('receipt.priceComparison')}</Text>
         <View style={styles.headerButton} />
       </View>
-      
+
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.content}>
         {/* Item Selector */}
         <View style={styles.section}>
-          <Text style={styles.sectionLabel}>Select Item</Text>
+          <Text style={styles.sectionLabel}>{t('receipt.selectItem')}</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.itemSelector}>
             {receiptData.items.map((item: any, index: number) => (
               <TouchableOpacity
@@ -156,19 +158,19 @@ export default function PriceComparisonScreen() {
         
         {/* Current Purchase */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Your Purchase</Text>
+          <Text style={styles.sectionTitle}>{t('receipt.yourPurchase')}</Text>
           <View style={[styles.priceCard, { borderLeftColor: rankColor, borderLeftWidth: 4 }]}>
             <View style={styles.priceCardHeader}>
               <View>
                 <Text style={styles.productName}>{selectedItem.name}</Text>
-                <Text style={styles.storeName}>{receiptData.merchantName || 'Unknown Store'}</Text>
+                <Text style={styles.storeName}>{receiptData.merchantName || t('receipt.unknownStore')}</Text>
               </View>
               <Text style={styles.currentPrice}>{selectedItem.unitPrice.toFixed(2)} ₺</Text>
             </View>
-            
+
             {marketComparison && (
               <View style={[styles.rankBadge, { backgroundColor: `${rankColor}15`, borderColor: rankColor }]}>
-                <Ionicons 
+                <Ionicons
                   name={marketComparison.comparison.rank === 'excellent' || marketComparison.comparison.rank === 'good' ? 'checkmark-circle' : 'alert-circle'}
                   size={16}
                   color={rankColor}
@@ -176,19 +178,19 @@ export default function PriceComparisonScreen() {
                 <Text style={[styles.rankText, { color: rankColor }]}>{rankLabel}</Text>
               </View>
             )}
-            
+
             {priceStats && priceStats.count > 1 && (
               <Text style={styles.comparisonText}>
-                {((selectedItem.unitPrice - priceStats.min) / priceStats.min * 100).toFixed(1)}% from your best price
+                {((selectedItem.unitPrice - priceStats.min) / priceStats.min * 100).toFixed(1)}% {t('receipt.fromBestPrice')}
               </Text>
             )}
           </View>
         </View>
-        
+
         {/* Price History Chart */}
         {priceHistory.length > 1 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Your Price History</Text>
+            <Text style={styles.sectionTitle}>{t('receipt.yourPriceHistory')}</Text>
             <View style={styles.chartContainer}>
               <LineChart
                 data={priceHistory.slice(0, 8).reverse().map((entry) => ({
@@ -222,57 +224,57 @@ export default function PriceComparisonScreen() {
         {/* Personal Statistics */}
         {priceStats && priceStats.count > 0 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Your Statistics</Text>
+            <Text style={styles.sectionTitle}>{t('receipt.yourStatistics')}</Text>
             <View style={styles.statsGrid}>
               <View style={styles.statCard}>
                 <Ionicons name="trending-down" size={20} color="#2C9364" />
                 <Text style={styles.statValue}>₺{priceStats.min.toFixed(2)}</Text>
-                <Text style={styles.statLabel}>Best Price</Text>
+                <Text style={styles.statLabel}>{t('receipt.bestPrice')}</Text>
               </View>
               <View style={styles.statCard}>
                 <Ionicons name="trending-up" size={20} color="#E03E3E" />
                 <Text style={styles.statValue}>₺{priceStats.max.toFixed(2)}</Text>
-                <Text style={styles.statLabel}>Worst Price</Text>
+                <Text style={styles.statLabel}>{t('receipt.worstPrice')}</Text>
               </View>
               <View style={styles.statCard}>
                 <Ionicons name="stats-chart" size={20} color="#787774" />
                 <Text style={styles.statValue}>₺{priceStats.average.toFixed(2)}</Text>
-                <Text style={styles.statLabel}>Average</Text>
+                <Text style={styles.statLabel}>{t('receipt.average')}</Text>
               </View>
               <View style={styles.statCard}>
                 <Ionicons name="receipt" size={20} color="#787774" />
                 <Text style={styles.statValue}>{priceStats.count}x</Text>
-                <Text style={styles.statLabel}>Purchased</Text>
+                <Text style={styles.statLabel}>{t('receipt.purchased')}</Text>
               </View>
             </View>
           </View>
         )}
-        
+
         {/* Market Comparison */}
         {marketComparison && (
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Market Comparison</Text>
+              <Text style={styles.sectionTitle}>{t('receipt.marketComparison')}</Text>
               <View style={styles.dataSourceBadge}>
-                <Ionicons 
-                  name={marketComparison.comparison.isRealData ? "people" : "flask"} 
-                  size={12} 
-                  color="#787774" 
+                <Ionicons
+                  name={marketComparison.comparison.isRealData ? "people" : "flask"}
+                  size={12}
+                  color="#787774"
                 />
                 <Text style={styles.dataSourceText}>
-                  {marketComparison.comparison.isRealData 
-                    ? `${marketComparison.comparison.sampleSize || 0} prices` 
-                    : 'Estimated'}
+                  {marketComparison.comparison.isRealData
+                    ? `${marketComparison.comparison.sampleSize || 0} ${t('receipt.pricesStore')}`
+                    : t('receipt.estimated')}
                 </Text>
               </View>
             </View>
             <View style={styles.marketCard}>
               <View style={styles.marketRow}>
-                <Text style={styles.marketLabel}>Market Average</Text>
+                <Text style={styles.marketLabel}>{t('receipt.marketAverage')}</Text>
                 <Text style={styles.marketValue}>₺{marketComparison.comparison.marketAverage.toFixed(2)}</Text>
               </View>
               <View style={styles.marketRow}>
-                <Text style={styles.marketLabel}>Your Price</Text>
+                <Text style={styles.marketLabel}>{t('receipt.yourPrice')}</Text>
                 <Text style={[
                   styles.marketValue,
                   { color: marketComparison.comparison.difference > 0 ? '#E03E3E' : '#2C9364' }
@@ -285,7 +287,7 @@ export default function PriceComparisonScreen() {
                 <View style={[styles.savingsBanner, { backgroundColor: '#2C936415' }]}>
                   <Ionicons name="wallet-outline" size={18} color="#2C9364" />
                   <Text style={styles.savingsText}>
-                    {PriceComparisonService.getSavingsMessage(marketComparison.comparison.savingsOpportunity)}
+                    {PriceComparisonService.getSavingsMessage(marketComparison.comparison.savingsOpportunity, t)}
                   </Text>
                 </View>
               )}
@@ -296,12 +298,12 @@ export default function PriceComparisonScreen() {
         {/* Prices by Store */}
         {marketComparison && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Prices by Store</Text>
+            <Text style={styles.sectionTitle}>{t('receipt.pricesByStore')}</Text>
             {marketComparison.allPrices.map((entry, index) => {
               const isUserStore = entry.isUserPrice;
               const isCheapest = entry.price === marketComparison.comparison.cheapestPrice;
               const isExpensive = entry.price === marketComparison.comparison.mostExpensivePrice;
-              
+
               return (
                 <View
                   key={index}
@@ -320,7 +322,7 @@ export default function PriceComparisonScreen() {
                       isUserStore && styles.storeNameHighlight
                     ]}>
                       {entry.store}
-                      {isUserStore && ' (You)'}
+                      {isUserStore && ` (${t('receipt.you')})`}
                     </Text>
                   </View>
                   <View style={styles.storeRight}>
@@ -332,12 +334,12 @@ export default function PriceComparisonScreen() {
                     </Text>
                     {isCheapest && (
                       <View style={styles.badge}>
-                        <Text style={styles.badgeText}>Best!</Text>
+                        <Text style={styles.badgeText}>{t('receipt.best')}</Text>
                       </View>
                     )}
                     {isExpensive && !isCheapest && (
                       <View style={[styles.badge, { backgroundColor: '#E03E3E15', borderColor: '#E03E3E' }]}>
-                        <Text style={[styles.badgeText, { color: '#E03E3E' }]}>Highest</Text>
+                        <Text style={[styles.badgeText, { color: '#E03E3E' }]}>{t('receipt.highest')}</Text>
                       </View>
                     )}
                   </View>

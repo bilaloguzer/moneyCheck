@@ -11,11 +11,13 @@ import { PieChart } from 'react-native-gifted-charts';
 import { getCategoryDisplayName, getCategoryColor } from '@/lib/constants/categories';
 import { showErrorToast, showSuccessToast } from '@/lib/utils/toast';
 import { hapticSuccess, hapticError, hapticWarning } from '@/lib/utils/haptics';
+import { useLocalization } from '@/contexts/LocalizationContext';
 
 export default function ReceiptDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const { db } = useDatabaseContext();
+  const { t } = useLocalization();
   const [receipt, setReceipt] = useState<Receipt | null>(null);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
@@ -68,7 +70,7 @@ export default function ReceiptDetailScreen() {
       } catch (error) {
         console.error('Failed to load receipt:', error);
         hapticError();
-        showErrorToast('Failed to load receipt details');
+        showErrorToast(t('receipt.loadError'));
       } finally {
         setLoading(false);
       }
@@ -82,12 +84,12 @@ export default function ReceiptDetailScreen() {
 
     hapticWarning();
     Alert.alert(
-      'Delete Receipt',
-      'Are you sure you want to delete this receipt? This action cannot be undone.',
+      t('receipt.deleteReceipt'),
+      t('receipt.deleteConfirm'),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Delete',
+          text: t('common.delete'),
           style: 'destructive',
           onPress: async () => {
             setDeleting(true);
@@ -95,12 +97,12 @@ export default function ReceiptDetailScreen() {
               const repository = new ReceiptRepository(db);
               await repository.delete(parseInt(id));
               hapticSuccess();
-              showSuccessToast('Receipt deleted successfully');
+              showSuccessToast(t('receipt.receiptDeleted'));
               router.back();
             } catch (error) {
               console.error('Failed to delete receipt:', error);
               hapticError();
-              showErrorToast('Failed to delete receipt');
+              showErrorToast(t('receipt.deleteError'));
               setDeleting(false);
             }
           }
@@ -121,8 +123,8 @@ export default function ReceiptDetailScreen() {
     return (
       <View style={styles.center}>
         <Ionicons name="receipt-outline" size={64} color="#E9E9E7" />
-        <Text style={styles.errorText}>Receipt not found</Text>
-        <Button title="Go Back" onPress={() => router.back()} />
+        <Text style={styles.errorText}>{t('receipt.notFound')}</Text>
+        <Button title={t('receipt.goBack')} onPress={() => router.back()} />
       </View>
     );
   }
@@ -146,7 +148,7 @@ export default function ReceiptDetailScreen() {
           <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
             <Ionicons name="arrow-back" size={24} color="#37352F" />
           </TouchableOpacity>
-          <Text style={styles.title}>Receipt Details</Text>
+          <Text style={styles.title}>{t('receipt.details')}</Text>
           <TouchableOpacity onPress={handleDelete} disabled={deleting}>
             <Ionicons name="trash-outline" size={24} color="#E03E3E" />
           </TouchableOpacity>
@@ -155,8 +157,8 @@ export default function ReceiptDetailScreen() {
         {/* Receipt Image */}
         {receipt.imagePath ? (
           <View style={styles.imageContainer}>
-            <Image 
-              source={{ uri: receipt.imagePath }} 
+            <Image
+              source={{ uri: receipt.imagePath }}
               style={styles.image}
               resizeMode="contain"
               onError={(error) => console.log('Image load error:', error.nativeEvent.error)}
@@ -166,7 +168,7 @@ export default function ReceiptDetailScreen() {
         ) : (
           <View style={[styles.imageContainer, { justifyContent: 'center', alignItems: 'center' }]}>
             <Ionicons name="image-outline" size={48} color="#E9E9E7" />
-            <Text style={{ color: '#787774', marginTop: 8 }}>No image available</Text>
+            <Text style={{ color: '#787774', marginTop: 8 }}>{t('receipt.noImageAvailable')}</Text>
           </View>
         )}
 
@@ -175,15 +177,15 @@ export default function ReceiptDetailScreen() {
           <View style={styles.infoRow}>
             <Ionicons name="storefront-outline" size={20} color="#787774" />
             <View style={styles.infoContent}>
-              <Text style={styles.infoLabel}>Merchant</Text>
-              <Text style={styles.infoValue}>{receipt.merchantName || 'Unknown'}</Text>
+              <Text style={styles.infoLabel}>{t('receipt.merchant')}</Text>
+              <Text style={styles.infoValue}>{receipt.merchantName || t('receipt.unknown')}</Text>
             </View>
           </View>
 
           <View style={styles.infoRow}>
             <Ionicons name="calendar-outline" size={20} color="#787774" />
             <View style={styles.infoContent}>
-              <Text style={styles.infoLabel}>Date</Text>
+              <Text style={styles.infoLabel}>{t('receipt.date')}</Text>
               <Text style={styles.infoValue}>{formatDate(receipt.date)}</Text>
             </View>
           </View>
@@ -191,21 +193,21 @@ export default function ReceiptDetailScreen() {
           <View style={styles.infoRow}>
             <Ionicons name="cash-outline" size={20} color="#787774" />
             <View style={styles.infoContent}>
-              <Text style={styles.infoLabel}>Total Amount</Text>
+              <Text style={styles.infoLabel}>{t('receipt.totalAmount')}</Text>
               <Text style={[styles.infoValue, styles.totalAmount]}>
                 {receipt.total?.toFixed(2)} ₺
               </Text>
             </View>
           </View>
-          
+
           {/* Compare Prices Button */}
           {receipt.items && receipt.items.length > 0 && (
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.comparePricesButton}
               onPress={() => router.push(`/receipt/${id}/compare`)}
             >
               <Ionicons name="stats-chart-outline" size={20} color="#2C9364" />
-              <Text style={styles.comparePricesText}>Compare Prices</Text>
+              <Text style={styles.comparePricesText}>{t('receipt.comparePrices')}</Text>
               <Ionicons name="chevron-forward" size={16} color="#2C9364" />
             </TouchableOpacity>
           )}
@@ -214,7 +216,7 @@ export default function ReceiptDetailScreen() {
         {/* Category Analysis */}
         {categoryStats.length > 0 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Category Breakdown</Text>
+            <Text style={styles.sectionTitle}>{t('receipt.categoryBreakdown')}</Text>
             <View style={{ alignItems: 'center', marginBottom: 20 }}>
               <PieChart
                 data={categoryStats.map(cat => ({
@@ -234,7 +236,7 @@ export default function ReceiptDetailScreen() {
                     <Text style={{ fontSize: 16, fontWeight: '700', color: '#37352F' }}>
                       ₺{receipt.total?.toFixed(0)}
                     </Text>
-                    <Text style={{ fontSize: 10, color: '#787774' }}>Total</Text>
+                    <Text style={{ fontSize: 10, color: '#787774' }}>{t('common.total')}</Text>
                   </View>
                 )}
               />
@@ -260,15 +262,15 @@ export default function ReceiptDetailScreen() {
         {/* Line Items */}
         {receipt.items && receipt.items.length > 0 ? (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Items ({receipt.items.length})</Text>
+            <Text style={styles.sectionTitle}>{t('receipt.items')} ({receipt.items.length})</Text>
             {receipt.items.map((item, index) => {
               const categoryColor = getCategoryColor(item.category || 'other');
               return (
-                <View 
-                  key={index} 
+                <View
+                  key={index}
                   style={[
                     styles.itemCard,
-                    { 
+                    {
                       backgroundColor: `${categoryColor}15`,
                       borderLeftWidth: 4,
                       borderLeftColor: categoryColor,
@@ -278,7 +280,7 @@ export default function ReceiptDetailScreen() {
                   <View style={styles.itemHeader}>
                     <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8 }}>
                       <View style={[styles.categoryDot, { backgroundColor: categoryColor }]} />
-                      <Text style={styles.itemName}>{item.name || 'Unknown Item'}</Text>
+                      <Text style={styles.itemName}>{item.name || t('receipt.unknownItem')}</Text>
                     </View>
                     <Text style={styles.itemPrice}>
                       {((item.quantity || 1) * (item.unitPrice || 0) - (item.discount || 0)).toFixed(2)} ₺
@@ -290,7 +292,7 @@ export default function ReceiptDetailScreen() {
                     </Text>
                     {(item.discount && item.discount > 0) ? (
                       <Text style={styles.itemDiscount}>
-                        -{item.discount.toFixed(2)} ₺ discount
+                        -{item.discount.toFixed(2)} ₺ {t('receipt.discount')}
                       </Text>
                     ) : null}
                     {item.category ? (
@@ -312,7 +314,7 @@ export default function ReceiptDetailScreen() {
           <View style={styles.confidenceContainer}>
             <Ionicons name="checkmark-circle-outline" size={16} color="#787774" />
             <Text style={styles.confidenceText}>
-              OCR Confidence: {(receipt.ocrConfidence * 100).toFixed(0)}%
+              {t('receipt.ocrConfidence')}: {(receipt.ocrConfidence * 100).toFixed(0)}%
             </Text>
           </View>
         )}
